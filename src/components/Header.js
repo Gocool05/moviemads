@@ -60,11 +60,11 @@ function Header() {
     <Nav>
       <Logo src="/images/Moviemads Logo.png"></Logo>
       {/* <h1 style={{ color: "Red" }}>MOVIE<span style={{ color: "gold" }}>MADS</span></h1> */}
-      {!userName ? (
+      {/* {userName ? (
         <LoginContainer>
           <Login onClick={signIn}>Login</Login>
         </LoginContainer>
-      ) : (
+      ) : ( */}
         <>
         <MenuToggle onClick={toggleMenu}>&#9776;</MenuToggle>
         <Menu isOpen={isMenuOpen}>
@@ -94,7 +94,7 @@ function Header() {
           </Menu>
           <LogoutOutlined rotate={-90} style={{fontSize:"20px"}} onClick={signOut} />
         </> 
-      )}
+      {/* )} */}
     </Nav>
   );
 }
