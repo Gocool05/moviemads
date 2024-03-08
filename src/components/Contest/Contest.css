@@ -1,0 +1,47 @@
+.steps-container{
+    margin: 50px 50px;
+    padding: 50px 50px;
+    background-color: #212529;
+    color:#ffffff;
+    
+}
+.contest-heading{
+    font-size: 72px;
+    background: -webkit-linear-gradient(#e50914, #333);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    text-align: center;
+}
+.upload-container{
+    display: flex;
+    justify-content: space-evenly;
+}
+div.Two.input {
+    display: flex; /* Use flexbox */
+    gap: 16px;
+    flex-direction: row; /* Ensure items are arranged in a row */
+}
+
+div.Two.input .input-container {
+    flex: 1; /* Allow each input to grow to take up available space */
+    margin-right: 16px; /* Optional: Add margin between inputs */
+}
+
+/* Optional: Adjust input width */
+div.Two.input .input-container input {
+    width: 100%; /* Ensure input takes up all available space */
+}
+
+
+@media screen and (max-width: 512px) {
+    div.Two.input {
+        display: flex; /* Use flexbox */
+        gap: 16px;
+        flex-direction: column;
+    }
+    .upload-container{
+        display:contents;
+    }
+}
