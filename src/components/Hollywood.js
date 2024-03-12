@@ -51,9 +51,6 @@ const Hollywood = () => {
               slidesPerView: 3,
             },
           }}
-        // pagination={{
-        //   type: 'fraction',
-        // }}
         navigation={true}
       >
                 {movies.map((movie) => (

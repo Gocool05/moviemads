@@ -67,10 +67,19 @@
 
 .movie-name {
     color:#ffffff;
-    font-weight: bold;
-    font-size: 14px;
+    /* font-weight: bold; */
+    font-size: 16px;
     text-align: center;
     padding: 8px;
     margin: 0;
     text-transform: uppercase;
+}
+
+.swiper-button-next:after{
+  color: #ff0015;
+  font-weight: bold;
+}
+.swiper-button-prev:after{
+  color: #ff0015;
+  font-weight: bold;
 }
