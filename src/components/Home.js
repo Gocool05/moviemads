@@ -9,6 +9,9 @@ import ImgSlider from "./imgSlider";
 import Footer from "./Footer/Footer";
 import UpcomingMovies from "./upcomingMovies";
 import Topnav from "./TopNav/Topnav";
+import TopRated from "./TopRated";
+import TvShows from "./Hollywood";
+import Hollywood from "./Hollywood";
 
 function Home() {
   const dispatch = useDispatch();
@@ -26,9 +29,11 @@ function Home() {
     <Container>
       <ImgSlider />
       <UpcomingMovies/>
-      <h1 style={{padding:"30px 0px"}}>SHORT FILM AWARDS</h1>
+      <TopRated/>
+      <h1 style={{padding:"10px 0px", fontSize:"1.5rem",color:"#fff",fontWeight:"600"}}>SHORT FILM AWARDS</h1>
       <Viewers />
       <Movies />
+    <Hollywood/>
     </Container>
       <Footer/>
       </>
@@ -44,7 +49,7 @@ const Container = styled.main`
   padding-bottom: 50px;
   overflow-x: hidden;
   &:before {
-    background: url("/images/home-background.png") center center / cover
+    // background: url("/images/home-background.png") center center / cover
       no-repeat fixed;
     content: "";
     position: absolute;

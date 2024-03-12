@@ -53,4 +53,7 @@ const Nav = styled.div`
   padding: 0 36px;
   overflow-x: hidden;
   overflow-y: hidden;
+  @media (max-width: 768px) {
+    padding: 0 10px;
+  }
 `;

@@ -79,6 +79,11 @@ const Container = styled.div`
   padding: 0 calc(3.5vw + 5px);
   position: relative;
   padding:30px;
+  // overflow-x: hidden;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const Background = styled.div`
@@ -119,6 +124,9 @@ const Controls = styled.div`
   display: flex;
   align-items: center;
   margin-top: 100px;
+  @media (max-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 const PlayButton = styled.button`

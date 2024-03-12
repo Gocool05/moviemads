@@ -49,10 +49,10 @@ function ImgSlider() {
           <Info>
             <Button1>Play Now</Button1>
             <Button2>More Info</Button2>
-            <Subtitle>THANGALAAN</Subtitle>
-            <Description>Upcoming Release of Actor Chiyaan Vikram.</Description>
+            <Subtitle>THUG LIFE</Subtitle>
+            <Description>Upcoming Release of Actor kamal Haasan.</Description>
           </Info>
-          <img src="/images/chiyaan-sixteen_nine.jpg" alt="" />
+          <img src="/images/thuglife2.webp" alt="" />
       </Wrap>
     </Carousel>
   );
@@ -67,8 +67,30 @@ const Carousel = styled(Slider)`
     color: rgb(150, 158, 171);
   }
 
+  .slick-next:before {
+   color: #ff0015;
+   font-size: 40px;
+   font-weight: bold;
+   opacity: 100%;
+  }
+  .slick-prev:before {
+    color: #ff0015;
+    font-size: 40px;
+    font-weight: bold;
+    opacity: 100%;
+  }
+  @media (max-width: 768px) {
+    .slick-next:before{
+      display: none;
+    }
+    .slick-prev:before{
+      display: none;
+    }
+  }
+    
   li.slick-active Button1::before {
     color: white;
+    display: none;
   }
   .slick-list {
     overflow: visible;
@@ -82,8 +104,10 @@ const Carousel = styled(Slider)`
 const Wrap = styled.div`
   position: relative; /* To position the Button1s and information */
   cursor: pointer;
-  width:80vw;
-    height:70vh;
+    height:80vh;
+    @media (max-width: 768px) {
+      height: auto;
+    }
   img {
     border: 5px solid transparent;
     width:100%;
@@ -96,6 +120,7 @@ const Wrap = styled.div`
     &:hover {
       border: 4px solid rgba(249, 249, 249, 0.8);
     }
+
   }
 `;
 
@@ -106,6 +131,9 @@ z-index: 3;
 bottom: 0;
 margin-bottom: 10px;
 margin-left: 20px;
+@media (max-width: 768px) {
+  // display: none;
+}
 `;
 
 const Button1 = styled.button`
@@ -115,6 +143,10 @@ const Button1 = styled.button`
   color: #ffffff;
   border-radius: 5px;
   cursor: pointer;
+  @media (max-width: 768px) {
+    margin: 0px;
+  padding: 5px;
+  }
 `;
 const Button2 = styled.button`
   margin: 5px;
@@ -124,16 +156,25 @@ const Button2 = styled.button`
   color: #fff;
   border-radius: 5px;
   cursor: pointer;
-
+  @media (max-width: 768px) {
+    margin: 0px;
+  padding: 5px;
+  }
 `;
 
 const Subtitle = styled.h2`
   color: #fff;
   font-size: 24px;
   margin-bottom: 10px;
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const Description = styled.p`
   color: #fff;
   font-size: 18px;
+  @media (max-width: 768px) {
+    font-size: 10px;
+  }
 `;

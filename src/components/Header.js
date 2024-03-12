@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect,useState,useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { auth, provider } from "../firebase";
@@ -10,7 +10,8 @@ import {
 } from "../features/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { async } from "@firebase/util";
-import { LogoutOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined } from "@ant-design/icons";
+
 
 function Header() {
   const userName = useSelector(selectUserName);
@@ -18,6 +19,7 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
   useEffect(() => {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -32,18 +34,38 @@ function Header() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    // Function to close the menu when clicking outside of it
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    // Add event listener when the component mounts
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Remove event listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
+
   const signIn = () => {
-    // auth.signInWithPopup(provider).then((result) => {
-    //   let user = result.user;
-    //   dispatch(
-    //     setUserLogin({
-    //       name: user.displayName,
-    //       email: user.email,
-    //       photo: user.photoURL,
-    //     })
-    //   );
+    auth.signInWithPopup(provider).then((result) => {
+      let user = result.user;
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        })
+      );
       navigate("/home");
-    // });
+    });
   };
 
   const signOut = () => {
@@ -56,45 +78,49 @@ function Header() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <Nav>
       <Logo src="/images/Moviemads Logo.png"></Logo>
       {/* <h1 style={{ color: "Red" }}>MOVIE<span style={{ color: "gold" }}>MADS</span></h1> */}
-      {/* {userName ? (
+      {!userName ? (
         <LoginContainer>
           <Login onClick={signIn}>Login</Login>
         </LoginContainer>
-      ) : ( */}
+      ) : (
         <>
-        <MenuToggle onClick={toggleMenu}>&#9776;</MenuToggle>
-        <Menu isOpen={isMenuOpen}>
+        <MenuToggle onClick={toggleMenu}><MenuOutlined style={{fontSize:"24px"}} /></MenuToggle>
+        <Menu isOpen={isMenuOpen} ref={menuRef}>
           <NavMenu>
-            <a onClick={() => navigate("/home")}>
+            <a onClick={() => { navigate("/home"); handleMenuClick(); }}>
               {/* <img src="/images/home-icon.svg" /> */}
               <span>Home</span>
             </a>
-            <a onClick={() => navigate("/movieTrailer")}>
+            <a onClick={() => { navigate("/movieTrailer"); handleMenuClick(); }}>
               {/* <img src="/images/movie-icon.svg" /> */}
               <span>Movie Trailers</span>
             </a>
-            <a onClick={() => navigate("/shortFilms")}>
+            <a onClick={() => { navigate("/shortfilms"); handleMenuClick(); }}>
               {/* <img src="/images/original-icon.svg" /> */}
               <span>Short Flims</span>
             </a>
-            <a onClick={() => navigate("/awards")}>
+            <a onClick={() => { navigate("/awards"); handleMenuClick(); }}>
               {/* <img src="/images/series-icon.svg" /> */}
               <span>Awards</span>
             </a>
-            <a onClick={() => navigate("/reviews")}>
+            <a onClick={() => { navigate("/reviews"); handleMenuClick(); }}>
               {/* <img src="/images/watchlist-icon.svg" /> */}
               <span>Reviews</span>
             </a>
-           
+          <a className="sign-out" style={{cursor:"pointer"}} onClick={signOut}>SIGN<LogoutOutlined rotate={-90}  style={{fontSize:"20px",color:"red"}} />UT</a>
           </NavMenu>
           </Menu>
-          <LogoutOutlined rotate={-90} style={{fontSize:"20px"}} onClick={signOut} />
         </> 
-      {/* )} */}
+       )} 
     </Nav>
   );
 }
@@ -122,7 +148,7 @@ const Menu = styled.div`
   top: 75px; /* Adjust according to your header height */
   left: 0;
   width: 100%;
-  z-index: 1;
+  z-index: 9;
 
   /* Adjust display for desktop screens */
   @media (min-width: 768px) {

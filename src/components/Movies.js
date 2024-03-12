@@ -5,6 +5,16 @@ import { selectMovies } from '../features/movie/movieSlice';
 import { useSelector } from 'react-redux';
 import movies from '../movies.js';
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import './Slider.css';
+// import required modules
+import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
+
+
 function Movies() {
   const [movies, setMovies] = useState([]);
   const options = {
@@ -27,16 +37,36 @@ function Movies() {
     return (
         <Container>
             <h1>MOVIE TRAILERS</h1>
-            <Content>
+            <Swiper
+        modules={[ Navigation, Pagination,Grid]}
+        slidesPerView={2}
+        centeredSlides={false}
+        spaceBetween={20}
+        // pagination={{
+        //   type: 'fraction',
+        // }}
+        breakpoints={{
+          // when window width is <= 768px
+          768: {
+            slidesPerView: 6,
+          },
+        }}
+        navigation={true}
+      >
                 {movies.map((movie) => (
-                        <Wrap key={movie.id}>
-                            <Link to={'/details/'+movie.id} >
+                        <SwiperSlide key={movie.id}>
+                            <Link to={'/details/'+movie.id} className="movie-link" >
+                            <div className="movie-container">
                                 <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
+                            <div className="overlay">
+                                <p className="movie-name">{movie.title}</p>
+                            </div>
+                            </div>
                             </Link>
-                        </Wrap>
+                        </SwiperSlide>
                     ))
                 }
-            </Content>
+                 </Swiper>
         </Container>
     )
 }
@@ -45,7 +75,10 @@ export default Movies;
 
 const Container = styled.div`
 h1{
-  padding: 30px 0;
+  padding: 10px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
 }`;
 
 const Content = styled.div`
@@ -70,7 +103,7 @@ const Wrap = styled.div`
   box-shadow: rgb(0 0 0 / 69%) 0px 26px 30px -10px,
     rgb(0 0 0 / 73%) 0px 16px 10px -10px;
   transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
-
+  
   img {
     width: 100%;
     height: 100%;
@@ -80,7 +113,6 @@ const Wrap = styled.div`
     transform: scale(1.05);
     box-shadow: rgb(0 0 0 / 69%) 0px 26px 30px -10px,
       rgb(0 0 0 / 73%) 0px 16px 10px -10px;
-
     border-color: rgba(249, 249, 249, 0.8);
   }
 `;

@@ -27,6 +27,7 @@ const Contest = () => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+  // const [previewVideo, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [videoUpload, setVideoUpload] = useState(null);
   const [imageUpload, setImageUpload] = useState(null);
@@ -43,6 +44,7 @@ const Contest = () => {
   const [directorName, setDirectorName] = useState("");
   const [contentRating, setContentRating] = useState("");
   const [duration, setDuration] = useState("");
+  const [profile, setProfile] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -80,6 +82,9 @@ const Contest = () => {
       case "duration":
         setDuration(value);
         break;
+      case "profile":
+        setProfile(value);
+        break;
       default:
         break;
     }
@@ -104,6 +109,7 @@ const Contest = () => {
       Directors: values.directorName,
       contentRating: values.contentRating,
       Duration: values.duration,
+      profile:values.profile
     }
     });
     console.log(response);
@@ -121,9 +127,6 @@ const Contest = () => {
     setCurrentStep(currentStep + 1);
   };
 
-
- 
-
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
   };
@@ -137,31 +140,34 @@ const Contest = () => {
     setPreviewOpen(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
- 
-  // const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-
-
-  const handleVideoUpload = ({ fileList: newFileList }) => setVideoUpload(newFileList);
-    // const file = event.target.files[0];
-    // setVideoUpload(file);
-    // console.log(videoUpload);
-  // };
-
-
-  const handleImageUpload = ({ fileList: newFileList }) => setImageUpload(newFileList);
-  console.log(imageUpload);
-  //   const file = event.target.files[0];
-  //   setImageUpload(file);
-  // };
-  const handleImageUpload1 = (event) => {
-    const file = event.target.files[0];
-    setImageUpload1(file);
+  const handleVideoPreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
   };
+
+  const handleVideoUpload = async (file) => {
+    setVideoUpload(file.file.originFileObj);
+    console.log('video',videoUpload);
+  }
+  const handleImageUpload = async (file) => {
+    setImageUpload(file.file.originFileObj);
+    console.log('image1',imageUpload);
+  }
+  const handleImageUpload1 = async (file) => {
+    setImageUpload1(file.file.originFileObj);
+    console.log('image2',imageUpload1);
+  }
+
+
 
 
 
   const handleUpload = async () => {
-    const formData = new FormData();
+    const videoFormData = new FormData();
 
     const newFileData = {
       alternativeText: localStorage.getItem("formId"),
@@ -171,20 +177,21 @@ const Contest = () => {
     const captionVideo = {
       caption: 'video',
     };
-    formData.append('fileInfo', JSON.stringify(newFileData));
+    // formData.append('fileInfo', JSON.stringify(newFileData));
     // formData.append('file', JSON.stringify(captionVideo));
-    formData.append('files', videoUpload);
-    formData.append('refId',localStorage.getItem("formId"))
-    formData.append('ref','api::form.form')
-    formData.append('field',"VideoFile")
+    videoFormData.append('files', videoUpload);
+    videoFormData.append('refId',localStorage.getItem("formId"))
+    videoFormData.append('ref','api::contest.contest')
+    videoFormData.append('field',"VideoFile")
     // Handle video upload
+    console.log(' upload response:', videoFormData.values);
+    
     try {
-      const videoResponse = await axios.post('http://strapi.letstrydevandops.site/api/upload', formData, {
+      const videoResponse = await axios.post('https://strapi.letstrydevandops.site/api/upload', videoFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
       // Handle success or error for video upload
       console.log('Video upload response:', videoResponse);
     } catch (error) {
@@ -199,7 +206,7 @@ const Contest = () => {
       const imageFormData = new FormData();
       imageFormData.append('files', imageFormDatas[i]);
       imageFormData.append('refId',localStorage.getItem("formId"))
-      imageFormData.append('ref','api::form.form')
+      imageFormData.append('ref','api::contest.contest')
 
       
       if(i==0){
@@ -208,7 +215,7 @@ const Contest = () => {
           alternativeText: localStorage.getItem("formId"),
           caption: 'MoviePoster',
         };
-        imageFormData.append('fileInfo', JSON.stringify(newFileData));
+        // imageFormData.append('fileInfo', JSON.stringify(newFileData));
       }
       else{
         imageFormData.append('field',"MovieThumbnail")
@@ -216,11 +223,11 @@ const Contest = () => {
           alternativeText: localStorage.getItem("formId"),
           caption: 'Thumbnail',
         };
-        imageFormData.append('fileInfo', JSON.stringify(newFileData));
+        // imageFormData.append('fileInfo', JSON.stringify(newFileData));
       }
       // Handle image upload
       try {
-        const imageResponse = await axios.post('http://strapi.letstrydevandops.site/api/upload', imageFormData, {
+        const imageResponse = await axios.post('https://strapi.letstrydevandops.site/api/upload', imageFormData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -228,7 +235,6 @@ const Contest = () => {
 
         setCurrentStep(currentStep + 1);
         console.log('All uploads completed');
-
         console.log(`Image ${i + 1} upload response:`, imageResponse);
       } catch (error) {
         console.error(`Error uploading image ${i + 1}:`, error);
@@ -470,7 +476,7 @@ const Contest = () => {
               onChange={handleInputChange}
               
             >
-          <TextArea rows={6}  />
+          <TextArea rows={6}   />
             </Form.Item>
             <div className="input-container">
             <Form.Item
@@ -492,6 +498,7 @@ const Contest = () => {
             <Select.Option value="Science fiction">Science fiction</Select.Option>
             <Select.Option value="Sports">Sports</Select.Option>
             <Select.Option value="Thriller">Thriller</Select.Option>
+            <Select.Option value="Documentary">Documentary</Select.Option>
           </Select>
             </Form.Item>
 
@@ -508,9 +515,27 @@ const Contest = () => {
               </div>
             <div className='Two input'>
             <Form.Item
+              label="Profile"
+              name="profile"
+              rules={[{ required: true, message: 'Please Select Content Rating!' }]}
+              className="input-container"
+              onChange={handleInputChange}
+            >
+             <Select>
+            <Select.Option value="Student">Student</Select.Option>
+            <Select.Option value="Employee">Employee</Select.Option>
+            <Select.Option value="Freelancer">Freelancer</Select.Option>
+            <Select.Option value="Business Owner">Business Owner</Select.Option>
+            <Select.Option value="Unemployed">Unemployed</Select.Option>
+            <Select.Option value="Homemaker">Homemaker</Select.Option>
+            <Select.Option value="Consultant">Consultant</Select.Option>
+            <Select.Option value="Entrepreneur">Entrepreneur</Select.Option>
+          </Select>
+            </Form.Item>
+            <Form.Item
               label="Content Rating"
               name="contentRating"
-              rules={[{ required: true, message: 'Please Select Content Rating!' }]}
+              rules={[{ required: true, message: 'Please Select Your Profile!' }]}
               className="input-container"
               onChange={handleInputChange}
             >
@@ -554,7 +579,8 @@ const Contest = () => {
         maxCount={1}
         accept="image/*"
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {/* {fileList.length >= 8 ? null : uploadButton} */}
+        {uploadButton}
       </Upload>
       <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
         <img
@@ -569,14 +595,13 @@ const Contest = () => {
          <div style={{ marginBottom: '20px' }}>
           <h3>Upload Thumbnail </h3>
          <Upload
-        // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture-card"
-        // fileList={fileList}
         rules={[{ required: true, message: 'Please Upload the Thumbnail' }]}
         onPreview={handlePreview}
         onChange={handleImageUpload1}
         maxCount={1}
         accept="image/*"
+
       >
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>

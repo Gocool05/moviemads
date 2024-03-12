@@ -7,7 +7,7 @@ const ShortFilms = () => {
       <div className="title-holder">
         <h2>Get ready for the Short Films</h2>
     <div className="header">
-        <h2>COMING SOON</h2>
+        <h2 className='h2-tag'>COMING SOON</h2>
       </div>
         <p>Page coming soon. Please check back to know more. Shoot us an email if you're curious.</p>
       </div>

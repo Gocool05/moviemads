@@ -4,18 +4,17 @@ import { json, Link } from 'react-router-dom';
 import { selectMovies } from '../features/movie/movieSlice';
 import { useSelector } from 'react-redux';
 import movies from '../movies.js';
-
+import './Slider1.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-import './Slider.css';
+// import './Slider.css';
 // import required modules
-import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
+import { Autoplay, EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 
-const UpcomingMovies = () => {
+const TopRated = () => {
     const [movies, setMovies] = useState([]);
     const options = {
       method: 'GET',
@@ -25,7 +24,7 @@ const UpcomingMovies = () => {
       }
     };
     const getMovies = () => {
-      fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=ta', options)
+      fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=hi', options)
       .then(response => response.json())
       .then(json => setMovies(json.results))
       .catch(err => console.error(err));
@@ -36,28 +35,34 @@ const UpcomingMovies = () => {
     },[]);
       return (
           <Container>
-              <h1>POPULAR MOVIES</h1>
+              <h1>TOP RATED MOVIES</h1>
               <Swiper
-        modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={2}
+        modules={[ Navigation, Pagination,Grid,Autoplay]}
+        slidesPerView={1}
         centeredSlides={false}
         spaceBetween={20}
+        autoplay={{
+            delay: 1500,
+            disableOnInteraction: false,
+          }}
+          breakpoints={{
+            // when window width is <= 768px
+            768: {
+              slidesPerView: 3,
+            },
+          }}
+        // pagination={{
+        //   type: 'fraction',
+        // }}
         navigation={true}
-        breakpoints={{
-          // when window width is <= 768px
-          768: {
-            slidesPerView: 6,
-          },
-        }}
-        className="mySwiper"
       >
                 {movies.map((movie) => (
-                        <SwiperSlide  key={movie.id}>
-                            <Link to={'/details/'+movie.id} className="movie-link" >
-                            <div className="movie-container">
-                                <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
-                            <div className="overlay">
-                                <p className="movie-name">{movie.title}</p>
+                        <SwiperSlide className='swiper-slide1' key={movie.id}>
+                            <Link to={'/details/'+movie.id} className="movie-link1" >
+                            <div className="movie-container1">
+                                <img src={`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`} alt="Img" id={movie.id}/>
+                            <div className="overlay1">
+                                <p className="movie-name1">{movie.title}</p>
                             </div>
                             </div>
                             </Link>
@@ -69,11 +74,11 @@ const UpcomingMovies = () => {
       )
 }
 
-export default UpcomingMovies
+export default TopRated
 
 const Container = styled.div`
 h1{
-  padding: 10px 0;
+    padding: 10px 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;

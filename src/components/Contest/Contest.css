@@ -3,7 +3,6 @@
     padding: 50px 50px;
     background-color: #212529;
     color:#ffffff;
-    
 }
 .contest-heading{
     font-size: 72px;
@@ -43,5 +42,9 @@ div.Two.input .input-container input {
     }
     .upload-container{
         display:contents;
+    }
+    .steps-container{
+        margin: 50px 20px;
+        padding: 50px 20px;
     }
 }

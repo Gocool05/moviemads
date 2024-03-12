@@ -6,18 +6,27 @@
     display: inline-block;
     font-size: 15px;
     line-height: 15px;
-    padding: 18px 18px 17px;
+    padding: 15px 18px 15px 10px;
     text-decoration: none;
     cursor: pointer;
     background: #303030;
     text-transform: uppercase;
-    border-radius: 10px;;
+    border-radius: 10px;
     font-weight: bold;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     -webkit-animation: flicker-1 2s linear infinite both;
     animation: flicker-1 2s linear infinite both;
+    }
+
+    @media screen and (max-width: 512px) {
+      .button-57 {
+        width: 50%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
     }
 
     @-webkit-keyframes flicker-1 {
