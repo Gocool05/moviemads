@@ -87,11 +87,11 @@ function Header() {
     <Nav>
       <Logo src="/images/Moviemads Logo.png"></Logo>
       {/* <h1 style={{ color: "Red" }}>MOVIE<span style={{ color: "gold" }}>MADS</span></h1> */}
-      {!userName ? (
+      {/* {!userName ? (
         <LoginContainer>
           <Login onClick={signIn}>Login</Login>
         </LoginContainer>
-      ) : (
+      ) : ( */}
         <>
         <MenuToggle onClick={toggleMenu}><MenuOutlined style={{fontSize:"24px"}} /></MenuToggle>
         <Menu isOpen={isMenuOpen} ref={menuRef}>
@@ -120,7 +120,7 @@ function Header() {
           </NavMenu>
           </Menu>
         </> 
-       )} 
+       {/* )}  */}
     </Nav>
   );
 }

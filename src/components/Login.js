@@ -15,17 +15,17 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const signIn = () => {
-    auth.signInWithPopup(provider).then((result) => {
-      let user = result.user;
-      dispatch(
-        setUserLogin({
-          name: user.displayName,
-          email: user.email,
-          photo: user.photoURL,
-        })
-      );
+    // auth.signInWithPopup(provider).then((result) => {
+    //   let user = result.user;
+    //   dispatch(
+    //     setUserLogin({
+    //       name: user.displayName,
+    //       email: user.email,
+    //       photo: user.photoURL,
+    //     })
+    //   );
       navigate("/home");
-    });
+    // });
   };
 
 
