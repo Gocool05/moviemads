@@ -76,7 +76,6 @@ const Container = styled.div`
   grid-template-columns: repeat(5, minmax(0, 1fr));
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    font-size: 8px;
   }
 `;
 
@@ -96,14 +95,17 @@ const Wrap = styled.div`
     height: 100%;
     object-fit: cover;
     opacity: 1;
-    justify-content: center;
-    align-items: center;
     position: absolute;
     text-align: center;
     transition: opacity 500ms ease-in-out 0s;
     width: 100%;
     z-index: 1;
-    top: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
   }
   img {
     inset: 0px;

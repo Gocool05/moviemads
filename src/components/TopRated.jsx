@@ -14,7 +14,7 @@ import 'swiper/css/pagination';
 // import required modules
 import { Autoplay, EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 
-const Hollywood = () => {
+const TopRated = () => {
     const [movies, setMovies] = useState([]);
     const options = {
       method: 'GET',
@@ -24,18 +24,18 @@ const Hollywood = () => {
       }
     };
     const getMovies = () => {
-      fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US', options)
+      fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=hi', options)
       .then(response => response.json())
       .then(json => setMovies(json.results))
       .catch(err => console.error(err));
     }
-    console.log("TV",movies)
+    console.log("popular",movies)
     useEffect(() => {
       getMovies();
     },[]);
       return (
           <Container>
-              <h1>HOLLYWOOD MOVIES</h1>
+              <h1>TOP RATED MOVIES</h1>
               <Swiper
         modules={[ Navigation, Pagination,Grid,Autoplay]}
         slidesPerView={1}
@@ -51,11 +51,14 @@ const Hollywood = () => {
               slidesPerView: 3,
             },
           }}
+        // pagination={{
+        //   type: 'fraction',
+        // }}
         navigation={true}
       >
                 {movies.map((movie) => (
                         <SwiperSlide className='swiper-slide1' key={movie.id}>
-                            <Link to={'/details/'+movie.id} className="movie-link1" >
+                            <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
                             <div className="movie-container1">
                                 <img src={`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`} alt="Img" id={movie.id}/>
                             <div className="overlay1">
@@ -71,11 +74,11 @@ const Hollywood = () => {
       )
 }
 
-export default Hollywood
+export default TopRated
 
 const Container = styled.div`
 h1{
-  padding: 10px 0;
+    padding: 10px 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;

@@ -11,7 +11,7 @@ const Awards = () => {
       </div>
         <p>Page coming soon. Please check back to know more. Shoot us an email if you're curious.</p>
       </div>
-      <a className="cta" href="mailto:user@example.com">
+      <a className="cta" href="mailto:jgntechnologies@gmail.com">
         <div >Send us an email</div>
       </a>
     </div>

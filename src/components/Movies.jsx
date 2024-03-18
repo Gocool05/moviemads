@@ -25,7 +25,7 @@ function Movies() {
     }
   };
   const getMovies = () => {
-    fetch('https://api.themoviedb.org/3/movie/upcoming?language=ta-IN&page=2', options)
+    fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=te', options)
     .then(response => response.json())
     .then(json => setMovies(json.results))
     .catch(err => console.error(err));
@@ -34,9 +34,10 @@ function Movies() {
   useEffect(() => {
     getMovies();
   },[]);
+  
     return (
         <Container>
-            <h1>MOVIE TRAILERS</h1>
+    <h1>SOUTH INDIAN MOVIES   </h1>
             <Swiper
         modules={[ Navigation, Pagination,Grid]}
         slidesPerView={2}
@@ -55,7 +56,7 @@ function Movies() {
       >
                 {movies.map((movie) => (
                         <SwiperSlide key={movie.id}>
-                            <Link to={'/details/'+movie.id} className="movie-link" >
+                            <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
                             <div className="movie-container">
                                 <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
                             <div className="overlay">

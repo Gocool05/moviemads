@@ -146,10 +146,16 @@
     .marquee {
       display: inline-block;
       white-space: nowrap;
-      animation: marquee-animation 20s linear infinite;
+      animation: marquee-animation 35s linear infinite;
       color: #ffffff;
     }
     
+    @media screen and (max-width: 512px) {
+      .marquee {
+        animation: marquee-animation 15s linear infinite;
+      }
+      
+    }
     @keyframes marquee-animation {
       from {
         transform: translateX(90vw);

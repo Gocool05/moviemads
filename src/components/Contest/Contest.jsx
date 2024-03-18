@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { Steps, Form, Input,ConfigProvider, Button, Upload, message, Progress,Select, TimePicker } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { LeftOutlined } from '@ant-design/icons';
+import { Checkbox } from 'antd';
+
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import {STRAPI_API_URL} from '../../constants.js';
 import './Contest.css';
 import TextArea from 'antd/es/input/TextArea';
 import axios from 'axios';
 import Modal from 'antd/es/modal/Modal';
 const { Step } = Steps;
-
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -32,6 +34,10 @@ const Contest = () => {
   const [videoUpload, setVideoUpload] = useState(null);
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUpload1, setImageUpload1] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewVideo, setPreviewVideo] = useState('');
 
   const [yourName, setYourName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -45,7 +51,7 @@ const Contest = () => {
   const [contentRating, setContentRating] = useState("");
   const [duration, setDuration] = useState("");
   const [profile, setProfile] = useState("");
-
+  const [agreed, setAgreed] = useState(false);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
@@ -94,33 +100,33 @@ const Contest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const values = await form.validateFields();
-      const response = await axios.post('https://strapi.letstrydevandops.site/api/contests', {
-    data:{
-      userName: values.yourName,
-      mobileNumber: values.mobile,
-      MovieName: values.movieName,
-      Description: values.description,
-      Language: values.language,
-      Genres: values.genre,
-      Actors: values.actorName,
-      Actresses: values.actressName,
-      Directors: values.directorName,
-      contentRating: values.contentRating,
-      Duration: values.duration,
-      profile:values.profile
-    }
-    });
-    console.log(response);
-    const formId = response.data.data.id;
-    console.log(formId);
-    localStorage.setItem("formId",formId);
+    // try {
+    //   const values = await form.validateFields();
+    //   const response = await axios.post('https://strapi.letstrydevandops.site/api/contests', {
+    // data:{
+    //   userName: values.yourName,
+    //   mobileNumber: values.mobile,
+    //   MovieName: values.movieName,
+    //   Description: values.description,
+    //   Language: values.language,
+    //   Genres: values.genre,
+    //   Actors: values.actorName,
+    //   Actresses: values.actressName,
+    //   Directors: values.directorName,
+    //   contentRating: values.contentRating,
+    //   Duration: values.duration,
+    //   profile:values.profile
+    // }
+    // });
+    // console.log(response);
+    // const formId = response.data.data.id;
+    // console.log(formId);
+    // localStorage.setItem("formId",formId);
     setCurrentStep(currentStep + 1);  
-    }
-    catch (err) {
-      alert("Enter Correct credentials", err);
-    }
+    // }
+    // catch (err) {
+    //   alert("Enter Correct credentials", err);
+    // }
   }
 
   const nextStep = () => {
@@ -133,40 +139,88 @@ const Contest = () => {
 
   const handleCancel = () => setPreviewOpen(false);
   const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
+    if (file.type.startsWith('video/')) {
+      // Generate thumbnail for video file
+      const thumbnail = await generateThumbnail(file.originFileObj);
+      // Set thumbnail as preview image
+      setPreviewImage(thumbnail);
+    } else {
+      setPreviewImage(file.url || file.preview);
     }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-  };
-  const handleVideoPreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+    setPreviewVisible(true);
   };
 
+  const handleClosePreview = () => {
+    setPreviewVisible(false);
+  };
+
+
+
+  const generateThumbnail = async (videoFile) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const videoElement = document.createElement('video');
+        videoElement.src = event.target.result;
+        videoElement.addEventListener('loadeddata', () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+          canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+          const thumbnailUrl = canvas.toDataURL('image/jpeg');
+          resolve(thumbnailUrl);
+        });
+      };
+      reader.readAsDataURL(videoFile);
+    });
+  };
+
+
+
+ 
+
+  
   const handleVideoUpload = async (file) => {
     setVideoUpload(file.file.originFileObj);
     console.log('video',videoUpload);
+    setUploadProgress({ ...uploadProgress, movie: file.percent });
   }
   const handleImageUpload = async (file) => {
     setImageUpload(file.file.originFileObj);
     console.log('image1',imageUpload);
+    setUploadProgress({ ...uploadProgress, poster: file.percent });
   }
   const handleImageUpload1 = async (file) => {
     setImageUpload1(file.file.originFileObj);
     console.log('image2',imageUpload1);
+    setUploadProgress({ ...uploadProgress, thumbnail: file.percent });
   }
 
 
+  const calculateOverallProgress = () => {
+    const { poster, thumbnail, movie } = uploadProgress;
+    if (poster !== undefined && thumbnail !== undefined && movie !== undefined) {
+      const overallProgress = (poster + thumbnail + movie) / 3;
+      return overallProgress;
+    }
+    return 0;
+  };
 
 
 
   const handleUpload = async () => {
+
+    // setUploading(true);
+    for (let i = 0; i <= 100; i += 10) {
+      setTimeout(() => {
+        setUploadProgress({
+          poster: i,
+          thumbnail: i,
+          movie: i,
+        });
+      }, i * 100);
+    }
     const videoFormData = new FormData();
 
     const newFileData = {
@@ -177,7 +231,7 @@ const Contest = () => {
     const captionVideo = {
       caption: 'video',
     };
-    // formData.append('fileInfo', JSON.stringify(newFileData));
+    videoFormData.append('fileInfo', JSON.stringify(newFileData));
     // formData.append('file', JSON.stringify(captionVideo));
     videoFormData.append('files', videoUpload);
     videoFormData.append('refId',localStorage.getItem("formId"))
@@ -215,7 +269,7 @@ const Contest = () => {
           alternativeText: localStorage.getItem("formId"),
           caption: 'MoviePoster',
         };
-        // imageFormData.append('fileInfo', JSON.stringify(newFileData));
+        imageFormData.append('fileInfo', JSON.stringify(newFileData));
       }
       else{
         imageFormData.append('field',"MovieThumbnail")
@@ -223,7 +277,7 @@ const Contest = () => {
           alternativeText: localStorage.getItem("formId"),
           caption: 'Thumbnail',
         };
-        // imageFormData.append('fileInfo', JSON.stringify(newFileData));
+        imageFormData.append('fileInfo', JSON.stringify(newFileData));
       }
       // Handle image upload
       try {
@@ -232,15 +286,18 @@ const Contest = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-
-        setCurrentStep(currentStep + 1);
         console.log('All uploads completed');
         console.log(`Image ${i + 1} upload response:`, imageResponse);
+        setCurrentStep(currentStep + 1);
       } catch (error) {
         console.error(`Error uploading image ${i + 1}:`, error);
-
       }
     }
+   
+  
+    setTimeout(() => {
+      setUploading(false);
+    }, 1100);
   };
 
 
@@ -271,22 +328,38 @@ const Contest = () => {
     message.success('Form submitted successfully!');
   };
 
+
+  const toggleAgreement = () => {
+    setAgreed(!agreed);
+  };
+
+
+  const handlePay = () => {
+    if (agreed) {
+      handlePayment();
+    } else {
+      console.log("Please agree to the terms and conditions.");
+    }
+  };
   const handlePayment = async(e)=>{
     
     e.preventDefault();
      const amount = 1000;
       var options = {
-        key: "rzp_test_CqbzQKAn3Mm2Ol",
-        key_secret:"G4ueEdy441wU3S039jtx7Rz4",
+        key: "rzp_test_rFQdp4hkyya9md",
+        key_secret:"IFnwpSeNySxElg7ucEyGEFj0",
         amount: amount *100,
         currency:"INR",
         name:"MovieMads",
         description:"for testing purpose",
         handler:  function (Paymentresponse){
+          handleFinish();
           // handleUpload();
         //  handleData(Paymentresponse);
         //  handleEnroll();
-        
+        window.location.reload(); // Refresh the page
+      window.location.href = "/home"; // Navigate to the home page
+
         },
         prefill: {
           name:"GOCOOL",
@@ -303,6 +376,9 @@ const Contest = () => {
       var pay = new window.Razorpay(options);
       pay.open();
     }
+
+
+
 
   return (
     <>
@@ -368,10 +444,17 @@ const Contest = () => {
             borderRadius: 0,
           },
           Progress:{
-            colorBgContainer: '#ffffff',
-            colorText: '#e50914',
-            colorFillAlter: '#e50914',
-            
+            defaultColor: '#fba010',
+            colorSuccess: '#e50914',
+            colorFillSecondary:'#303030',
+            fontSize: '36px',
+          },
+          TimePicker:{
+            colorBgContainer: '#495057',
+            colorText: '#ffffff',
+            colorBgElevated: '#212529',
+            colorPrimary: '#e50914',
+            colorBorder: '#495057',
           },
           Input: {
             colorBgContainer: '#495057',
@@ -469,7 +552,7 @@ const Contest = () => {
               </div>
             <div className='Two input'>
             <Form.Item
-              label="Description"
+              label="Description ( Should not be more than 500 words! )"
               name="description"
               rules={[{ required: true, message: 'Please input the movie name!' }]}
               className="input-container"
@@ -547,13 +630,13 @@ const Contest = () => {
           </Select>
             </Form.Item>
             <Form.Item
-              label="Duration"
+              label="Duration ( Should not be more than 15mins! )"
               name="duration"
               rules={[{ required: true, message: 'Please Fill the Duration!' }]}
               className="input-container"
               onChange={handleInputChange}
             >
-             <TimePicker defaultValue={dayjs('12:08:23', 'HH:mm:ss')} size="large" />
+             <TimePicker defaultValue={dayjs('00:00', 'HH:mm')} size="large" format="HH:mm" />
             </Form.Item>
               </div>
             {/* Add other form fields here */}
@@ -567,8 +650,8 @@ const Contest = () => {
         {currentStep === 1 && (
          <div >
           <div className="upload-container">
-         <div style={{ marginBottom: '20px' }}>
-          <h3>Upload Movie Poster</h3>
+         <div style={{ marginBottom: '20px',textAlign: 'center' }}>
+          <h3>Upload Movie Poster </h3>
          <Upload
         // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture-card"
@@ -582,17 +665,18 @@ const Contest = () => {
         {/* {fileList.length >= 8 ? null : uploadButton} */}
         {uploadButton}
       </Upload>
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <span style={{ color: 'red' }}>( Maximum 3MB )</span>
+      <Modal open={previewVideo} title={previewTitle} footer={null} onCancel={handleCancel}>
         <img
           alt="example"
           style={{
             width: '100%',
           }}
-          src={previewImage}
+          src={previewVideo}
         />
       </Modal>
          </div>
-         <div style={{ marginBottom: '20px' }}>
+         <div style={{ marginBottom: '20px',textAlign: 'center' }}>
           <h3>Upload Thumbnail </h3>
          <Upload
         listType="picture-card"
@@ -605,6 +689,7 @@ const Contest = () => {
       >
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>
+      <span style={{ color: 'red' }}>( Maximum 3MB )</span>
       <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
         <img
           alt="example"
@@ -615,7 +700,7 @@ const Contest = () => {
         />
       </Modal>
          </div>
-         <div style={{ marginBottom: '20px' }}>
+         <div style={{ marginBottom: '20px',textAlign: 'center' }}>
           <h3>Upload Movie</h3>
          <Upload
         // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
@@ -628,22 +713,23 @@ const Contest = () => {
       >
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-        <img
-          alt="example"
-          style={{
-            width: '100%',
-          }}
-          src={previewImage}
-        />
+      <span style={{ color: 'red' }}>( Maximum 1GB )</span>
+      <Modal
+        visible={previewVisible}
+        title={previewTitle}
+        footer={null}
+        onCancel={handleClosePreview}
+      >
+        {previewImage && <img alt="Preview" src={previewImage} style={{ width: '100%' }} />}
       </Modal>
          </div>
          </div>
+         <Progress percent={calculateOverallProgress()} />
          <div style={{ marginTop: 40 }}>
            <Button onClick={prevStep}>
              <LeftOutlined /> Previous
            </Button>
-           <Button type="primary" style={{float: 'right'}} onClick={handleUpload}>
+           <Button type="primary" style={{float: 'right'}} onClick={nextStep}>
              Next
            </Button>
          </div>
@@ -651,12 +737,22 @@ const Contest = () => {
         )}
         {currentStep === 2 && (
           <div>
-            Payment gateway content goes here.
+            <div>
+        <h2>Payment Terms and Conditions</h2>
+        <p>These are the terms and conditions of payment. Please read them carefully.</p>
+        {/* Your terms and conditions content goes here */}
+      </div>
+       {/* Checkbox for agreement */}
+       <div style={{ marginTop: 10 }}>
+        <Checkbox checked={agreed} onChange={toggleAgreement}>
+          I agree to the terms and conditions
+        </Checkbox>
+      </div>
             <div style={{ marginTop: 20 }}>
               <Button onClick={prevStep}>
                 <LeftOutlined /> Previous
               </Button>
-              <Button type="primary"  style={{float: 'right'}} onClick={handlePayment}>
+              <Button type="primary"  style={{float: 'right'}} onClick={handlePay} disabled={!agreed}>
                 Pay
               </Button>
             </div>

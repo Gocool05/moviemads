@@ -1,6 +1,24 @@
 import React from 'react'
 import './Footer.css'
+import { useNavigate } from 'react-router-dom'
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const homePage = () => {
+    navigate("/home")
+  }
+  const movieTrailer = () => {
+    navigate("/movieTrailer")
+  }
+  const shortFilms = () => {
+    navigate("/shortFilms")
+  }
+  const Awards = () => {
+    navigate("/awards")
+  }
+  const Reviews = () => {
+    navigate("/reviews")
+  }
   return (
     <>
 <footer class="footer">
@@ -10,11 +28,11 @@ const Footer = () => {
     </p>
 
     <div class="icons">
-      <a href="#"><i class="fa fa-facebook"></i></a>
-      <a href="#"><i class="fa fa-instagram"></i></a>
-      <a href="#"><i class="fa-brands fa-youtube"></i></a>
-      <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-      <a href="#"><i class="fa fa-linkedin"></i></a>
+      <a href="https://www.facebook.com/people/Movie-mads/100088595811792/"><i class="fa fa-facebook"></i></a>
+      <a href="https://www.instagram.com/moviemadsindia/"><i class="fa fa-instagram"></i></a>
+      <a href="https://www.youtube.com/@Moviemadsindia"><i class="fa-brands fa-youtube"></i></a>
+      <a href="https://twitter.com/moviemadsindia/"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="https://www.linkedin.com/in/movie-mads-53233125b/"><i class="fa fa-linkedin"></i></a>
     </div>
   </div>
   <div class="footer-center col-md-4 col-sm-6">
@@ -34,13 +52,13 @@ const Footer = () => {
   <div class="footer-right col-md-4 col-sm-6">
     <img class="Footer-logo" src="/images/Moviemads Logo.png"/>
     <p class="menu">
-      <a href="#"> Home</a> | &nbsp;
-      <a href="#"> Movie Trailers </a> | &nbsp;
-      <a href="#"> Short Films</a> | &nbsp;
-      <a href="#"> Awards</a> | &nbsp;
-      <a href="#"> Reviews</a>
+      <a onClick={homePage}> Home</a> | &nbsp;
+      <a onClick={movieTrailer}> Movie Trailers </a> | &nbsp;
+      <a onClick={shortFilms}> Short Films</a> | &nbsp;
+      <a onClick={Awards}> Awards</a> | &nbsp;
+      <a onclick={Reviews}> Reviews</a>
     </p>
-    <p class="name" >  &copy; 2024 All rights reserved by{' '}<span style={{color: "#e50914",fontWeight: "bold"}}><a>MOVIEMADS</a></span></p>
+    <p class="name" >  &copy; 2024 All rights reserved by{' '}<span style={{fontWeight: "bold"}}><a style={{color: "#e50914",textDecoration: "none",fontWeight: "bold"}} href='http://www.moviemads.com/'>MOVIEMADS</a></span></p>
     <br/>
     <p class="name">  Designed By{' '}<span ><a style={{color: "#e50914", textDecoration: "none",fontWeight: "bold"}} href='http://www.jgntechnologies.com/'>JGN TECHNOLOGIES</a></span></p>
   </div>

@@ -12,6 +12,7 @@ import Topnav from "./TopNav/Topnav";
 import TopRated from "./TopRated";
 import TvShows from "./Hollywood";
 import Hollywood from "./Hollywood";
+import EventPartners from "./EventPartners/EventPartners";
 
 function Home() {
   const dispatch = useDispatch();
@@ -32,11 +33,12 @@ function Home() {
       <TopRated/>
       <h1 style={{padding:"10px 0px", fontSize:"1.5rem",color:"#fff",fontWeight:"600"}}>SHORT FILM AWARDS</h1>
       <Viewers />
+      <EventPartners/>
       <Movies />
     <Hollywood/>
     </Container>
       <Footer/>
-      </>
+  </>
   );
 }
 

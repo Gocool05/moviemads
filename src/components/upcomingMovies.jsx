@@ -53,7 +53,7 @@ const UpcomingMovies = () => {
       >
                 {movies.map((movie) => (
                         <SwiperSlide  key={movie.id}>
-                            <Link to={'/details/'+movie.id} className="movie-link" >
+                            <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
                             <div className="movie-container">
                                 <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
                             <div className="overlay">
