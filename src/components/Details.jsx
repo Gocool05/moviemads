@@ -22,7 +22,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 const JWT = localStorage.getItem("User");
 const Token = localStorage.getItem("JwtToken");
 const UserId = localStorage.getItem("UserId");
-
+const [refreshIsMovieLiked, setRefreshIsMovieLiked] = useState(false);
 
 const option1 = {
 headers: {
@@ -66,37 +66,39 @@ const IsUserLiked = async () => {
 const LikedMovieId = localStorage.getItem('LikedMovieId');
 const GetLikedMovies = async () => {
   try{
-    const response = await axios.get(`${API_URL}/api/liked-movies/${LikedMovieId}?populate[movies]=*`, option1);
-    const responseData = response;
-    console.log("Liked Movies data", responseData);
-    setMovies(responseData.data.data.attributes.movies.data);
-    console.log("Movie Id", movies); 
+    console.log("Liked Movie checvk");
+    if(LikedMovieId){
+      const response = await axios.get(`${API_URL}/api/liked-movies/${LikedMovieId}?populate[movies]=*`, option1);
+      const responseData = response;
+      console.log("Liked Movies data", responseData.data.data.attributes.movies.data);
+      setMovies(responseData.data.data.attributes.movies.data);
+      }
   }catch(err){
     console.error(err);
   }
 }
 
+const IsMovieLiked = () => {
+  const isLiked = movies.some(movie => movie.id.toString() == id.toString());
+
+  if (isLiked) {
+    setLiked(true);
+  }else{
+    setLiked(false);
+  }
+  console.log("isLiked status", isLiked);
+};
 
 useEffect(() => {
-  GetLikedMovies();
+  fetchData();
   IsUserLiked();
-fetchData();
+  GetLikedMovies();
 }, []);
 
 
-// {movies.map((movie) => {
-//   // Iterate through each movie in the movies array
-//   for (let i = 0; i < movie.attributes.movies.data.length; i++) {
-//     // Check if the current movie's ID matches the provided ID
-//     if (movie.attributes.movies.data[i].id === id) {
-//       // If it matches, set liked to true
-//       setLiked(true);
-//     } else {
-//       // If it doesn't match, set liked to false
-//       setLiked(false);
-//     }
-//   }
-// })}
+useEffect(() => {
+  IsMovieLiked();
+}, [movies]);
 
 const getViews = async () => {
   
@@ -122,36 +124,22 @@ setShowModal(false);
 };
 
 const toggleLike = async () => {
-
+if(liked){
+  setLikes(likes -1);
+  setLiked(false);
+}
+else{
+  setLikes(likes +1);
+  setLiked(true);
+}
 try{
-const response = await axios .post(`${API_URL}/api/movies/${id}/like`, {}, option1);
+  const response = await axios .post(`${API_URL}/api/movies/${id}/like`, {}, option1);
 console.log("response lieiks", response.data);
 }
 
 catch (err) {
 console.error(err);
 }
-// try {
-// let response;
-// if (liked) {
-// // Unlike the movie
-// response = await axios.delete(`${API_URL}/api/movies/${id}/like`, option1);
-// } else {
-// // Like the movie
-// response = await axios.post(`${API_URL}/api/movies/${id}/like`, {}, option1);
-// }
-// console.log("Likes response", response);
-// setLikes(response.data.likes);
-// setLoading(false); // Set loading to false after data is fetched
-// // Store liked status in local storage
-// localStorage.setItem(`liked_${id}`, !liked);
-// } catch (err) {
-// console.error(err);
-// setLoading(false); // Set loading to false in case of error
-// }
-
-// // Toggle liked state locally
-// setLiked(!liked);
 };
 
 
@@ -411,6 +399,7 @@ const CustomModal = ({ onClose, API_URL, details }) => {
     style={{ objectFit: 'cover', justifyContent: 'center',alignItems: 'center'}}
     footer={null}
     width={800} // Adjust width as needed
+    className="custom-modal"
     >
  {loading ? (
     <Skeleton active />
@@ -423,8 +412,8 @@ const CustomModal = ({ onClose, API_URL, details }) => {
     // allowFullScreen
     // onLoad={handleLoad}
     // ></iframe>
-    <video style={{ height: '100%', width: '100%' }} controls>
-  <source src={`${API_URL}${details?.attributes.VideoFile.data.attributes.url}`} type="video/mp4" />
+    <video style={{ height: '100%', width: '100%' }} controls autoPlay loop >
+  <source  src={`${API_URL}${details?.attributes.VideoFile.data.attributes.url}`} type="video/mp4" />
   Your browser does not support the video tag.
 </video>
     )}

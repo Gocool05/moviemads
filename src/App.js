@@ -29,7 +29,7 @@ function AppContent() {
 const user = localStorage.getItem("User");
   return (
     <>
-      {!isLoginPage && <Topnav />}
+      {/* {!isLoginPage && <Topnav />} */}
       <Header />
      {/* {user? */}
       <Routes>
