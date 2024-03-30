@@ -1,39 +1,38 @@
 import React, { useEffect,useState,useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { auth, provider } from "../firebase";
-import {
-  selectUserName,
-  selectUserPhoto,
-  setSignOut,
-  setUserLogin,
-} from "../features/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { async } from "@firebase/util";
-import { LogoutOutlined, MenuOutlined } from "@ant-design/icons";
+// import { useDispatch, useSelector } from "react-redux";
+import { CiOutlined, LogoutOutlined, MenuOutlined, StarTwoTone, UpOutlined } from "@ant-design/icons";
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 function Header() {
-  const userName = useSelector(selectUserName);
-  const userPhoto = useSelector(selectUserPhoto);
-  const dispatch = useDispatch();
+  // const userPhoto = useSelector(selectUserPhoto);
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        dispatch(
-          setUserLogin({
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-          })
-        );
-        navigate("/home");
-      }
-    });
-  }, []);
+  
+  const user = localStorage.getItem("User");
+  var username ;
+  if (user){
+    username= true
+  }
+  else{
+    username= false
+  }
+  // useEffect(() => {
+  //     if (user) {
+  //       dispatch(
+  //         setUserLogin({
+  //           name: user.username,
+  //           email: user.email,
+  //           photo: user.photoURL,
+  //         })
+  //       );
+  //       navigate("/home");
+  //     }
+  //   });
 
   useEffect(() => {
     // Function to close the menu when clicking outside of it
@@ -55,24 +54,24 @@ function Header() {
 
 
   const signIn = () => {
-    auth.signInWithPopup(provider).then((result) => {
-      let user = result.user;
-      dispatch(
-        setUserLogin({
-          name: user.displayName,
-          email: user.email,
-          photo: user.photoURL,
-        })
-      );
+    // auth.signInWithPopup(provider).then((result) => {
+    //   let user = result.user;
+    //   dispatch(
+    //     setUserLogin({
+    //       name: user.displayName,
+    //       email: user.email,
+    //       photo: user.photoURL,
+    //     })
+    //   );
       navigate("/home");
-    });
+    // });
   };
 
   const signOut = () => {
-    auth.signOut().then(() => {
-      dispatch(setSignOut());
-      navigate("/");
-    });
+    localStorage.removeItem("User")
+      
+    navigate("/login", { replace: true });
+     
   };
 
   const toggleMenu = () => {
@@ -87,16 +86,17 @@ function Header() {
     <Nav>
       <Logo src="/images/Moviemads Logo.png"></Logo>
       {/* <h1 style={{ color: "Red" }}>MOVIE<span style={{ color: "gold" }}>MADS</span></h1> */}
-      {/* {!userName ? (
+      {!username ? (
         <LoginContainer>
-          <Login onClick={signIn}>Login</Login>
+          <Login  onClick={() =>
+          (window.location =`${API_URL}/api/connect/google`)}>Login</Login>
         </LoginContainer>
-      ) : ( */}
+      ) : (
         <>
         <MenuToggle onClick={toggleMenu}><MenuOutlined style={{fontSize:"24px"}} /></MenuToggle>
         <Menu isOpen={isMenuOpen} ref={menuRef}>
           <NavMenu>
-            <a onClick={() => { navigate("/home"); handleMenuClick(); }}>
+            <a onClick={() => { navigate("/"); handleMenuClick(); }}>
               {/* <img src="/images/home-icon.svg" /> */}
               <span>Home</span>
             </a>
@@ -106,7 +106,7 @@ function Header() {
             </a>
             <a onClick={() => { navigate("/shortfilms"); handleMenuClick(); }}>
               {/* <img src="/images/original-icon.svg" /> */}
-              <span>Short Flims</span>
+              <span>Short Films</span>
             </a>
             <a onClick={() => { navigate("/awards"); handleMenuClick(); }}>
               {/* <img src="/images/series-icon.svg" /> */}
@@ -116,11 +116,11 @@ function Header() {
               {/* <img src="/images/watchlist-icon.svg" /> */}
               <span>Reviews</span>
             </a>
-          <a className="sign-out" style={{cursor:"pointer"}} onClick={signOut}>SIGN<LogoutOutlined rotate={-90}  style={{fontSize:"20px",color:"red"}} />UT</a>
+          <a className="sign-out" style={{cursor:"pointer"}} onClick={signOut}>SIGN<LogoutOutlined rotate={-90}  style={{fontSize:"20px",color:"red"}} /> UT </a>
           </NavMenu>
           </Menu>
         </> 
-       {/* )}  */}
+         )}  
     </Nav>
   );
 }
@@ -171,6 +171,7 @@ const Nav = styled.div`
   overflow-x: hidden;
   overflow-y: hidden;
   justify-content: space-between;
+  
 `;
 
 const Logo = styled.img`

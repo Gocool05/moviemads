@@ -1,10 +1,8 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
-import { selectMovies } from '../features/movie/movieSlice';
-import { useSelector } from 'react-redux';
 import movies from '../movies.js';
-
+import axios from 'axios';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
@@ -14,26 +12,39 @@ import './Slider.css';
 // import required modules
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 
+const API_URL = process.env.REACT_APP_API_URL;
 
-function YouMayLike() {
-  const [movies, setMovies] = useState([]);
+function YouMayLike(props) {
+  const [relatedMovies, setRelatedMovies] = useState([]);
+  const [details, setDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [ID, setID] = useState(null);
+  // setID(props.id);
   const options = {
     method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-    }
-  };
-  const getMovies = () => {
-    fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=ta', options)
-    .then(response => response.json())
-    .then(json => setMovies(json.results))
-    .catch(err => console.error(err));
+    headers:{
+      "ngrok-skip-browser-warning": true,
+      'Access-Control-Allow-Origin': '*',
   }
-  console.log("hello",movies)
-  useEffect(() => {
-    getMovies();
-  },[]);
+  };
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/movies/${props.id}?populate[blocks][populate][movies][populate]=*`, options);
+        const responseData = response.data.data.attributes.blocks[0].movies.data;
+        setRelatedMovies(responseData);
+        console.log("Related Movies", responseData);
+        setLoading(false); // Set loading to false after data is fetched
+        // setID();
+        // window.location.reload();
+      } catch (err) {
+        console.error(err);
+        setLoading(false); 
+      }
+    };
+    useEffect(() => {
+      fetchData();
+  }, []); 
   
     return (
         <Container>
@@ -54,13 +65,13 @@ function YouMayLike() {
         }}
         navigation={true}
       >
-                {movies.map((movie) => (
+                {relatedMovies.map((movie) => (
                         <SwiperSlide key={movie.id}>
-                            <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
+                            <Link to={'/details/'+movie.id} onClick={() => {window.scrollTo(0, 0)}}  className="movie-link" >
                             <div className="movie-container">
-                                <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
+                                <img src={`${API_URL}${movie.attributes.MoviePoster.data.attributes.url}`} alt="Img" id={movie.id}/>
                             <div className="overlay">
-                                <p className="movie-name">{movie.title}</p>
+                                <p className="movie-name">{movie.attributes.MovieName}</p>
                             </div>
                             </div>
                             </Link>
@@ -76,10 +87,14 @@ export default YouMayLike;
 
 const Container = styled.div`
 padding: 10px 30px;
+margin-top:5%;
 h1{
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
+  @media(max-width:768px){
+    font-size:16px;
+  }
 }
 `;
 

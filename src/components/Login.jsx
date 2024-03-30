@@ -1,32 +1,25 @@
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { auth, provider } from "../firebase";
-import {
-  selectUserName,
-  selectUserPhoto,
-  setSignOut,
-  setUserLogin,
-} from "../features/user/userSlice";
-import { useDispatch, useSelector } from "react-redux";
-
+// import { useDispatch } from "react-redux";
+const API_URL = process.env.REACT_APP_API_URL;
 function Login() {
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const signIn = () => {
-    // auth.signInWithPopup(provider).then((result) => {
-    //   let user = result.user;
-    //   dispatch(
-    //     setUserLogin({
-    //       name: user.displayName,
-    //       email: user.email,
-    //       photo: user.photoURL,
-    //     })
-    //   );
-      navigate("/home");
-    // });
-  };
+  // const dispatch = useDispatch();
+  // const signIn = () => {
+  //   auth.signInWithPopup(provider).then((result) => {
+  //     let user = result.user;
+  //     dispatch(
+  //       setUserLogin({
+  //         name: user.displayName,
+  //         email: user.email,
+  //         photo: user.photoURL,
+  //       })
+  //     );
+  //     navigate("/");
+  //   });
+  // };
 
 
   return (
@@ -34,7 +27,8 @@ function Login() {
       <div style={{top: 0,left: 0,width: "100%",height: "100%",position: "absolute",zIndex: -1,backgroundColor: "rgba(0, 0, 0, 0.6)"}}></div>
       <CTA>
         <CTALogoOne src="/images/mm logo.png" alt="" />
-        <SignUp  onClick={signIn}>Let's Get Started</SignUp>
+        <SignUp  onClick={() =>
+          (window.location =`${API_URL}/api/connect/google`)}>Let's Get Started</SignUp>
         <Description>
         MovieMads: Your gateway to successful film marketing. Showcase your film pre-release with strategic promotion, branding, and social media campaigns. From press releases to targeted audience outreach, MovieMads ensures your film gets the attention it deserves. Join us and design your path to success in the film industry.
         </Description>
@@ -56,6 +50,9 @@ const Container = styled.div`
     background-size: cover;
     background-repeat: no-repeat;
     background-image: url("/images/loginBG.jpg");
+    @media (max-width:756px) {
+      background-image: url("/images/miniBg.jpg");
+    }
     content: "";
     position: absolute;
     top: 0;
@@ -63,6 +60,7 @@ const Container = styled.div`
     left: 0;
     right: 0;
     z-index: -1;
+    
   }
 `;
 const CTA = styled.div`
@@ -91,6 +89,9 @@ const SignUp = styled.a`
   margin-bottom: 12px;
   &:hover {
     background: #090b13;
+  }
+  @media(max-width:756px){
+    padding 8px 0;
   }
 `;
 

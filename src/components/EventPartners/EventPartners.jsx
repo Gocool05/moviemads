@@ -64,4 +64,8 @@ h1{
   padding: 10px 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color`
+  @media(max-width:768px){
+    font-size:16px;
+  }
+  `
+  

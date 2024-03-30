@@ -1,8 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
-import { selectMovies } from '../features/movie/movieSlice';
-import { useSelector } from 'react-redux';
 import movies from '../movies.js';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -80,6 +78,9 @@ h1{
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
+  @media(max-width:768px){
+    font-size:16px;
+  }
 }`;
 
 const Content = styled.div`

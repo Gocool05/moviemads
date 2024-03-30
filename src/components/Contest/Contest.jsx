@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { Steps, Form, Input,ConfigProvider, Button, Upload, message, Progress,Select, TimePicker } from 'antd';
+import React, { useState,useEffect } from 'react';
+import { Steps, Form, Input,ConfigProvider, Button, Upload, message, Progress,Select, TimePicker,notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { LeftOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import {STRAPI_API_URL} from '../../constants.js';
+// import {STRAPI_API_URL} from '../../constants.js';
 import './Contest.css';
 import TextArea from 'antd/es/input/TextArea';
 import axios from 'axios';
 import Modal from 'antd/es/modal/Modal';
 const { Step } = Steps;
-
+const Token = localStorage.getItem("JwtToken");
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -21,6 +21,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
+  const API_URL = process.env.REACT_APP_API_URL;
 
 const Contest = () => {
 
@@ -28,7 +29,7 @@ const Contest = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
+  const [ previewImage, setPreviewImage] = useState('');
   // const [previewVideo, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [videoUpload, setVideoUpload] = useState(null);
@@ -38,7 +39,7 @@ const Contest = () => {
   const [uploading, setUploading] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewVideo, setPreviewVideo] = useState('');
-
+  const [buttonDisabled, setButtonDisabled] = useState(true);
   const [yourName, setYourName] = useState("");
   const [mobile, setMobile] = useState("");
   const [movieName, setMovieName] = useState("");
@@ -52,6 +53,15 @@ const Contest = () => {
   const [duration, setDuration] = useState("");
   const [profile, setProfile] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+  const [uploadStatus, setUploadStatus] = useState({
+    poster: false,
+    thumbnail: false,
+    movie: false
+  });
+
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
@@ -98,35 +108,36 @@ const Contest = () => {
 
 
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const values = await form.validateFields();
-    //   const response = await axios.post('https://strapi.letstrydevandops.site/api/contests', {
-    // data:{
-    //   userName: values.yourName,
-    //   mobileNumber: values.mobile,
-    //   MovieName: values.movieName,
-    //   Description: values.description,
-    //   Language: values.language,
-    //   Genres: values.genre,
-    //   Actors: values.actorName,
-    //   Actresses: values.actressName,
-    //   Directors: values.directorName,
-    //   contentRating: values.contentRating,
-    //   Duration: values.duration,
-    //   profile:values.profile
-    // }
-    // });
-    // console.log(response);
-    // const formId = response.data.data.id;
-    // console.log(formId);
-    // localStorage.setItem("formId",formId);
+    try {
+      const values = await form.validateFields();
+      const response = await axios.post(`${API_URL}/api/contests`, {
+    data:{
+      userName: values.yourName,
+      mobileNumber: values.mobile,
+      MovieName: values.movieName,
+      Description: values.description,
+      Language: values.language,
+      Genres: values.genre,
+      Actors: values.actorName,
+      Actresses: values.actressName,
+      Directors: values.directorName,
+      contentRating: values.contentRating,
+      Duration: values.duration,
+      profile:values.profile
+    }
+    });
+    console.log(response);
+    const formId = response.data.data.id;
+    console.log(formId);
+    localStorage.setItem("formId",formId);
     setCurrentStep(currentStep + 1);  
-    // }
-    // catch (err) {
-    //   alert("Enter Correct credentials", err);
-    // }
+    }
+    catch (err) {
+      alert("Enter Correct credentials", err);
+    }
   }
 
   const nextStep = () => {
@@ -139,70 +150,77 @@ const Contest = () => {
 
   const handleCancel = () => setPreviewOpen(false);
   const handlePreview = async (file) => {
-    if (file.type.startsWith('video/')) {
-      // Generate thumbnail for video file
-      const thumbnail = await generateThumbnail(file.originFileObj);
-      // Set thumbnail as preview image
-      setPreviewImage(thumbnail);
-    } else {
-      setPreviewImage(file.url || file.preview);
+    if (!file.url && !file.preview) {
+      file.preview = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+      console.log(file);
     }
-    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+    setPreviewImage(file.url || file.preview);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
+    setPreviewOpen(true);
     setPreviewVisible(true);
   };
 
-  const handleClosePreview = () => {
-    setPreviewVisible(false);
-  };
 
 
 
-  const generateThumbnail = async (videoFile) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const videoElement = document.createElement('video');
-        videoElement.src = event.target.result;
-        videoElement.addEventListener('loadeddata', () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = videoElement.videoWidth;
-          canvas.height = videoElement.videoHeight;
-          canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-          const thumbnailUrl = canvas.toDataURL('image/jpeg');
-          resolve(thumbnailUrl);
-        });
-      };
-      reader.readAsDataURL(videoFile);
-    });
-  };
 
 
-
- 
 
   
   const handleVideoUpload = async (file) => {
-    setVideoUpload(file.file.originFileObj);
-    console.log('video',videoUpload);
-    setUploadProgress({ ...uploadProgress, movie: file.percent });
-  }
-  const handleImageUpload = async (file) => {
-    setImageUpload(file.file.originFileObj);
-    console.log('image1',imageUpload);
-    setUploadProgress({ ...uploadProgress, poster: file.percent });
-  }
-  const handleImageUpload1 = async (file) => {
-    setImageUpload1(file.file.originFileObj);
-    console.log('image2',imageUpload1);
-    setUploadProgress({ ...uploadProgress, thumbnail: file.percent });
-  }
+    try {
+        setVideoUpload(file.file.originFileObj);
+        setUploadProgress(prevState => ({ ...prevState, movie: file.percent }));
+        setUploadStatus(prevStatus => ({ ...prevStatus, movie: true }));
+    } catch (error) {
+        console.error('Error handling video upload:', error);
+        // Handle error
+    }
+};
 
+const handleImageUpload = async (file) => {
+    try {
+        setImageUpload(file.file.originFileObj);
+        setUploadProgress(prevState => ({ ...prevState, poster: file.percent }));
+        setUploadStatus(prevStatus => ({ ...prevStatus, poster: true }));
+    } catch (error) {
+        console.error('Error handling image1 upload:', error);
+        // Handle error
+    }
+};
+
+const handleImageUpload1 = async (file) => {
+    try {
+        setImageUpload1(file.file.originFileObj);
+        setUploadProgress(prevState => ({ ...prevState, thumbnail: file.percent }));
+        setUploadStatus(prevStatus => ({ ...prevStatus, thumbnail: true }));
+    } catch (error) {
+        console.error('Error handling image2 upload:', error);
+        // Handle error
+    }
+};
+
+useEffect(() => {
+    // Check if all files are uploaded
+    if (uploadStatus.movie && uploadStatus.thumbnail && uploadStatus.poster) {
+        setButtonDisabled(false); // Enable button
+    } else {
+        setButtonDisabled(true); // Disable button
+    }
+}, [uploadStatus]);
 
   const calculateOverallProgress = () => {
     const { poster, thumbnail, movie } = uploadProgress;
     if (poster !== undefined && thumbnail !== undefined && movie !== undefined) {
-      const overallProgress = (poster + thumbnail + movie) / 3;
-      return overallProgress;
+      const overallProgress = movie;
+      const overallProgresss = Math.round(overallProgress);
+      return overallProgresss;
     }
     return 0;
   };
@@ -210,16 +228,22 @@ const Contest = () => {
 
 
   const handleUpload = async () => {
-
+    setUploading(true); 
     // setUploading(true);
+    const videoSize = videoUpload.size;
+    // console.log('uplaodsizeuplaodsizeuplaodsizeuplaodsizeuplaodsize',videoSize);
+    let uploadedBytes = 0;
+
     for (let i = 0; i <= 100; i += 10) {
-      setTimeout(() => {
-        setUploadProgress({
-          poster: i,
-          thumbnail: i,
-          movie: i,
-        });
-      }, i * 100);
+        setTimeout(() => {
+            // Calculate progress based on uploaded bytes
+            const progress = Math.min(uploadedBytes / videoSize * 100, 100);
+            setUploadProgress({
+                poster: progress,
+                thumbnail: progress,
+                movie: progress,
+            });
+        }, i * 100);
     }
     const videoFormData = new FormData();
 
@@ -235,16 +259,26 @@ const Contest = () => {
     // formData.append('file', JSON.stringify(captionVideo));
     videoFormData.append('files', videoUpload);
     videoFormData.append('refId',localStorage.getItem("formId"))
-    videoFormData.append('ref','api::contest.contest')
+    videoFormData.append('ref','api::constest.constest')
     videoFormData.append('field',"VideoFile")
     // Handle video upload
     console.log(' upload response:', videoFormData.values);
     
     try {
-      const videoResponse = await axios.post('https://strapi.letstrydevandops.site/api/upload', videoFormData, {
+      const videoResponse = await axios.post(`${API_URL}/api/upload`, videoFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        onUploadProgress: progressEvent => {
+          uploadedBytes = progressEvent.loaded;
+          // Calculate progress based on uploaded bytes
+          const progress = Math.min(uploadedBytes / videoSize * 100, 100);
+          setUploadProgress({
+              poster: progress,
+              thumbnail: progress,
+              movie: progress,
+          });
+      }
       });
       // Handle success or error for video upload
       console.log('Video upload response:', videoResponse);
@@ -260,7 +294,7 @@ const Contest = () => {
       const imageFormData = new FormData();
       imageFormData.append('files', imageFormDatas[i]);
       imageFormData.append('refId',localStorage.getItem("formId"))
-      imageFormData.append('ref','api::contest.contest')
+      imageFormData.append('ref','api::constest.constest')
 
       
       if(i==0){
@@ -281,7 +315,7 @@ const Contest = () => {
       }
       // Handle image upload
       try {
-        const imageResponse = await axios.post('https://strapi.letstrydevandops.site/api/upload', imageFormData, {
+        const imageResponse = await axios.post(`${API_URL}/api/upload`, imageFormData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -291,13 +325,11 @@ const Contest = () => {
         setCurrentStep(currentStep + 1);
       } catch (error) {
         console.error(`Error uploading image ${i + 1}:`, error);
+      }finally {
+        setUploading(false); 
       }
     }
-   
   
-    setTimeout(() => {
-      setUploading(false);
-    }, 1100);
   };
 
 
@@ -333,7 +365,6 @@ const Contest = () => {
     setAgreed(!agreed);
   };
 
-
   const handlePay = () => {
     if (agreed) {
       handlePayment();
@@ -341,13 +372,24 @@ const Contest = () => {
       console.log("Please agree to the terms and conditions.");
     }
   };
+
+  const option1 = {
+    headers: {
+    'Authorization':`Bearer ${Token}`
+    },
+    // httpsAgent: new https.Agent({ rejectUnauthorized: false }) 
+    };
+
+
   const handlePayment = async(e)=>{
-    
+    const response = await axios.get(`${API_URL}/api/razorpay`,option1);
+    console.log('Razorpay',response.data);
+    console.log('Razorpay',response.data.data.attributes.keyId);
     e.preventDefault();
      const amount = 1000;
       var options = {
-        key: "rzp_test_rFQdp4hkyya9md",
-        key_secret:"IFnwpSeNySxElg7ucEyGEFj0",
+        key: `${response.data.data.attributes.keyId}`,
+        key_secret:`${response.data.data.attributes.keySecret}`,
         amount: amount *100,
         currency:"INR",
         name:"MovieMads",
@@ -358,7 +400,7 @@ const Contest = () => {
         //  handleData(Paymentresponse);
         //  handleEnroll();
         window.location.reload(); // Refresh the page
-      window.location.href = "/home"; // Navigate to the home page
+      window.location.href = "/"; // Navigate to the home page
 
         },
         prefill: {
@@ -377,7 +419,48 @@ const Contest = () => {
       pay.open();
     }
 
+    const validateDuration = (_, value) => {
+      if (value > 8 ) { // 8 minutes converted to seconds
+        return Promise.reject('Duration cannot exceed 8 minutes!');
+      }
+      return Promise.resolve();
+    };
 
+
+    const handleBeforeUpload = (file, fileList) => {
+      // Check if the file size exceeds the limit
+      const isSizeAccepted = file.size / 1024 / 1024 < 3; // 3MB limit
+      if (!isSizeAccepted) {
+        notification.error({
+          message: 'Upload Error',
+          description: 'File size exceeds the limit. Maximum size allowed is 3MB.',
+        });
+        return false;
+      }else{
+        notification.success({
+          message: 'Your file is Uploading',
+          description: 'plesase wait while we upload your file',
+        });
+      }
+      return true;
+    };
+    const handleBeforeUploadVideo = (file, fileList) => {
+      // Check if the file size exceeds the limit
+      const isSizeAccepted = file.size / 1024 / 1024 < 500; // 3MB limit
+      if (!isSizeAccepted) {
+        notification.error({
+          message: 'Upload Error',
+          description: 'File size exceeds the limit. Maximum size allowed is 500MB.',
+        });
+        return false;
+      }else{
+        notification.success({
+          message: 'Your file is Uploading',
+          description: 'plesase wait while we upload your file',
+        });
+      }
+      return true;
+    };
 
 
   return (
@@ -404,6 +487,7 @@ const Contest = () => {
           Button: {
             colorPrimary: '#e50914',
             algorithm: true, 
+            colorBgContainerDisabled: '#495057',
           },
           Select:{
             optionSelectedBg: '#e50914',
@@ -456,6 +540,9 @@ const Contest = () => {
             colorPrimary: '#e50914',
             colorBorder: '#495057',
           },
+          Notification:{
+            colorBgElevated: '#212529',
+          },
           Input: {
             colorBgContainer: '#495057',
             colorPrimary: '#fba010',
@@ -476,10 +563,8 @@ const Contest = () => {
         {currentStep === 0 && (
           <Form
             form={form}
-            onFinish={nextStep}
             layout="vertical"
             size="large"
-            // initialValues={{ remember: true }}
             className="form-container"
           >
             <div  className='Two input'>
@@ -630,67 +715,88 @@ const Contest = () => {
           </Select>
             </Form.Item>
             <Form.Item
-              label="Duration ( Should not be more than 15mins! )"
+              label="Duration ( Maximum 8mins ! )"
               name="duration"
-              rules={[{ required: true, message: 'Please Fill the Duration!' }]}
+              rules={[{ required: true, message: 'Please Fill the Duration!' },
+              { validator: validateDuration }]}
               className="input-container"
               onChange={handleInputChange}
             >
-             <TimePicker defaultValue={dayjs('00:00', 'HH:mm')} size="large" format="HH:mm" />
+              <Input type='number' max={2}/>
             </Form.Item>
               </div>
             {/* Add other form fields here */}
             <Form.Item>
-              <Button type="primary" htmlType="submit"  onClick={handleSubmit}>
+              <Button type="primary" htmlType="submit" onClick={nextStep}>
                 Next
               </Button>
             </Form.Item>
           </Form>
         )}
         {currentStep === 1 && (
+          <Form>
          <div >
           <div className="upload-container">
-         <div style={{ marginBottom: '20px',textAlign: 'center' }}>
+         <div style={{ marginBottom: '40px',textAlign: 'center',lineHeight: '5px' }}>
           <h3>Upload Movie Poster </h3>
+          <h4>( 500 x 750 px)</h4>
+          <Form.Item
+          name="movie"
+          rules={[{ required: true, message: 'Please Upload the Movie' }]}
+          className="input-container"
+        >
          <Upload
-        // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture-card"
         // fileList={fileList}
-        rules={[{ required: true, message: 'Please Upload the Movie Poster' }]}
+        // rules={[{ required: true, message: 'Please Upload the Movie Poster' }]}
         onPreview={handlePreview}
         onChange={handleImageUpload}
+        beforeUpload={handleBeforeUpload}
         maxCount={1}
         accept="image/*"
+       
       >
-        {/* {fileList.length >= 8 ? null : uploadButton} */}
-        {uploadButton}
+        {fileList.length >= 8 ? null : uploadButton}
+        {/* {uploadButton} */}
       </Upload>
+      </Form.Item>
       <span style={{ color: 'red' }}>( Maximum 3MB )</span>
-      <Modal open={previewVideo} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal open={previewOpen} title={previewTitle} visible={previewVisible} footer={null} 
+      onCancel={handleCancel}
+      >
         <img
           alt="example"
           style={{
             width: '100%',
           }}
-          src={previewVideo}
+          src={previewImage}
         />
-      </Modal>
+      </Modal >
          </div>
-         <div style={{ marginBottom: '20px',textAlign: 'center' }}>
+         <div style={{ marginBottom: '40px',textAlign: 'center',lineHeight: '5px' }}>
           <h3>Upload Thumbnail </h3>
+          <h4>( 1280 x 720 px )</h4>
+          <Form.Item
+          name="movie"
+          rules={[{ required: true, message: 'Please Upload the Movie' }]}
+          className="input-container"
+        >
          <Upload
         listType="picture-card"
-        rules={[{ required: true, message: 'Please Upload the Thumbnail' }]}
         onPreview={handlePreview}
+        beforeUpload={handleBeforeUpload}
         onChange={handleImageUpload1}
         maxCount={1}
         accept="image/*"
-
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {uploadButton}
       </Upload>
+      </Form.Item>
       <span style={{ color: 'red' }}>( Maximum 3MB )</span>
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal open={previewOpen} title={previewTitle} footer={null} 
+      onCancel={handleCancel}
+      visible={previewVisible}
+      >
         <img
           alt="example"
           style={{
@@ -700,28 +806,26 @@ const Contest = () => {
         />
       </Modal>
          </div>
-         <div style={{ marginBottom: '20px',textAlign: 'center' }}>
+         <div style={{ marginBottom: '40px',textAlign: 'center' , lineHeight: '5px' }}>
           <h3>Upload Movie</h3>
+          <h4>( 1280 x 720 px )</h4>
+          <Form.Item
+          name="movie"
+          rules={[{ required: true, message: 'Please Upload the Movie' }]}
+          className="input-container"
+        >
          <Upload
-        // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture-card"
-        // fileList={fileList}
         onPreview={handlePreview}
+        beforeUpload={handleBeforeUploadVideo}
         onChange={handleVideoUpload}
         maxCount={1}
         accept="video/*"
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {uploadButton}
       </Upload>
-      <span style={{ color: 'red' }}>( Maximum 1GB )</span>
-      <Modal
-        visible={previewVisible}
-        title={previewTitle}
-        footer={null}
-        onCancel={handleClosePreview}
-      >
-        {previewImage && <img alt="Preview" src={previewImage} style={{ width: '100%' }} />}
-      </Modal>
+      </Form.Item>
+      <span style={{ color: 'red' }}>( Maximum 500MB )</span>
          </div>
          </div>
          <Progress percent={calculateOverallProgress()} />
@@ -729,11 +833,13 @@ const Contest = () => {
            <Button onClick={prevStep}>
              <LeftOutlined /> Previous
            </Button>
-           <Button type="primary" style={{float: 'right'}} onClick={nextStep}>
+           <Button type="primary" disabled={buttonDisabled || uploading}  style={{float: 'right'}} onClick={handleUpload } 
+               >
              Next
            </Button>
          </div>
        </div>
+       </Form>
         )}
         {currentStep === 2 && (
           <div>
@@ -752,7 +858,7 @@ const Contest = () => {
               <Button onClick={prevStep}>
                 <LeftOutlined /> Previous
               </Button>
-              <Button type="primary"  style={{float: 'right'}} onClick={handlePay} disabled={!agreed}>
+              <Button type="primary"  style={{float: 'right'}} onClick={handlePayment} disabled={!agreed}>
                 Pay
               </Button>
             </div>

@@ -1,8 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
-import { selectMovies } from '../features/movie/movieSlice';
-import { useSelector } from 'react-redux';
 import movies from '../movies.js';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,28 +12,38 @@ import 'swiper/css/navigation';
 import './Slider.css';
 // import required modules
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
-
+import axios from 'axios';
+const API_URL = process.env.REACT_APP_API_URL;
+console.log(API_URL,'API URL')
 const UpcomingMovies = () => {
     const [movies, setMovies] = useState([]);
+    const [seoData, setSeoData] = useState(null);
+
     const options = {
       method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-      }
-    };
-    const getMovies = () => {
-      fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=ta', options)
-      .then(response => response.json())
-      .then(json => setMovies(json.results))
-      .catch(err => console.error(err));
+      // headers: {
+      //   accept: 'application/json',
+      //   Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
+      // }
+      headers:{
+        "ngrok-skip-browser-warning": true,
+        'Access-Control-Allow-Origin': '*',
     }
-    console.log("popular",movies)
+    };
+    const getMovies = async() => {
+      
+      const res = await axios(`${API_URL}/api/movies?populate=*`,options);
+      console.log("STARPI CHECK",res.data)
+      setMovies(res.data.data);
+      setSeoData()
+    }
+    console.log("Movies checck",movies)
     useEffect(() => {
       getMovies();
     },[]);
       return (
           <Container>
+
               <h1>POPULAR MOVIES</h1>
               <Swiper
         modules={[ Navigation, Pagination,Grid]}
@@ -55,9 +63,9 @@ const UpcomingMovies = () => {
                         <SwiperSlide  key={movie.id}>
                             <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
                             <div className="movie-container">
-                                <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
+                                <img src={`${API_URL}${movie.attributes.MoviePoster.data.attributes.url}`} alt="Img" id={movie.id}/>
                             <div className="overlay">
-                                <p className="movie-name">{movie.title}</p>
+                                <p className="movie-name">{movie.attributes.MovieName}</p>
                             </div>
                             </div>
                             </Link>
@@ -77,6 +85,9 @@ h1{
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
+  @media(max-width:768px){
+    font-size:16px;
+  }
 }`;
 
 const Content = styled.div`

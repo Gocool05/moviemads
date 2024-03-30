@@ -2,9 +2,6 @@ import styled from "styled-components";
 import React, { useEffect } from "react";
 import Viewers from "./Viewers";
 import Movies from "./Movies";
-import db from "../firebase";
-import {useDispatch} from "react-redux"
-import { setMovies } from "../features/movie/movieSlice";
 import ImgSlider from "./imgSlider";
 import Footer from "./Footer/Footer";
 import UpcomingMovies from "./upcomingMovies";
@@ -13,20 +10,16 @@ import TopRated from "./TopRated";
 import TvShows from "./Hollywood";
 import Hollywood from "./Hollywood";
 import EventPartners from "./EventPartners/EventPartners";
+import { Navigate } from "react-router-dom";
+import Login from "./Login";
 
 function Home() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    db.collection("movies").onSnapshot((snapshot) => {
-      let tempMovies = snapshot.docs.map((doc) => {
-        console.log(doc.data());
-        return { id: doc.id, ...doc.data() };
-      });
-      dispatch(setMovies(tempMovies));
-    });
-  },[]);
+  const user = localStorage.getItem("User");
+  
   return (
     <>
+    {user?(
+      <div>
     <Container>
       <ImgSlider />
       <UpcomingMovies/>
@@ -38,6 +31,9 @@ function Home() {
     <Hollywood/>
     </Container>
       <Footer/>
+      </div>
+      ):
+      <Login />}
   </>
   );
 }
@@ -60,5 +56,9 @@ const Container = styled.main`
     right: 0;
     bottom: 0;
     z-index: -1;
+  }
+
+  h1{
+
   }
 `;

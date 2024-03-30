@@ -6,10 +6,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { json, Link } from 'react-router-dom';
 import { Overlay } from "antd/es/popconfirm/PurePanel";
 import { InfoCircleFilled, InfoCircleOutlined, PlayCircleFilled, PlayCircleOutlined, PlaySquareFilled } from "@ant-design/icons";
-import './MovieTrailers.css'
+import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
-function MovieSlider() {
+function ShortFlimSlider() {
   
   let settings = {
     dots: true,
@@ -21,20 +21,26 @@ function MovieSlider() {
   };
 
   const [movies, setMovies] = useState([]);
+ 
   const options = {
     method: 'GET',
+    // headers: {
+    //   accept: 'application/json',
+    //   Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
+    // }
     headers:{
       "ngrok-skip-browser-warning": true,
       'Access-Control-Allow-Origin': '*',
   }
   };
-  const getSlider = () => {
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US', options)
-    .then(response => response.json())
-    .then(json => setMovies(json.results))
-    .catch(err => console.error(err));
+
+  
+  const getSlider = async() => {
+    const res = await axios(`${API_URL}/api/short-film-sliders?populate[0]=short_film.MovieThumbnail&populate[1]=short_film.VideoFile`,options);
+    console.log("ShortFlim Slider CHECK",res.data)
+    setMovies(res.data.data);
   }
-  console.log("Slider",movies)
+  console.log("Slider checck",movies)
   useEffect(() => {
     getSlider();
   },[]);
@@ -42,66 +48,30 @@ function MovieSlider() {
 
 
   return (
-    <Carousel {...settings}>{movies.map((movie) => (
+    <Carousel {...settings}>
+      {movies.map((movie) => (
       <Wrap>
            <Info key={movie.id}>
      
-      <Link to={'/details/'+movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
+      <Link to={'/details/'+movie.attributes.short_film.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
          <Button1><PlayCircleFilled spin/> Play Now</Button1>
           <Button2><InfoCircleFilled /> More Info</Button2>
            </Link>
-           <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
-           <Description>{movie.attributes.movie.data.attributes.Description}</Description>
+           <Subtitle>{movie.attributes.short_film.data.attributes.MovieName}</Subtitle>
+           <Description>{movie.attributes.short_film.data.attributes.Description}</Description>
          </Info>
          <Overlays>
-           <img src={`${API_URL}${movie.attributes.movie.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
+           <img src={`${API_URL}${movie.attributes.short_film.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
            </Overlays>
     </Wrap>
            
     ))}
-
-      <Wrap>
-          <Info>
-            <Subtitle>LEO</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>Parthiban is a mild-mannered cafe owner in Kashmir, who fends off a gang of murderous thugs and gains attention from a drug cartel claiming he was once a part of them</Description>
-          </Info>
-          <img src="/images/Leo.jpg" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>JAILER</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>A retired jailer goes on a manhunt to find his son's killers. But the road leads him to a familiar, albeit a bit darker place. Can he emerge from this complex situation successfully?</Description>
-          </Info>
-          <img src="/images/Jailer.jpeg" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>VIKRAM</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.</Description>
-          </Info>
-          <img src="/images/vikram.jpg" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>BLUE STAR</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>The cricket captains of Arakkonam, Ranjith and Rajesh, ignite a rivalry that ruins their chances of playing when politics interferes</Description>
-          </Info>
-          <img src="/images/Bluestar.jpg" alt="" />
-      </Wrap>
     </Carousel>
   );
 }
 
 
-export default MovieSlider;
+export default ShortFlimSlider;
 
 const Carousel = styled(Slider)`
 //   margin-top: 20px;
@@ -181,6 +151,15 @@ const Wrap = styled.div`
     // }
 
   }
+`;
+const Overlay1 = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
 `;
 
 const Info = styled.div`

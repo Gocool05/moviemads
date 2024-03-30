@@ -100,11 +100,17 @@ const Wrap = styled.div`
     transition: opacity 500ms ease-in-out 0s;
     width: 100%;
     z-index: 1;
-    top: 50%;
+    top: 60%;
+    bottom: 0;
+    // font-size: 24px;
     left: 50%;
     transform: translate(-50%, -50%);
-    @media (max-width: 768px) {
-      font-size: 20px;
+   
+    @media (max-width: 1250px) {
+      font-size: 25px;
+      @media (max-width: 468px) {
+        font-size: 18px;
+      }
     }
   }
   img {
@@ -128,6 +134,9 @@ const Wrap = styled.div`
     z-index: 0;
   }
   &:hover {
+    h1{
+      display: none;
+    }
     box-shadow: rgb(0 0 0 / 80%) 0px 40px 58px -16px,
       rgb(0 0 0 / 72%) 0px 30px 22px -10px;
     transform: scale(1.05);

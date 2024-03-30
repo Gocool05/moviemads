@@ -5,9 +5,9 @@ import './MovieTrailers.css'
 import { json, Link } from 'react-router-dom';
 // Import Swiper styles
 import './MovieTrailers.css'
-import Footer from '../Footer/Footer.js'
 import { ConfigProvider, Pagination, Typography } from 'antd';
 import { WindowsFilled } from '@ant-design/icons';
+import Footer from '../Footer/Footer';
 // import required modules
 
 const MovieTrailers = () => {
@@ -77,7 +77,6 @@ const MovieTrailers = () => {
             fontWeight: "bold",
             textTransform: "uppercase",
             marginRight: "10px",
-            fontSize: "1.5rem",
           }}
         >
           Movie Trailers
@@ -173,7 +172,7 @@ const MovieTrailers = () => {
         />
       </ConfigProvider>
       </PaginationWrapper>
-      <Footer />
+      <Footer/>
     </Container>
   );
 }
@@ -235,8 +234,16 @@ const Toolbar = styled.div`
   justify-content: space-between;
   padding: 15px;
   background-color: #101011;
+
+  p {
+    font-size: 20px;
+    @media (max-width: 768px) {
+      font-size: 15px;
+    }
+  }
   @media (max-width: 768px) {
     padding: 10px;
+
   }
 `;
 
@@ -250,6 +257,7 @@ const SearchInput = styled.input`
   background-color: transparent;
   @media (max-width: 768px) {
     width: 60%;
+    padding: 10px;
   }
 `;
 

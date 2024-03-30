@@ -1,21 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
 import './TopNav.css'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Typography } from 'antd';
+import Login from '../Login';
 
 const { Text } = Typography;
 const Topnav = () => {
 
   const navigate = useNavigate();
+  const user = localStorage.getItem("User");
   return (
-        <Nav>
+      <Nav>
         <div className="marquee-container">
       <Text strong className="marquee">
       Get ready for an exciting announcement: Moviemads 2024 Short Film Awards are coming soon! Prepare your best short films and stay tuned for more details!
       </Text>
     </div>
-        <button class="button-57" role="button" ><span class="text">Contest</span><span onClick={() => navigate("/contest")}>Apply Now</span></button>
+        {/* <button class="button-57" role="button" ><span class="text">Contest</span><span onClick={() => navigate("/contest")}>Apply Now</span></button>
+         */}
+
+<button  onClick={() => navigate("/contest")} class='glowing-btn'><span class='glowing-txt'>CONTEST</span></button>
         </Nav>
   )
 }
@@ -29,7 +34,7 @@ const Nav = styled.div`
 
   -webkit-animation: AnimationName 20s ease infinite;
   -moz-animation: AnimationName 20s ease infinite;
-  animation: AnimationName 20s ease infinite;
+  animation: AnimationName 10s ease infinite;
 
   @-webkit-keyframes AnimationName {
     0%{background-position:0% 48%}

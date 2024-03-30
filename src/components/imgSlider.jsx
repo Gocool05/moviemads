@@ -6,9 +6,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { json, Link } from 'react-router-dom';
 import { Overlay } from "antd/es/popconfirm/PurePanel";
 import { InfoCircleFilled, InfoCircleOutlined, PlayCircleFilled, PlayCircleOutlined } from "@ant-design/icons";
-
+import axios from "axios";
+const API_URL = process.env.REACT_APP_API_URL;
 function ImgSlider() {
-  
+ 
   let settings = {
     dots: true,
     infinite: true,
@@ -17,22 +18,28 @@ function ImgSlider() {
     slidesToScroll: 1,
     autoplay: true,
   };
-
   const [movies, setMovies] = useState([]);
+ 
   const options = {
     method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-    }
-  };
-  const getSlider = () => {
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US', options)
-    .then(response => response.json())
-    .then(json => setMovies(json.results))
-    .catch(err => console.error(err));
+    // headers: {
+    //   accept: 'application/json',
+    //   Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
+    // }
+    headers:{
+      "ngrok-skip-browser-warning": true,
+      'Access-Control-Allow-Origin': '*',
   }
-  console.log("Slider",movies)
+  };
+
+  
+  const getSlider = async() => {
+    
+    const res = await axios(`${API_URL}/api/sliders?populate[0]=movie.MovieThumbnail&populate[1]=movie.VideoFile`,options);
+    console.log("STARPI CHECK",res.data)
+    setMovies(res.data.data);
+  }
+  console.log("Slider checck",movies)
   useEffect(() => {
     getSlider();
   },[]);
@@ -41,25 +48,25 @@ function ImgSlider() {
 
   return (
     <Carousel {...settings}>
-      {/* {movies.map((movie) => (
+      {movies.map((movie) => (
         <Wrap>
              <Info key={movie.id}>
        
-        <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
+        <Link to={'/details/'+movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
            <Button1><PlayCircleFilled spin/> Play Now</Button1>
             <Button2><InfoCircleFilled /> More Info</Button2>
              </Link>
-             <Subtitle>{movie.original_title}</Subtitle>
-             <Description>{movie.overview}</Description>
+             <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
+             <Description>{movie.attributes.movie.data.attributes.Description}</Description>
            </Info>
            <Overlays>
-             <img src={`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`} alt="Img" id={movie.id}/>
+             <img src={`${API_URL}${movie.attributes.movie.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
              </Overlays>
       </Wrap>
              
-      ))} */}
+      ))}
 
-      <Wrap>
+      {/* <Wrap>
           <Info>
             <Subtitle>VETTAIYAN</Subtitle>
             <Button1><PlayCircleFilled spin/> Play Now</Button1>
@@ -96,7 +103,7 @@ function ImgSlider() {
             <Description>Upcoming Release of Actor kamal Haasan.</Description>
           </Info>
           <img src="/images/thuglife2.webp" alt="" />
-      </Wrap>
+      </Wrap> */}
     </Carousel>
   );
 }
@@ -174,10 +181,6 @@ const Wrap = styled.div`
     box-shadow: rgb(0 0 0 / 69%) 0px 26px 30px -10px,
       rgb(0 0 0 / 73%) 0px 16px 10px -10px;
     transition-duration: 300ms;
-    &:hover {
-      border: 4px solid rgba(249, 249, 249, 0.8);
-    }
-
   }
 `;
 
@@ -210,16 +213,19 @@ padding: 5px;
 }
 `;
 const Button2 = styled.button`
-  margin: 5px;
+  // margin: 5px;
   padding: 10px;
   background-color: #303030;
   background:#fba010;
   color: #fff;
   font-weight: bold;
+  font-size: 15px;
   border-radius: 5px;
   cursor: pointer;
   @media (max-width: 768px) {
     margin: 0px;
+    font-size: 12px;
+   
   padding: 5px;
   }
 `;
