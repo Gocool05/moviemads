@@ -7,6 +7,7 @@ import { json, Link } from 'react-router-dom';
 import { Overlay } from "antd/es/popconfirm/PurePanel";
 import { InfoCircleFilled, InfoCircleOutlined, PlayCircleFilled, PlayCircleOutlined, PlaySquareFilled } from "@ant-design/icons";
 import './MovieTrailers.css'
+import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
 function MovieSlider() {
@@ -20,82 +21,41 @@ function MovieSlider() {
     autoplay: true,
   };
 
+ 
   const [movies, setMovies] = useState([]);
-  const options = {
-    method: 'GET',
-    headers:{
-      "ngrok-skip-browser-warning": true,
-      'Access-Control-Allow-Origin': '*',
+ 
+ 
+
+  
+  const getSlider = async() => {
+    const res = await axios.get(`${API_URL}/api/short-film-sliders?populate[0]=short_film.MovieThumbnail&populate[1]=short_film.VideoFile`);
+    setMovies(res.data.data);
   }
-  };
-  const getSlider = () => {
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US', options)
-    .then(response => response.json())
-    .then(json => setMovies(json.results))
-    .catch(err => console.error(err));
-  }
-  console.log("Slider",movies)
   useEffect(() => {
     getSlider();
   },[]);
 
-
-
   return (
-    <Carousel {...settings}>{movies.map((movie) => (
-      <Wrap>
-           <Info key={movie.id}>
-     
-      <Link to={'/details/'+movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
-         <Button1><PlayCircleFilled spin/> Play Now</Button1>
-          <Button2><InfoCircleFilled /> More Info</Button2>
-           </Link>
-           <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
-           <Description>{movie.attributes.movie.data.attributes.Description}</Description>
-         </Info>
-         <Overlays>
-           <img src={`${API_URL}${movie.attributes.movie.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
-           </Overlays>
-    </Wrap>
+    <Carousel {...settings}>
+      
+      {movies.map((movie) => (
+       <Wrap>
+       <Info key={movie.id}>
+ 
+       <Subtitle>{movie.attributes.short_film.data.attributes.MovieName}</Subtitle>
+  <Link to={'/details/'+movie.attributes.short_film.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
+     <Button1><PlayCircleFilled spin/> Play Now</Button1>
+      <Button2><InfoCircleFilled /> More Info</Button2>
+       </Link>
+       <Description>{movie.attributes.short_film.data.attributes.Description}</Description>
+     </Info>
+     <Overlays>
+       <img src={`${API_URL}${movie.attributes.short_film.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
+       </Overlays>
+</Wrap>
            
     ))}
-
-      <Wrap>
-          <Info>
-            <Subtitle>LEO</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>Parthiban is a mild-mannered cafe owner in Kashmir, who fends off a gang of murderous thugs and gains attention from a drug cartel claiming he was once a part of them</Description>
-          </Info>
-          <img src="/images/Leo.jpg" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>JAILER</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>A retired jailer goes on a manhunt to find his son's killers. But the road leads him to a familiar, albeit a bit darker place. Can he emerge from this complex situation successfully?</Description>
-          </Info>
-          <img src="/images/Jailer.jpeg" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>VIKRAM</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.</Description>
-          </Info>
-          <img src="/images/vikram.jpg" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>BLUE STAR</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>The cricket captains of Arakkonam, Ranjith and Rajesh, ignite a rivalry that ruins their chances of playing when politics interferes</Description>
-          </Info>
-          <img src="/images/Bluestar.jpg" alt="" />
-      </Wrap>
+      
     </Carousel>
   );
 }
@@ -204,27 +164,27 @@ font-weight: bold;
 cursor: pointer;
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 12px;
-  margin-right: 10px;
+  font-size: 8px;
+  margin-right: 3px;
 padding: 5px;
 }
 `;
 const Button2 = styled.button`
-  // margin: 5px;
-  padding: 10px;
-  background-color: #303030;
-  background:#fba010;
-  color: #fff;
-  font-weight: bold;
-  font-size: 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  @media (max-width: 768px) {
-    margin: 0px;
-    font-size: 12px;
-   
-  padding: 5px;
-  }
+// margin: 5px;
+padding: 10px;
+background-color: #303030;
+background:#fba010;
+color: #fff;
+font-weight: bold;
+font-size: 15px;
+border-radius: 5px;
+cursor: pointer;
+@media (max-width: 768px) {
+  margin: 0px;
+  font-size: 8px;
+ 
+padding: 5px;
+}
 `;
 
 const Subtitle = styled.h2`
@@ -233,7 +193,7 @@ const Subtitle = styled.h2`
   margin-bottom: 10px;
   @media (max-width: 768px) {
     font-size: 20px;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
   }
 `;
 const Overlays = styled.div`

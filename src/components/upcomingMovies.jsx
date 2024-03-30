@@ -19,20 +19,10 @@ const UpcomingMovies = () => {
     const [movies, setMovies] = useState([]);
     const [seoData, setSeoData] = useState(null);
 
-    const options = {
-      method: 'GET',
-      // headers: {
-      //   accept: 'application/json',
-      //   Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-      // }
-      headers:{
-        "ngrok-skip-browser-warning": true,
-        'Access-Control-Allow-Origin': '*',
-    }
-    };
+    
     const getMovies = async() => {
       
-      const res = await axios(`${API_URL}/api/movies?populate=*`,options);
+      const res = await axios.get(`${API_URL}/api/movies?populate=*`);
       console.log("STARPI CHECK",res.data)
       setMovies(res.data.data);
       setSeoData()

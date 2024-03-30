@@ -7,6 +7,8 @@ const Viewers = (props) => {
     vidRef.current.play();
   }, []);
   return (
+    <Container2>
+      <h1>Short Film Awards</h1>
     <Container>
       <Wrap>
         <h1>BEST DIRECTOR AWARD</h1>
@@ -64,6 +66,7 @@ const Viewers = (props) => {
         />
       </Wrap>
     </Container>
+    </Container2>
   );
 };
 
@@ -77,6 +80,25 @@ const Container = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  h1{
+    padding: 10px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    @media(max-width:768px){
+      font-size:16px;
+    }
+`;
+const Container2 = styled.div`
+  h1{
+    padding: 10px 0;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    @media(max-width:768px){
+      font-size:16px;
+    }
 `;
 
 const Wrap = styled.div`

@@ -12,10 +12,17 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
+.ant-modal .ant-modal-close-x{
+    display: none;
+}
+iframe{
+    width: 800px;
+    height: 400px;
+}
 @media screen and (max-width: 512px) {
     iframe{
         height: 200px;
+        width: 100%;
     }
     .ant-modal .ant-modal-content{
             width: 90%; 
@@ -23,4 +30,5 @@
             padding: 5px; 
             transform: translate(-50%, -75%);
     }
+  
 }

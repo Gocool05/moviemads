@@ -404,18 +404,16 @@ const CustomModal = ({ onClose, API_URL, details }) => {
  {loading ? (
     <Skeleton active />
     ) : (
-    // <iframe
-    // src={`${API_URL}${details?.attributes.VideoFile.data.attributes.url}`}
-    // // src={'https://www.youtube.com/embed/JCGLR8AJOiI?si=Im8jMnnDUS_1UtAb'}
-    // title="YouTube video player"
-    // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    // allowFullScreen
-    // onLoad={handleLoad}
-    // ></iframe>
-    <video style={{ height: '100%', width: '100%' }} controls autoPlay loop >
-  <source  src={`${API_URL}${details?.attributes.VideoFile.data.attributes.url}`} type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+      <>
+      {details?.attributes.VideoFile.data !== null && details?.attributes.VideoFile.data !== undefined ? (
+        <video style={{ height: '100%', width: '100%' }} controls autoPlay loop>
+          <source src={`${API_URL}${details?.attributes.VideoFile.data.attributes.url}`} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+      <iframe  src={details?.attributes.videoEmbedCode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      )}
+      </>
     )}
     </Modal>
     </ModalContent>

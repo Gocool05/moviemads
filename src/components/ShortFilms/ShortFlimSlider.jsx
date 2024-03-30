@@ -22,25 +22,14 @@ function ShortFlimSlider() {
 
   const [movies, setMovies] = useState([]);
  
-  const options = {
-    method: 'GET',
-    // headers: {
-    //   accept: 'application/json',
-    //   Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-    // }
-    headers:{
-      "ngrok-skip-browser-warning": true,
-      'Access-Control-Allow-Origin': '*',
-  }
-  };
+ 
 
   
   const getSlider = async() => {
-    const res = await axios(`${API_URL}/api/short-film-sliders?populate[0]=short_film.MovieThumbnail&populate[1]=short_film.VideoFile`,options);
+    const res = await axios.get(`${API_URL}/api/short-film-sliders?populate[0]=short_film.MovieThumbnail&populate[1]=short_film.VideoFile`);
     console.log("ShortFlim Slider CHECK",res.data)
     setMovies(res.data.data);
   }
-  console.log("Slider checck",movies)
   useEffect(() => {
     getSlider();
   },[]);
@@ -53,11 +42,11 @@ function ShortFlimSlider() {
       <Wrap>
            <Info key={movie.id}>
      
+           <Subtitle>{movie.attributes.short_film.data.attributes.MovieName}</Subtitle>
       <Link to={'/details/'+movie.attributes.short_film.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
          <Button1><PlayCircleFilled spin/> Play Now</Button1>
           <Button2><InfoCircleFilled /> More Info</Button2>
            </Link>
-           <Subtitle>{movie.attributes.short_film.data.attributes.MovieName}</Subtitle>
            <Description>{movie.attributes.short_film.data.attributes.Description}</Description>
          </Info>
          <Overlays>
@@ -183,27 +172,27 @@ font-weight: bold;
 cursor: pointer;
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 12px;
-  margin-right: 10px;
+  font-size: 8px;
+  margin-right: 3px;
 padding: 5px;
 }
 `;
 const Button2 = styled.button`
-  // margin: 5px;
-  padding: 10px;
-  background-color: #303030;
-  background:#fba010;
-  color: #fff;
-  font-weight: bold;
-  font-size: 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  @media (max-width: 768px) {
-    margin: 0px;
-    font-size: 12px;
-   
-  padding: 5px;
-  }
+// margin: 5px;
+padding: 10px;
+background-color: #303030;
+background:#fba010;
+color: #fff;
+font-weight: bold;
+font-size: 15px;
+border-radius: 5px;
+cursor: pointer;
+@media (max-width: 768px) {
+  margin: 0px;
+  font-size: 8px;
+ 
+padding: 5px;
+}
 `;
 
 const Subtitle = styled.h2`
@@ -212,7 +201,7 @@ const Subtitle = styled.h2`
   margin-bottom: 10px;
   @media (max-width: 768px) {
     font-size: 20px;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
   }
 `;
 const Overlays = styled.div`

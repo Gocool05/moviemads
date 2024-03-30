@@ -10,26 +10,24 @@ import 'swiper/css/pagination';
 // import './Slider.css';
 // import required modules
 import { Autoplay, EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
-
+import axios from 'axios';
+const API_URL = process.env.REACT_APP_API_URL;
 const TopRated = () => {
-    const [movies, setMovies] = useState([]);
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-      }
-    };
-    const getMovies = () => {
-      fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=hi', options)
-      .then(response => response.json())
-      .then(json => setMovies(json.results))
-      .catch(err => console.error(err));
-    }
-    console.log("popular",movies)
-    useEffect(() => {
-      getMovies();
-    },[]);
+  const [movies, setMovies] = useState([]);
+  const [seoData, setSeoData] = useState(null);
+
+  
+  const getMovies = async() => {
+    
+    const res = await axios.get(`${API_URL}/api/movies?populate=*&sort[0]=id:desc`);
+    console.log("STARPI CHECK",res.data)
+    setMovies(res.data.data);
+    setSeoData()
+  }
+  console.log("Movies checck",movies)
+  useEffect(() => {
+    getMovies();
+  },[]);
       return (
           <Container>
               <h1>TOP RATED MOVIES</h1>
@@ -57,9 +55,9 @@ const TopRated = () => {
                         <SwiperSlide className='swiper-slide1' key={movie.id}>
                             <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
                             <div className="movie-container1">
-                                <img src={`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`} alt="Img" id={movie.id}/>
+                            <img src={`${API_URL}${movie.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
                             <div className="overlay1">
-                                <p className="movie-name1">{movie.title}</p>
+                                <p className="movie-name1">{movie.attributes.MovieName}</p>
                             </div>
                             </div>
                             </Link>

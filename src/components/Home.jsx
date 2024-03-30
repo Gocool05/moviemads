@@ -24,7 +24,7 @@ function Home() {
       <ImgSlider />
       <UpcomingMovies/>
       <TopRated/>
-      <h1 style={{padding:"10px 0px", fontSize:"1.5rem",color:"#fff",fontWeight:"600"}}>SHORT FILM AWARDS</h1>
+      {/* <h1 className="h1-home" style={{padding:"10px 0px", fontSize:"1.5rem",color:"#fff",fontWeight:"600"}}>SHORT FILM AWARDS</h1> */}
       <Viewers />
       <EventPartners/>
       <Movies />

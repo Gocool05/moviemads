@@ -52,11 +52,11 @@ function ImgSlider() {
         <Wrap>
              <Info key={movie.id}>
        
+             <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
         <Link to={'/details/'+movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
            <Button1><PlayCircleFilled spin/> Play Now</Button1>
             <Button2><InfoCircleFilled /> More Info</Button2>
              </Link>
-             <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
              <Description>{movie.attributes.movie.data.attributes.Description}</Description>
            </Info>
            <Overlays>
@@ -66,44 +66,7 @@ function ImgSlider() {
              
       ))}
 
-      {/* <Wrap>
-          <Info>
-            <Subtitle>VETTAIYAN</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>Upcoming Release of Superstar Rajinikanth.</Description>
-          </Info>
-          <img src="/images/Vattaiyan.webp" alt="" />
-      </Wrap>
-      <Wrap>
-          <Info>
-            <Subtitle>GREATEST OF ALL TIME(GOAT)</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>Upcoming Release of Thalapathy Vijay.</Description>
-          </Info>
-          <img src="/images/goat2.jpg" alt="" />
-      </Wrap>
-
-      <Wrap>
-          <Info>
-            <Subtitle>KANGUVA</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>Upcoming Release of Actor Surya Sivakumar</Description>
-          </Info>
-          <img src="/images/kanguva-1.jpg" alt="" />
-      </Wrap>
-
-      <Wrap>
-          <Info>
-            <Subtitle>THUG LIFE</Subtitle>
-            <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-            <Description>Upcoming Release of Actor kamal Haasan.</Description>
-          </Info>
-          <img src="/images/thuglife2.webp" alt="" />
-      </Wrap> */}
+    
     </Carousel>
   );
 }
@@ -192,9 +155,6 @@ bottom: 0;
 left: 0;
 padding-left: 20px;
 padding-top: 10px;
-@media (max-width: 768px) {
-  // display: none;
-}
 `;
 
 const Button1 = styled.button`
@@ -207,8 +167,8 @@ font-weight: bold;
 cursor: pointer;
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 12px;
-  margin-right: 10px;
+  font-size: 8px;
+  margin-right: 3px;
 padding: 5px;
 }
 `;
@@ -224,7 +184,7 @@ const Button2 = styled.button`
   cursor: pointer;
   @media (max-width: 768px) {
     margin: 0px;
-    font-size: 12px;
+    font-size: 8px;
    
   padding: 5px;
   }
@@ -236,7 +196,7 @@ const Subtitle = styled.h2`
   margin-bottom: 10px;
   @media (max-width: 768px) {
     font-size: 20px;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
   }
 `;
 const Overlays = styled.div`
@@ -249,7 +209,7 @@ const Description = styled.p`
   color: #fff;
   font-size: 18px;
   @media (max-width: 768px) {
-    font-size: 10px;
+    font-size: 8px;
     z-index: 10;
   }
 `;
