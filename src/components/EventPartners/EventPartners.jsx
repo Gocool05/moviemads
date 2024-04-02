@@ -31,7 +31,6 @@ const getMovies = async() => {
     <>
        <Container>
     <h1>EVENT PARTNERS</h1>
-
         <Swiper
         slidesPerView={5}
         spaceBetween={30}

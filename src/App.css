@@ -6,9 +6,7 @@
 h3{
     color:#ff0015;
     font-size:medium;
-    text-align: justify;
     padding: 10px 0px;
-    margin: 10px;
     cursor: pointer;
 }
 .ant-modal .ant-modal-content{
@@ -44,5 +42,8 @@ font-size: large
   .swiper-button-prev, .swiper-button-next{
     font-size:smaller;
   }
+  h3{
+    margin: 10px;
+}
   
 }
