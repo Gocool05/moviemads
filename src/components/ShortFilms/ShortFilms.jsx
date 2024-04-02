@@ -2,12 +2,12 @@ import React,{useState,useEffect} from 'react'
 import styled from 'styled-components'
 import { json, Link } from 'react-router-dom';
 // Import Swiper styles
-
 import Footer from '../Footer/Footer.jsx'
 import { ConfigProvider, Pagination, Typography } from 'antd';
 import { WindowsFilled } from '@ant-design/icons';
-import ShortFlimSlider from './ShortFlimSlider';
+// import ShortFlimSlider from './ShortFlimSlider';
 // import required modules
+import './ShortFilms.css'
 
 const ShortFilms = () => {
 
@@ -68,79 +68,93 @@ const ShortFilms = () => {
 
 
   return (
-    <Container>
-      <ShortFlimSlider/>
-      <Toolbar>
-        <p
-          style={{
-            fontWeight: "bold",
-            textTransform: "uppercase",
-            marginRight: "10px",
-          }}
-        >
-          Short Films
-        </p>
-        <SearchInput
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-      </Toolbar>
+    <div className="card">
+    <div className="content">
+      <div className="title-holder">
+        <h2>Get ready for the SHORT FILMS</h2>
+    <div className="header">
+        <h2>COMING SOON</h2>
+      </div>
+        <p>Page coming soon. Please check back to know more. Shoot us an email if you're curious.</p>
+      </div>
+      <a className="cta" href="mailto:jgntechnologies@gmail.com">
+        <div >Send us an email</div>
+      </a>
+    </div>
+  </div>
+    // <Container>
+    //   <ShortFlimSlider/>
+    //   <Toolbar>
+    //     <p
+    //       style={{
+    //         fontWeight: "bold",
+    //         textTransform: "uppercase",
+    //         marginRight: "10px",
+    //       }}
+    //     >
+    //       Short Films
+    //     </p>
+    //     <SearchInput
+    //       type="text"
+    //       placeholder="Search..."
+    //       value={searchQuery}
+    //       onChange={(e) => setSearchQuery(e.target.value)}
+    //     />
+    //   </Toolbar>
 
-      <Content>
-        {currentPageMovies.map((movie) => (
-          <div key={movie.id}>
-            <Link
-              to={"/details/" + movie.id}
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              <div className="movieTrailers-container">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                  alt="Img"
-                  id={movie.id}
-                />
-                <div className="Movietrailers-overlay">
-                  <p className="movieTrailers-title">{movie.title}</p>
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </Content>
-      <PaginationWrapper>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#e50914",
-            colorText: "#ffffff",
-            colorIcon: "#e50914",
-          },
-          components: {
-            Pagination: {
-              colorPrimary: "#e50914",
-              itemSize: "42px",
-              fontSize: "22px",
-              borderRadius: "20px",
-              colorBgTextHover: "#e50914",
-            },
-          },
-        }}
-      >
-        <Pagination
-          className="pagination"
-          size="large"
-          current={current}
-          onChange={onChange}
-          total={filteredMovies.length}
-          showSizeChanger={false}
-          pageSize={pageSize}
-        />
-      </ConfigProvider>
-      </PaginationWrapper>
-      <Footer />
-    </Container>
+    //   <Content>
+    //     {currentPageMovies.map((movie) => (
+    //       <div key={movie.id}>
+    //         <Link
+    //           to={"/details/" + movie.id}
+    //           onClick={() => window.scrollTo(0, 0)}
+    //         >
+    //           <div className="movieTrailers-container">
+    //             <img
+    //               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+    //               alt="Img"
+    //               id={movie.id}
+    //             />
+    //             <div className="Movietrailers-overlay">
+    //               <p className="movieTrailers-title">{movie.title}</p>
+    //             </div>
+    //           </div>
+    //         </Link>
+    //       </div>
+    //     ))}
+    //   </Content>
+    //   <PaginationWrapper>
+    //   <ConfigProvider
+    //     theme={{
+    //       token: {
+    //         colorPrimary: "#e50914",
+    //         colorText: "#ffffff",
+    //         colorIcon: "#e50914",
+    //       },
+    //       components: {
+    //         Pagination: {
+    //           colorPrimary: "#e50914",
+    //           itemSize: "42px",
+    //           fontSize: "22px",
+    //           borderRadius: "20px",
+    //           colorBgTextHover: "#e50914",
+    //         },
+    //       },
+    //     }}
+    //   >
+    //     <Pagination
+    //       className="pagination"
+    //       size="large"
+    //       current={current}
+    //       onChange={onChange}
+    //       total={filteredMovies.length}
+    //       showSizeChanger={false}
+    //       pageSize={pageSize}
+    //     />
+    //   </ConfigProvider>
+    //   </PaginationWrapper>
+    //   <Footer />
+    // </Container>
   );
 }
 
@@ -186,8 +200,9 @@ img{
   }
 }
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
+    grid-gap: 10px;
     height: 100%;
   }
 `;

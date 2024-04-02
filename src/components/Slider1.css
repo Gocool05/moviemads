@@ -82,3 +82,12 @@
     color: #ff0015;
     font-weight: bold;
   }
+
+  @media screen and (max-width: 512px) {
+    .swiper-button-next:after{
+      font-size: large;
+    }
+    .swiper-button-prev:after{
+      font-size: large;
+    }
+  }

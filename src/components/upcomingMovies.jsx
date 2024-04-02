@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
 import movies from '../movies.js';
-
+import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
@@ -14,11 +14,10 @@ import './Slider.css';
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
-console.log(API_URL,'API URL')
 const UpcomingMovies = () => {
+  const [seoData, setSeoData] = useState(null);
     const [movies, setMovies] = useState([]);
-    const [seoData, setSeoData] = useState(null);
-
+    const navigate = useNavigate();
     
     const getMovies = async() => {
       
@@ -33,11 +32,13 @@ const UpcomingMovies = () => {
     },[]);
       return (
           <Container>
-
-              <h1>POPULAR MOVIES</h1>
+              <div style={{display:'flex', justifyContent:"space-between"}}>
+              <h1>UPCOMING MOVIE TRAILERS</h1>
+              <h3 onClick={() => { navigate("/movieTrailer"); }}>View More</h3>
+              </div>
               <Swiper
         modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={2}
+        slidesPerView={3}
         centeredSlides={false}
         spaceBetween={20}
         navigation={true}
@@ -112,7 +113,6 @@ const Wrap = styled.div`
     transform: scale(1.05);
     box-shadow: rgb(0 0 0 / 69%) 0px 26px 30px -10px,
       rgb(0 0 0 / 73%) 0px 16px 10px -10px;
-
     border-color: rgba(249, 249, 249, 0.8);
   }
 `;

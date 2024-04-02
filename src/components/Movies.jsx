@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
 import movies from '../movies.js';
-
+import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
@@ -15,6 +15,7 @@ import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } fro
 
 function Movies() {
   const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
   const options = {
     method: 'GET',
     headers: {
@@ -35,10 +36,13 @@ function Movies() {
   
     return (
         <Container>
-    <h1>SOUTH INDIAN MOVIES   </h1>
+            <div style={{display:'flex', justifyContent:"space-between"}}>
+              <h1>SOUTH INDIAN MOVIES   </h1>
+              <h3 onClick={() => { navigate("/movieTrailer"); }}>View More</h3>
+              </div>
             <Swiper
         modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={2}
+        slidesPerView={3}
         centeredSlides={false}
         spaceBetween={20}
         // pagination={{

@@ -12,6 +12,7 @@ import Awards from "./components/Awards/Awards";
 import Reviews from "./components/Reviews/Reviews";
 import Contest from "./components/Contest/Contest";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
+import ReviewInfo from "./components/Reviews/ReviewInfo";
 
 function App() {
   return (
@@ -29,12 +30,13 @@ function AppContent() {
 const user = localStorage.getItem("User");
   return (
     <>
-      {/* {!isLoginPage && <Topnav />} */}
+      {!isLoginPage && <Topnav />}
       <Header />
      {/* {user? */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/details/:id" element={<Details />} />
+        <Route path="/review/:id" element={<ReviewInfo />} />
         <Route path="/movieTrailer" element={<MovieTrailers />} />
         <Route path="/shortFilms" element={<ShortFilms />} />
         <Route path="/awards" element={<Awards />} />

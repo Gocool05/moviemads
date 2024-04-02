@@ -124,7 +124,7 @@ const Wrap = styled.div`
   object-position: center center;
     height:80vh;
     @media (max-width: 768px) {
-      height:30vh;
+      height:25vh;
     }
   img {
     border: 5px solid transparent;

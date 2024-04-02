@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
 import './Slider1.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import { useNavigate } from 'react-router-dom';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -15,7 +15,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 const TopRated = () => {
   const [movies, setMovies] = useState([]);
   const [seoData, setSeoData] = useState(null);
-
+  const navigate = useNavigate();
   
   const getMovies = async() => {
     
@@ -24,13 +24,15 @@ const TopRated = () => {
     setMovies(res.data.data);
     setSeoData()
   }
-  console.log("Movies checck",movies)
   useEffect(() => {
     getMovies();
   },[]);
       return (
           <Container>
-              <h1>TOP RATED MOVIES</h1>
+              <div style={{display:'flex', justifyContent:"space-between"}}>
+              <h1>TOP RATED MOVIE TRAILERS</h1>
+              <h3 onClick={() => { navigate("/movieTrailer"); }}>View More</h3>
+              </div>
               <Swiper
         modules={[ Navigation, Pagination,Grid,Autoplay]}
         slidesPerView={1}

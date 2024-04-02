@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 import { CiOutlined, LogoutOutlined, MenuOutlined, StarTwoTone, UpOutlined } from "@ant-design/icons";
+import Topnav from "./TopNav/Topnav";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -83,6 +84,7 @@ function Header() {
   };
 
   return (
+    <>
     <Nav>
       <Logo src="/images/Moviemads Logo.png"></Logo>
       {/* <h1 style={{ color: "Red" }}>MOVIE<span style={{ color: "gold" }}>MADS</span></h1> */}
@@ -122,6 +124,7 @@ function Header() {
         </> 
          )}  
     </Nav>
+    </>
   );
 }
 

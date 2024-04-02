@@ -8,32 +8,26 @@ import './MovieTrailers.css'
 import { ConfigProvider, Pagination, Typography } from 'antd';
 import { WindowsFilled } from '@ant-design/icons';
 import Footer from '../Footer/Footer';
+import axios from 'axios';
 // import required modules
-
+const API_URL = process.env.REACT_APP_API_URL;
 const MovieTrailers = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [current, setCurrent] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(15);
 
 
 
   const [movies, setMovies] = useState([]);
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-      }
-    };
-    const getMovies = () => {
-      fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=ta', options)
-      .then(response => response.json())
-      .then(json => setMovies(json.results))
-      .catch(err => console.error(err));
-    }
+  const getMovies = async() => {
+      
+    const res = await axios.get(`${API_URL}/api/movies?populate=*`);
+    console.log("STARPI CHECK",res.data)
+    setMovies(res.data.data);
+  }
     console.log("TV",movies)
    
     useEffect(() => {
@@ -44,7 +38,7 @@ const MovieTrailers = () => {
   // Function to filter movies based on search query, language, and genre
   const filteredMovies = movies.filter(movie => {
     // Filter by search query
-    if (searchQuery && !movie.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+    if (searchQuery && !movie.attributes.MovieName.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
     // Filter by selected language
@@ -129,13 +123,9 @@ const MovieTrailers = () => {
               onClick={() => window.scrollTo(0, 0)}
             >
               <div className="movieTrailers-container">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                  alt="Img"
-                  id={movie.id}
-                />
+              <img src={`${API_URL}${movie.attributes.MoviePoster.data.attributes.url}`} alt="Img" id={movie.id}/>
                 <div className="Movietrailers-overlay">
-                  <p className="movieTrailers-title">{movie.title}</p>
+                  <p className="movieTrailers-title">{movie.attributes.MovieName}</p>
                 </div>
               </div>
             </Link>
@@ -219,9 +209,10 @@ img{
   }
 }
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
     height: 100%;
+    grid-gap: 10px;
   }
 `;
 

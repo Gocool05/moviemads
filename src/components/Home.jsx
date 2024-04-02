@@ -7,11 +7,10 @@ import Footer from "./Footer/Footer";
 import UpcomingMovies from "./upcomingMovies";
 import Topnav from "./TopNav/Topnav";
 import TopRated from "./TopRated";
-import TvShows from "./Hollywood";
-import Hollywood from "./Hollywood";
 import EventPartners from "./EventPartners/EventPartners";
 import { Navigate } from "react-router-dom";
 import Login from "./Login";
+import MovieReviews from "./MovieReviews";
 
 function Home() {
   const user = localStorage.getItem("User");
@@ -24,11 +23,10 @@ function Home() {
       <ImgSlider />
       <UpcomingMovies/>
       <TopRated/>
-      {/* <h1 className="h1-home" style={{padding:"10px 0px", fontSize:"1.5rem",color:"#fff",fontWeight:"600"}}>SHORT FILM AWARDS</h1> */}
       <Viewers />
+      {/* <Movies /> */}
+      <MovieReviews/>
       <EventPartners/>
-      <Movies />
-    <Hollywood/>
     </Container>
       <Footer/>
       </div>

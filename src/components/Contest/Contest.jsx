@@ -106,9 +106,6 @@ const Contest = () => {
     }
   };
 
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -126,7 +123,8 @@ const Contest = () => {
       Directors: values.directorName,
       contentRating: values.contentRating,
       Duration: values.duration,
-      profile:values.profile
+      Profile:values.profile,
+      user:localStorage.getItem('UserId'),
     }
     });
     console.log(response);
@@ -386,7 +384,7 @@ useEffect(() => {
     console.log('Razorpay',response.data);
     console.log('Razorpay',response.data.data.attributes.keyId);
     e.preventDefault();
-     const amount = 1000;
+     const amount = 1499;
       var options = {
         key: `${response.data.data.attributes.keyId}`,
         key_secret:`${response.data.data.attributes.keySecret}`,
@@ -394,14 +392,14 @@ useEffect(() => {
         currency:"INR",
         name:"MovieMads",
         description:"for testing purpose",
-        handler:  function (Paymentresponse){
+        handler:  async function (Paymentresponse){
+          console.log(Token,'Token check')
+          const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/payment`,{},option1);
+          console.log('Payment Response', response)
+          console.log('Payment ID Response', Paymentresponse.razorpay_payment_id)
           handleFinish();
-          // handleUpload();
-        //  handleData(Paymentresponse);
-        //  handleEnroll();
-        window.location.reload(); // Refresh the page
-      window.location.href = "/"; // Navigate to the home page
-
+          window.location.reload(); // Refresh the page
+          window.location.href = "/"; // Navigate to the home page
         },
         prefill: {
           name:"GOCOOL",
@@ -727,7 +725,7 @@ useEffect(() => {
               </div>
             {/* Add other form fields here */}
             <Form.Item>
-              <Button type="primary" htmlType="submit" onClick={nextStep}>
+              <Button type="primary" htmlType="submit" onClick={handleSubmit}>
                 Next
               </Button>
             </Form.Item>

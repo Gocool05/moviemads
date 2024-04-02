@@ -3,11 +3,10 @@ import styled from "styled-components";
 import { Await, useParams } from "react-router-dom";
 import axios, { Axios } from "axios";
 import { Modal, Skeleton } from "antd";
-import Movies from "./Movies";
 import { ControlFilled, EyeOutlined,CalendarOutlined,ClockCircleOutlined,HeartOutlined,ShareAltOutlined, HeartTwoTone, HeartFilled, UserAddOutlined, StarFilled, CrownOutlined, StarOutlined, VideoCameraAddOutlined, AppstoreOutlined, TranslationOutlined } from "@ant-design/icons";
-import Footer from "./Footer/Footer";
-import YouMayLike from "./YouMayLike";
-function Details() {
+import Footer from "../Footer/Footer";
+import YouMayLike from "../YouMayLike";
+function ReviewInfo() {
 const [details, setDetails] = useState(null); // Initialize details state as null
 const [loading, setLoading] = useState(true); // Initialize loading state as true
 const [showModal, setShowModal] = useState(false); // State to toggle modal
@@ -36,7 +35,7 @@ headers: {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/movies/${id}?populate=*`);
+    const response = await axios.get(`${API_URL}/api/reviews/${id}?populate=*`);
 const responseData = response.data.data;
 setDetails(responseData);
 console.log("response data", responseData);
@@ -53,20 +52,20 @@ const IsUserLiked = async () => {
     const response = await axios.get(`${API_URL}/api/users/${UserId}?populate=*`, option1);
     const responseData = response;
     console.log("Liked data", responseData);
-    if(responseData.data.liked_movie){localStorage.setItem('LikedMovieId',responseData.data.liked_movie.id);}else{setLiked(false);}
+    if(responseData.data.liked_review){localStorage.setItem('LikedReviewId',responseData.data.liked_review.id);}else{setLiked(false);}
   }catch(err){
     console.error(err);
   }
 }
-const LikedMovieId = localStorage.getItem('LikedMovieId');
+const LikedReviewId = localStorage.getItem('LikedReviewId');
 const GetLikedMovies = async () => {
   try{
     console.log("Liked Movie checvk");
-    if(LikedMovieId){
-      const response = await axios.get(`${API_URL}/api/liked-movies/${LikedMovieId}?populate[movies]=*`, option1);
+    if(LikedReviewId){
+      const response = await axios.get(`${API_URL}/api/liked-reviews/${LikedReviewId}?populate[reviews]=*`, option1);
       const responseData = response;
-      console.log("Liked Movies data", responseData.data.data.attributes.movies.data);
-      setMovies(responseData.data.data.attributes.movies.data);
+      console.log("Liked REVIEWS data", responseData.data.data.attributes.reviews.data);
+      setMovies(responseData.data.data.attributes.reviews.data);
       }
   }catch(err){
     console.error(err);
@@ -130,7 +129,7 @@ else{
   setLiked(true);
 }
 try{
-  const response = await axios .post(`${API_URL}/api/movies/${id}/like`, {}, option1);
+  const response = await axios .post(`${API_URL}/api/reviews/${id}/like`, {}, option1);
 console.log("response lieiks", response.data);
 }
 
@@ -202,12 +201,12 @@ rows: 4,
 )}
 </Container>
 {showModal && < CustomModal API_URL={API_URL} details={details} onClose={closeModal} />}
-<YouMayLike id = {id}/>
+{/* <YouMayLike id = {id}/> */}
 <Footer/>
 </>
 );
 }
-export default Details;
+export default ReviewInfo;
 
 const Container = styled.div`
 display: flex;

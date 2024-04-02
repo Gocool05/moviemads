@@ -3,7 +3,14 @@
 }
 
 
-
+h3{
+    color:#ff0015;
+    font-size:medium;
+    text-align: justify;
+    padding: 10px 0px;
+    margin: 10px;
+    cursor: pointer;
+}
 .ant-modal .ant-modal-content{
     background: linear-gradient(180deg,rgba(0, 0, 0, 1) 0%, rgba(105, 0, 0, 1) 60%, rgba(0, 0, 0, 1) 100%);
     padding: 10px;
@@ -19,6 +26,10 @@ iframe{
     width: 800px;
     height: 400px;
 }
+
+.swiper-button-prev, .swiper-button-next{
+font-size: large
+}
 @media screen and (max-width: 512px) {
     iframe{
         height: 200px;
@@ -30,5 +41,8 @@ iframe{
             padding: 5px; 
             transform: translate(-50%, -75%);
     }
+  .swiper-button-prev, .swiper-button-next{
+    font-size:smaller;
+  }
   
 }

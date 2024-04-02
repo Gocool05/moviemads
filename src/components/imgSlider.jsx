@@ -7,6 +7,8 @@ import { json, Link } from 'react-router-dom';
 import { Overlay } from "antd/es/popconfirm/PurePanel";
 import { InfoCircleFilled, InfoCircleOutlined, PlayCircleFilled, PlayCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { Skeleton } from "antd";
+import SkeletonAvatar from "antd/es/skeleton/Avatar";
 const API_URL = process.env.REACT_APP_API_URL;
 function ImgSlider() {
  
@@ -19,7 +21,7 @@ function ImgSlider() {
     autoplay: true,
   };
   const [movies, setMovies] = useState([]);
- 
+  const [loading, setLoading] = useState(true);
   const options = {
     method: 'GET',
     // headers: {
@@ -38,6 +40,7 @@ function ImgSlider() {
     const res = await axios(`${API_URL}/api/sliders?populate[0]=movie.MovieThumbnail&populate[1]=movie.VideoFile`,options);
     console.log("STARPI CHECK",res.data)
     setMovies(res.data.data);
+    setLoading(false);
   }
   console.log("Slider checck",movies)
   useEffect(() => {
@@ -47,26 +50,31 @@ function ImgSlider() {
 
 
   return (
-    <Carousel {...settings}>
-      {movies.map((movie) => (
-        <Wrap>
-             <Info key={movie.id}>
-       
-             <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
-        <Link to={'/details/'+movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
-           <Button1><PlayCircleFilled spin/> Play Now</Button1>
-            <Button2><InfoCircleFilled /> More Info</Button2>
-             </Link>
-             <Description>{movie.attributes.movie.data.attributes.Description}</Description>
-           </Info>
-           <Overlays>
-             <img src={`${API_URL}${movie.attributes.movie.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
-             </Overlays>
-      </Wrap>
-             
-      ))}
 
-    
+    <Carousel {...settings}>
+      {loading ? (
+        Array.from({ length: 5 }).map((_, index) => (
+          <SkeletonWrapper key={index}>
+            <SkeletonAvatar active   />
+          </SkeletonWrapper>
+        ))
+      ) : (
+        movies.map((movie) => (
+          <Wrap key={movie.id}>
+            <Info>
+              <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
+              <Link to={'/details/' + movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1">
+                <Button1><PlayCircleFilled spin /> Play Now</Button1>
+                <Button2><InfoCircleFilled /> More Info</Button2>
+              </Link>
+              <Description>{movie.attributes.movie.data.attributes.Description}</Description>
+            </Info>
+            <Overlays>
+              <img src={`${API_URL}${movie.attributes.movie.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id} />
+            </Overlays>
+          </Wrap>
+        ))
+      )}
     </Carousel>
   );
 }
@@ -112,6 +120,10 @@ const Carousel = styled(Slider)`
   }
 `;
 
+const SkeletonWrapper = styled.div`
+  margin: 20px;
+`;
+
 const Wrap = styled.div`
   position: relative; /* To position the Button1s and information */
   
@@ -132,7 +144,7 @@ const Wrap = styled.div`
   cursor: pointer;
     height:80vh;
     @media (max-width: 768px) {
-      height: 30vh;
+      height: 25vh;
     }
   img {
     border: 5px solid transparent;
@@ -175,7 +187,7 @@ padding: 5px;
 const Button2 = styled.button`
   // margin: 5px;
   padding: 10px;
-  background-color: #303030;
+  // background-color: #303030;
   background:#fba010;
   color: #fff;
   font-weight: bold;

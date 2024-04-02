@@ -20,17 +20,11 @@ function YouMayLike(props) {
   const [loading, setLoading] = useState(true);
   const [ID, setID] = useState(null);
   // setID(props.id);
-  const options = {
-    method: 'GET',
-    headers:{
-      "ngrok-skip-browser-warning": true,
-      'Access-Control-Allow-Origin': '*',
-  }
-  };
+  
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/movies/${props.id}?populate[blocks][populate][movies][populate]=*`, options);
+        const response = await axios.get(`${API_URL}/api/movies/${props.id}?populate[blocks][populate][movies][populate]=*`);
         const responseData = response.data.data.attributes.blocks[0].movies.data;
         setRelatedMovies(responseData);
         console.log("Related Movies", responseData);
@@ -44,14 +38,17 @@ function YouMayLike(props) {
     };
     useEffect(() => {
       fetchData();
+      
   }, []); 
+
+
   
     return (
         <Container>
             <h1>You May Also Like  </h1>
             <Swiper
         modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={2}
+        slidesPerView={3}
         centeredSlides={false}
         spaceBetween={20}
         // pagination={{

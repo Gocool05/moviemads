@@ -5,7 +5,7 @@ const Awards = () => {
     <div className="card">
     <div className="content">
       <div className="title-holder">
-        <h2>Get ready for the Awards</h2>
+        <h2>Get ready for the AWARDS</h2>
     <div className="header">
         <h2>COMING SOON</h2>
       </div>
