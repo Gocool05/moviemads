@@ -3,23 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 // import { useDispatch } from "react-redux";
 const API_URL = process.env.REACT_APP_API_URL;
+const user = localStorage.getItem("User");
 function Login() {
-
-  const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const signIn = () => {
-  //   auth.signInWithPopup(provider).then((result) => {
-  //     let user = result.user;
-  //     dispatch(
-  //       setUserLogin({
-  //         name: user.displayName,
-  //         email: user.email,
-  //         photo: user.photoURL,
-  //       })
-  //     );
-  //     navigate("/");
-  //   });
-  // };
 
 
   return (

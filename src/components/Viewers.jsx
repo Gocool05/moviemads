@@ -8,7 +8,7 @@ const Viewers = (props) => {
   }, []);
   return (
     <Container2>
-      <h1>Short Film Awards</h1>
+      <h1>SHORT FILM AWARDS <span>&#8702;</span> </h1>
     <Container>
       <Wrap>
         <h1>BEST DIRECTOR</h1>
@@ -85,22 +85,36 @@ const Container = styled.div`
     font-size: 1.5rem;
     font-weight: 600;
     color: #fff;
-    background:
     @media(max-width:768px){
       font-size:16px;
     }
 `;
 const Container2 = styled.div`
-  h1{
-    padding: 10px 0;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #fff;
-    @media(max-width:768px){
-      font-size:16px;
-    }
-`;
+h1{
+  padding: 10px 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  span{
+    opacity:0;
+    font-size:1.5rem;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    display: inline-block;
+    transform: translateX(-5px);
+  }
+  &:hover{
+    color:#e50914;
+    span{
+        opacity:1;
+    transform: translateX(5px);
+      }
+  }
+}
+  @media(max-width:768px){
+    font-size:16px;
+  }
+}`;
 
 const Wrap = styled.div`
   padding-top: 56.25%;
@@ -149,7 +163,7 @@ const Wrap = styled.div`
     padding:0;
     text-align:center;
     margin:0;
-    color:#fba010;
+    color:#daa520 ;
     bottom: 0;
     left: 50%;
     top: 50%;

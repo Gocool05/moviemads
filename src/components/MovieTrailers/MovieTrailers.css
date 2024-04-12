@@ -35,7 +35,7 @@
     /* background-color: #ffffff; */
     align-items: center;
     text-align: center;
-    padding: 20px 0px;
+    /* padding: 20px 0px; */
 }
 
 @media screen and (max-width: 512px) {

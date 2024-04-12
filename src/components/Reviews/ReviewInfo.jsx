@@ -407,7 +407,7 @@ const CustomModal = ({ onClose, API_URL, details }) => {
           Your browser does not support the video tag.
         </video>
       ) : (
-      <iframe  src={details?.attributes.videoEmbedCode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <iframe  src={details?.attributes.videoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       )}
       </>
     )}

@@ -259,7 +259,6 @@
 .glowing-btn:hover:after {
   opacity: 1;
 }
-
 @keyframes faulty-flicker {
   0% {
     opacity: 0.1;

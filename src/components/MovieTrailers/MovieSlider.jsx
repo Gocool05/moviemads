@@ -8,7 +8,7 @@ import { Overlay } from "antd/es/popconfirm/PurePanel";
 import { InfoCircleFilled, InfoCircleOutlined, PlayCircleFilled, PlayCircleOutlined, PlaySquareFilled } from "@ant-design/icons";
 import './MovieTrailers.css'
 import axios from "axios";
-
+const Token = localStorage.getItem("JwtToken");
 const API_URL = process.env.REACT_APP_API_URL;
 function MovieSlider() {
   
@@ -24,12 +24,22 @@ function MovieSlider() {
  
   const [movies, setMovies] = useState([]);
  
- 
+   
+const option1 = {
+  headers: {
+  'Authorization':`Bearer ${Token}`
+  },
+  };
 
   
   const getSlider = async() => {
-    const res = await axios.get(`${API_URL}/api/short-film-sliders?populate[0]=short_film.MovieThumbnail&populate[1]=short_film.VideoFile`);
-    setMovies(res.data.data);
+    try{
+      const res = await axios.get(`${API_URL}/api/slider-for-movie-trailers?populate[0]=movieTrailer.MovieThumbnail&populate[1]=movieTrailer.VideoFile`,option1);
+      console.log("Slider for movie trailer",res.data.data);
+      setMovies(res.data.data);
+    }catch(err){
+      console.error(err);
+    }
   }
   useEffect(() => {
     getSlider();
@@ -42,15 +52,15 @@ function MovieSlider() {
        <Wrap>
        <Info key={movie.id}>
  
-       <Subtitle>{movie.attributes.short_film.data.attributes.MovieName}</Subtitle>
-  <Link to={'/details/'+movie.attributes.short_film.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
+       <Subtitle>{movie.attributes.movieTrailer.data.attributes.MovieName}</Subtitle>
+  <Link to={'/details/movieTrailer/'+movie.attributes.movieTrailer.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
      <Button1><PlayCircleFilled spin/> Play Now</Button1>
       <Button2><InfoCircleFilled /> More Info</Button2>
        </Link>
-       <Description>{movie.attributes.short_film.data.attributes.Description}</Description>
+       <Description>{movie.attributes.movieTrailer.data.attributes.Description}</Description>
      </Info>
      <Overlays>
-       <img src={`${API_URL}${movie.attributes.short_film.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
+       <img src={`${API_URL}${movie.attributes.movieTrailer.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
        </Overlays>
 </Wrap>
            
@@ -191,6 +201,8 @@ const Subtitle = styled.h2`
   color: #fff;
   font-size: 32px;
   margin-bottom: 10px;
+  text-transform: uppercase;
+  opacity:0.8;
   @media (max-width: 768px) {
     font-size: 20px;
     margin-bottom: 1px;
@@ -205,6 +217,7 @@ height: 100%;
 const Description = styled.p`
   color: #fff;
   font-size: 18px;
+  opacity: 0.8;
   @media (max-width: 768px) {
     font-size: 10px;
   }

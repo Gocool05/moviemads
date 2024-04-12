@@ -13,28 +13,37 @@ import './Slider.css';
 // import required modules
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 import axios from 'axios';
+const Token = localStorage.getItem("JwtToken");
 const API_URL = process.env.REACT_APP_API_URL;
 const UpcomingMovies = () => {
   const [seoData, setSeoData] = useState(null);
     const [movies, setMovies] = useState([]);
     const navigate = useNavigate();
     
+    
+const option1 = {
+  headers: {
+  'Authorization':`Bearer ${Token}`
+  },
+  };
+
     const getMovies = async() => {
-      
-      const res = await axios.get(`${API_URL}/api/movies?populate=*`);
-      console.log("STARPI CHECK",res.data)
-      setMovies(res.data.data);
-      setSeoData()
+      try{
+        const res = await axios.get(`${API_URL}/api/movies?populate=*&sort[0]=id:desc`,option1);
+        setMovies(res.data.data);
+        setSeoData()
+      }catch(err){
+        console.error(err);
+      }
     }
-    console.log("Movies checck",movies)
     useEffect(() => {
       getMovies();
     },[]);
       return (
           <Container>
               <div style={{display:'flex', justifyContent:"space-between"}}>
-              <h1>UPCOMING MOVIE TRAILERS</h1>
-              <h3 onClick={() => { navigate("/movieTrailer"); }}>View More</h3>
+              <h1 onClick={() => { navigate("/movieTrailer"); }}>MOVIE TRAILERS <span>&#8702;</span></h1>
+              {/* <h3 >View More</h3> */}
               </div>
               <Swiper
         modules={[ Navigation, Pagination,Grid]}
@@ -76,10 +85,27 @@ h1{
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
+  cursor: pointer;
+  span{
+    opacity:0;
+    font-size:1.5rem;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    display: inline-block;
+    transform: translateX(-25px);
+  }
+  &:hover{
+    color:#e50914;
+    span{
+        opacity:1;
+    transform: translateX(5px);
+      }
+  }
+}
   @media(max-width:768px){
     font-size:16px;
   }
 }`;
+
 
 const Content = styled.div`
 cursor: pointer;

@@ -14,19 +14,25 @@ import 'swiper/css/pagination';
 import { Autoplay, EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
-
+const Token = localStorage.getItem("JwtToken");
 const MovieReviews = () => {
   const [movies, setMovies] = useState([]);
   const [seoData, setSeoData] = useState(null);
   const navigate = useNavigate();
   
+const option1 = {
+  headers: {
+  'Authorization':`Bearer ${Token}`
+  },
+  };
   const getMovies = async() => {
-    
-    const res = await axios.get(`${API_URL}/api/reviews?populate=*`);
-    console.log("STARPI CHECK",res.data)
-    setMovies(res.data.data);
+    try{
+      const res = await axios.get(`${API_URL}/api/reviews?populate=*`,option1);
+      setMovies(res.data.data);
+    }catch(err){
+      console.error(err);
+    }
   }
-  console.log("Movies checck",movies)
   useEffect(() => {
     getMovies();
   },[]);
@@ -35,8 +41,8 @@ const MovieReviews = () => {
       return (
           <Container>
               <div style={{display:'flex', justifyContent:"space-between"}}>
-              <h1>MOVIE REVIEWS</h1>
-              <h3 onClick={() => { navigate("/reviews"); }}>View More</h3>
+              <h1 onClick={() => { navigate("/reviews"); }}>MOVIE REVIEWS <span>&#8702;</span></h1>
+              {/* <h3 >View More</h3> */}
               </div>
               <Swiper
         modules={[ Navigation, Pagination,Grid,Autoplay]}
@@ -81,6 +87,22 @@ h1{
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
+  cursor: pointer;
+  span{
+    opacity:0;
+    font-size:1.5rem;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    display: inline-block;
+    transform: translateX(-25px);
+  }
+  &:hover{
+    color:#e50914;
+    span{
+        opacity:1;
+    transform: translateX(5px);
+      }
+  }
+}
   @media(max-width:768px){
     font-size:16px;
   }

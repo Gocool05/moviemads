@@ -199,6 +199,8 @@ const Subtitle = styled.h2`
   color: #fff;
   font-size: 32px;
   margin-bottom: 10px;
+  text-transform: uppercase;
+  opacity:0.8;
   @media (max-width: 768px) {
     font-size: 20px;
     margin-bottom: 1px;

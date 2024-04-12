@@ -5,7 +5,6 @@ import './Reviews.css'
 import Footer from '../Footer/Footer.jsx'
 import { ConfigProvider, Pagination, Typography } from 'antd';
 import { WindowsFilled } from '@ant-design/icons';
-import ReviewSlider from './ReviewSlider';
 import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 const Reviews = () => {
@@ -19,10 +18,12 @@ const Reviews = () => {
 
   const [movies, setMovies] = useState([]);
   const getMovies = async() => {
-      
-    const res = await axios.get(`${API_URL}/api/reviews?populate=*`);
-    console.log("STARPI CHECK",res.data)
-    setMovies(res.data.data);
+    try{
+      const res = await axios.get(`${API_URL}/api/reviews?populate=*`);
+      setMovies(res.data.data);
+    }catch(err){
+      console.error(err);
+    }
   }
     console.log("TV",movies)
    
@@ -203,11 +204,12 @@ const Toolbar = styled.div`
 const SearchInput = styled.input`
   margin-right: 10px;
   padding: 15px;
-  border: 2px inset #ff0015;
+  border: 0px inset #ff0015;
+  background-color: #212529;
+  border-radius: 5px;
   color: #fba010;
   float: right;
   width: 30%;
-  background-color: transparent;
   @media (max-width: 768px) {
     width: 60%;
     padding: 10px;

@@ -8,30 +8,33 @@ import UpcomingMovies from "./upcomingMovies";
 import Topnav from "./TopNav/Topnav";
 import TopRated from "./TopRated";
 import EventPartners from "./EventPartners/EventPartners";
-import { Navigate } from "react-router-dom";
+import { Navigate,useNavigate } from "react-router-dom";
 import Login from "./Login";
 import MovieReviews from "./MovieReviews";
+import { useState } from "react";
+import Skeleton,{SkeletonTheme} from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 function Home() {
   const user = localStorage.getItem("User");
-  
-  return (
+  const navigate = useNavigate();
+  if (!user) {
+  navigate('/login');
+  }
+
+  const [isLoading,setIsloading] = useState(true);
+  return(
     <>
-    {user?(
-      <div>
-    <Container>
-      <ImgSlider />
-      <UpcomingMovies/>
-      <TopRated/>
-      <Viewers />
-      {/* <Movies /> */}
-      <MovieReviews/>
-      <EventPartners/>
-    </Container>
-      <Footer/>
-      </div>
-      ):
-      <Login />}
+      <Container>
+        <ImgSlider />
+        <UpcomingMovies />
+       <Movies/>
+        <Viewers />
+        <MovieReviews />
+        <EventPartners />
+        <Footer />
+      </Container>
   </>
   );
 }

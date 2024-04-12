@@ -52,27 +52,10 @@ function Header() {
     };
   }, []);
 
-
-
-  const signIn = () => {
-    // auth.signInWithPopup(provider).then((result) => {
-    //   let user = result.user;
-    //   dispatch(
-    //     setUserLogin({
-    //       name: user.displayName,
-    //       email: user.email,
-    //       photo: user.photoURL,
-    //     })
-    //   );
-      navigate("/home");
-    // });
-  };
-
   const signOut = () => {
-    localStorage.removeItem("User")
-      
+    localStorage.removeItem("User");
+    localStorage.removeItem("UserId");
     navigate("/login", { replace: true });
-     
   };
 
   const toggleMenu = () => {
@@ -99,26 +82,24 @@ function Header() {
         <Menu isOpen={isMenuOpen} ref={menuRef}>
           <NavMenu>
             <a onClick={() => { navigate("/"); handleMenuClick(); }}>
-              {/* <img src="/images/home-icon.svg" /> */}
               <span>Home</span>
             </a>
             <a onClick={() => { navigate("/movieTrailer"); handleMenuClick(); }}>
-              {/* <img src="/images/movie-icon.svg" /> */}
               <span>Movie Trailers</span>
             </a>
             <a onClick={() => { navigate("/shortfilms"); handleMenuClick(); }}>
-              {/* <img src="/images/original-icon.svg" /> */}
               <span>Short Films</span>
             </a>
+            <a onClick={() => { navigate("/blogs"); handleMenuClick(); }}>
+              <span>Blogs</span>
+            </a>
             <a onClick={() => { navigate("/awards"); handleMenuClick(); }}>
-              {/* <img src="/images/series-icon.svg" /> */}
               <span>Awards</span>
             </a>
             <a onClick={() => { navigate("/reviews"); handleMenuClick(); }}>
-              {/* <img src="/images/watchlist-icon.svg" /> */}
               <span>Reviews</span>
             </a>
-          <a className="sign-out" style={{cursor:"pointer"}} onClick={signOut}>SIGN<LogoutOutlined rotate={-90}  style={{fontSize:"20px",color:"red"}} /> UT </a>
+          <a className="sign-out" style={{cursor:"pointer",fontWeight:"700",opacity:'0.8'}} onClick={signOut}>SIGN<LogoutOutlined rotate={-90}  style={{fontSize:"20px",color:"red"}} /> UT </a>
           </NavMenu>
           </Menu>
         </> 
@@ -202,11 +183,12 @@ const NavMenu = styled.div`
 
     span {
       font-size: 15px;
+      font-weight: 700;
+      opacity: 0.8;
       letter-spacing: 1.42px;
       text-transform: uppercase;
       cursor: pointer;
       position: relative;
-
 
       &:after {
         content: "";
@@ -217,7 +199,7 @@ const NavMenu = styled.div`
         right: 0;
         bottom: -6px;
         opacity: 0;
-        transform-origin:   center;
+        transform-origin: center;
         transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
         transform: scaleX(0);
 

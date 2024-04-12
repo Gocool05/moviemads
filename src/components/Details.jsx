@@ -28,7 +28,6 @@ const option1 = {
 headers: {
 'Authorization':`Bearer ${Token}`
 },
-// httpsAgent: new https.Agent({ rejectUnauthorized: false }) 
 };
 
 
@@ -36,7 +35,7 @@ headers: {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/movies/${id}?populate=*`);
+    const response = await axios.get(`${API_URL}/api/movies/${id}?populate=*`,option1);
 const responseData = response.data.data;
 setDetails(responseData);
 console.log("response data", responseData);

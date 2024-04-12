@@ -33,7 +33,7 @@ div.Two.input .input-container input {
     width: 100%; /* Ensure input takes up all available space */
 }
 
-:where(.css-dev-only-do-not-override-1rv0p9d).ant-modal .ant-modal-title{
+/* :where(.css-dev-only-do-not-override-1rv0p9d).ant-modal .ant-modal-title{
     color: red;
     font-weight: bold;
     background-color: #212529;
@@ -44,7 +44,7 @@ div.Two.input .input-container input {
 }
 :where(.css-dev-only-do-not-override-1rv0p9d).ant-tooltip .ant-tooltip-inner{
     display: none;
-}
+} */
 @media screen and (max-width: 512px) {
     div.Two.input {
         display: flex; /* Use flexbox */

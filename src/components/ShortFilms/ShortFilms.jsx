@@ -232,11 +232,13 @@ const Toolbar = styled.div`
 const SearchInput = styled.input`
   margin-right: 10px;
   padding: 15px;
-  border: 2px inset #ff0015;
+  border: 0px inset #ff0015;
+  background-color: #212529;
+  border-radius: 5px;
   color: #fba010;
   float: right;
   width: 30%;
-  background-color: transparent;
+
   @media (max-width: 768px) {
     width: 60%;
     padding: 10px;

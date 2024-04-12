@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { json, Link } from 'react-router-dom';
-import movies from '../movies.js';
 import axios from 'axios';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 
@@ -11,7 +10,7 @@ import 'swiper/css/pagination';
 import './Slider.css';
 // import required modules
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
-
+const Token = localStorage.getItem("JwtToken");
 const API_URL = process.env.REACT_APP_API_URL;
 
 function YouMayLike(props) {
@@ -21,11 +20,19 @@ function YouMayLike(props) {
   const [ID, setID] = useState(null);
   // setID(props.id);
   
+const option1 = {
+  headers: {
+  'Authorization':`Bearer ${Token}`
+  },
+  };
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/movies/${props.id}?populate[blocks][populate][movies][populate]=*`);
-        const responseData = response.data.data.attributes.blocks[0].movies.data;
+        const response = await axios.get(`${API_URL}/api/movies/${props.id}?populate[blocks][populate][movies][populate]=*`,option1);
+        var responseData;
+        if(response.data.data.attributes.blocks[0].movies.data){
+           responseData = response.data.data.attributes.blocks[0].movies.data;
+        }
         setRelatedMovies(responseData);
         console.log("Related Movies", responseData);
         setLoading(false); // Set loading to false after data is fetched
@@ -62,18 +69,24 @@ function YouMayLike(props) {
         }}
         navigation={true}
       >
-                {relatedMovies.map((movie) => (
-                        <SwiperSlide key={movie.id}>
-                            <Link to={'/details/'+movie.id} onClick={() => {window.scrollTo(0, 0)}}  className="movie-link" >
-                            <div className="movie-container">
-                                <img src={`${API_URL}${movie.attributes.MoviePoster.data.attributes.url}`} alt="Img" id={movie.id}/>
-                            <div className="overlay">
-                                <p className="movie-name">{movie.attributes.MovieName}</p>
-                            </div>
-                            </div>
-                            </Link>
-                        </SwiperSlide>
-                    ))
+                {relatedMovies.map((movie) => {
+                  if(movie){
+                    return(
+                      <SwiperSlide key={movie.id}>
+                          <Link to={'/details/'+movie.id} onClick={() => {window.scrollTo(0, 0)}}  className="movie-link" >
+                          <div className="movie-container">
+                              <img src={`${API_URL}${movie.attributes.MoviePoster.data.attributes.url}`} alt="Img" id={movie.id}/>
+                          <div className="overlay">
+                              <p className="movie-name">{movie.attributes.MovieName}</p>
+                          </div>
+                          </div>
+                          </Link>
+                      </SwiperSlide>
+                    )
+                  }else{
+                    return null;
+                  }
+                    })
                 }
                  </Swiper>
         </Container>

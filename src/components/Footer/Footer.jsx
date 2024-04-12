@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import './Footer.css'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
-
 const API_URL = process.env.REACT_APP_API_URL;
 const Footer = () => {
   const navigate = useNavigate();
@@ -10,7 +9,7 @@ const Footer = () => {
   const [Logo, setLogo] = useState(null);
 
   const homePage = () => {
-    navigate("/home")
+    navigate("/")
   }
   const movieTrailer = () => {
     navigate("/movieTrailer")
@@ -18,30 +17,21 @@ const Footer = () => {
   const shortFilms = () => {
     navigate("/shortFilms")
   }
-  const Awards = () => {
-    navigate("/awards")
+  const Blogs = () => {
+    navigate("/blogs")
   }
   const Reviews = () => {
     navigate("/reviews")
   }
 
-  
-  const options = {
-    method: 'GET',
-    headers:{
-      "ngrok-skip-browser-warning": true,
-      'Access-Control-Allow-Origin': '*',
-  }
-  };
- 
 
  useEffect(() => {
   const getFooter = async () => {
     try {
-      const res = await axios(`${API_URL}/api/footer?populate=*`, options);
+      const res = await axios(`${API_URL}/api/footer?populate[0]=footer&populate[1]=footer.FooterLogo`);
       console.log("Footer CHECK", res.data);
       setFooters(res.data.data.attributes.footer);
-       setLogo(res.data.data.attributes.Logo.data.attributes.url);
+       setLogo(res.data.data.attributes.footer.FooterLogo.data.attributes.url);
     } catch (error) {
       console.error("Error fetching footer:", error);
     }
@@ -58,7 +48,7 @@ const Footer = () => {
           <>
   <div class="footer-left col-md-4 col-sm-6">
     <p class="about">
-      <span> About the company</span> 
+      <span> About Moviemads</span> 
       {footers.About}
     </p>
     <div class="icons">
@@ -89,7 +79,7 @@ const Footer = () => {
       <a onClick={homePage}> Home</a> | &nbsp;
       <a onClick={movieTrailer}> Movie Trailers </a> | &nbsp;
       <a onClick={shortFilms}> Short Films</a> | &nbsp;
-      <a onClick={Awards}> Awards</a> | &nbsp;
+      <a onClick={Blogs}> Blogs</a> | &nbsp;
       <a onclick={Reviews}> Reviews</a>
     </p>
     <p class="name" >  &copy; 2024 All rights reserved by{' '}<span style={{fontWeight: "bold"}}><a style={{color: "#e50914",textDecoration: "none",fontWeight: "bold"}} href='http://www.moviemads.com/'>MOVIEMADS</a></span></p>

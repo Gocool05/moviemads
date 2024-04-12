@@ -17,7 +17,6 @@ function GoogleAuthCallback() {
       return
     }
     const { search } = location
-    // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzExNDM0NzA0LCJleHAiOjE3MTQwMjY3MDR9.C3ekRxXeyLxfPInl4kbeKAJXMRqPPCeacXIdxCTf9VM';
     axios({
         method: 'GET',
         url: `${API_URL}/api/auth/google/callback?${search}`,
@@ -34,7 +33,7 @@ function GoogleAuthCallback() {
     const jwtToken = auth?.jwt
 
     localStorage.setItem('UserId',auth?.user.id)
-    console.log(auth?.user.id,'UserId');
+    localStorage.setItem('EmailId',auth?.user.email)
     localStorage.setItem('JwtToken',jwtToken)
     console.log(jwtToken,'token');
     navigate("/");

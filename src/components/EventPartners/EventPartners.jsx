@@ -15,22 +15,26 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export default function EventPartners() {
 const [partners, setPartners] = useState([]);
-const getMovies = async() => {
-    
-  const res = await axios.get(`${API_URL}/api/event-partners?populate=*`);
-  console.log("EVENT PARTNERS",res.data.data)
-  setPartners(res.data.data);
+
+
+const getSponsers = async() => {
+  try{
+    const res = await axios.get(`${API_URL}/api/event-partners?populate=*`,);
+    setPartners(res.data.data);
+  }catch(err){
+    console.error(err);
+  }
 }
-  console.log("TV",partners)
+
  
   useEffect(() => {
-    getMovies();
+    getSponsers();
   },[]);
 
   return (
     <>
        <Container>
-    <h1>EVENT PARTNERS</h1>
+    <h1>EVENT PARTNERS  <span>&#8702;</span> </h1>
         <Swiper
         slidesPerView={5}
         spaceBetween={30}
@@ -73,8 +77,24 @@ h1{
   padding: 10px 0;
   font-size: 1.5rem;
   font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  span{
+    opacity:0;
+    font-size:1.5rem;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    display: inline-block;
+    transform: translateX(-25px);
+  }
+  &:hover{
+    color:#e50914;
+    span{
+        opacity:1;
+    transform: translateX(5px);
+      }
+  }
+}
   @media(max-width:768px){
     font-size:16px;
   }
-  `
-  
+}`;

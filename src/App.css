@@ -9,14 +9,21 @@ h3{
     padding: 10px 0px;
     cursor: pointer;
 }
+
+.ant-tooltip .ant-tooltip-inner{
+    display: none;
+}
 .ant-modal .ant-modal-content{
     background: linear-gradient(180deg,rgba(0, 0, 0, 1) 0%, rgba(105, 0, 0, 1) 60%, rgba(0, 0, 0, 1) 100%);
     padding: 10px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
+/* .ant-modal .ant-modal-content{
+    position:fixed;
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+} */
+
 .ant-modal .ant-modal-close-x{
     display: none;
 }
@@ -24,10 +31,46 @@ iframe{
     width: 800px;
     height: 400px;
 }
-
+.ant-modal-title{
+    background-color: transparent;
+}
+.ant-btn-primary{
+    background-color: #000000;
+}
 .swiper-button-prev, .swiper-button-next{
 font-size: large
 }
+
+
+
+
+/* @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-50%) translateX(-50%) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(-50%) translateX(-50%) scale(1);
+    }
+  }
+  
+  .ant-modal-wrap {
+    display: flex ;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .ant-modal-content {
+    animation: slideIn 0.5s ease;
+  }
+   */
+
+
+
+
+
+
 @media screen and (max-width: 512px) {
     iframe{
         height: 200px;
@@ -37,7 +80,10 @@ font-size: large
             width: 90%; 
             max-width: 400px;
             padding: 5px; 
-            transform: translate(-50%, -75%);
+            position: absolute;
+            top: 0%;
+            left:-40%;
+            transform: translate(50% ,40%);
     }
   .swiper-button-prev, .swiper-button-next{
     font-size:smaller;
@@ -46,4 +92,10 @@ font-size: large
     margin: 10px;
 }
   
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

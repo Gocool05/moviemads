@@ -1,0 +1,38 @@
+.movie-container {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(60deg, #ff0015, #c71b29);
+    width: 100%;
+    height: 0;
+    transition: .5s ease;
+}
+
+.movie-link:hover .overlay {
+    height: auto;
+    width: 100%;
+}
+
+.movie-name {
+    color:#ffffff;
+    /* font-weight: bold; */
+    font-size: 16px;
+    text-align: center;
+    padding: 8px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+@media screen and (max-width: 512px) {
+    .movie-name {
+      font-size: 10px;
+      padding: 4px;
+  }
+  }

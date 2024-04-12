@@ -4,45 +4,48 @@ import { json, Link } from 'react-router-dom';
 import movies from '../movies.js';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
+import axios from 'axios';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './Slider.css';
 // import required modules
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
-
-
+const API_URL = process.env.REACT_APP_API_URL;
+const Token = localStorage.getItem("JwtToken");
 function Movies() {
-  const [movies, setMovies] = useState([]);
+  const [bytes, setBytes] = useState([]);
   const navigate = useNavigate();
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZTFhOWQ1NDA4YjVhYmEwMjNjZjdiMDE2ZmJmNjc2NiIsInN1YiI6IjY1ZTAyZTVhMmQ1MzFhMDE4NWJmYWY1OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.gTjTU9CcYJYFqqwWS6mALcPpRaT5MykGbaYm3CHep9A'
-    }
+
+  
+const option1 = {
+  headers: {
+  'Authorization':`Bearer ${Token}`
+  },
   };
-  const getMovies = () => {
-    fetch('https://api.themoviedb.org/3/discover/movie?api_key=5e1a9d5408b5aba023cf7b016fbf6766&with_original_language=te', options)
-    .then(response => response.json())
-    .then(json => setMovies(json.results))
-    .catch(err => console.error(err));
+
+  const getBytes = async() => {
+    try{
+      const res = await axios.get(`${API_URL}/api/bytes?populate=*`,option1);
+      setBytes(res.data.data);
+      console.log(res.data,'Bytes')
+    }
+    catch(err){
+      console.error(err);
+    }
   }
-  console.log("hello",movies)
   useEffect(() => {
-    getMovies();
+    getBytes();
   },[]);
   
     return (
         <Container>
             <div style={{display:'flex', justifyContent:"space-between"}}>
-              <h1>SOUTH INDIAN MOVIES   </h1>
-              <h3 onClick={() => { navigate("/movieTrailer"); }}>View More</h3>
+            <h1 onClick={() => { navigate("/blogs"); }}>BYTES <span>&#8702;</span></h1>
               </div>
             <Swiper
         modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={3}
+        slidesPerView={1}
         centeredSlides={false}
         spaceBetween={20}
         // pagination={{
@@ -51,18 +54,18 @@ function Movies() {
         breakpoints={{
           // when window width is <= 768px
           768: {
-            slidesPerView: 6,
+            slidesPerView: 3,
           },
         }}
         navigation={true}
       >
-                {movies.map((movie) => (
+                {bytes.map((movie) => (
                         <SwiperSlide key={movie.id}>
                             <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
                             <div className="movie-container">
-                                <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="Img" id={movie.id}/>
+                                <img src={`${API_URL}${movie.attributes.Thumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
                             <div className="overlay">
-                                <p className="movie-name">{movie.title}</p>
+                                <p className="movie-name">{movie.attributes.caption}</p>
                             </div>
                             </div>
                             </Link>
@@ -82,6 +85,22 @@ h1{
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
+  cursor: pointer;
+  span{
+    opacity:0;
+    font-size:1.5rem;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    display: inline-block;
+    transform: translateX(-25px);
+  }
+  &:hover{
+    color:#e50914;
+    span{
+        opacity:1;
+    transform: translateX(5px);
+      }
+  }
+}
   @media(max-width:768px){
     font-size:16px;
   }
