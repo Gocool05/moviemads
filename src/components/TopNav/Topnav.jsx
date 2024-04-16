@@ -82,15 +82,32 @@ const Topnav = () => {
           amount: amount *100,
           currency:"INR",
           name:"MovieMads",
-          payment_method: {
-            // Specify only UPI as the allowed payment method
-            card: false,
-            wallet: false,
-            upi: true,
-            netbanking: false,
-            emi: false,
-            bank_transfer: false,
-            qr: false, // Disable QR code payment
+          config: {
+            display: {
+              blocks: {
+                banks: {
+                  name: 'All payment methods',
+                  instruments: [
+                    {
+                      method: 'upi'
+                    },
+                    // {
+                    //   method: 'card'
+                    // },
+                    // {
+                    //     method: 'wallet'
+                    // },
+                    // {
+                    //     method: 'netbanking'
+                    // }
+                  ],
+                },
+              },
+              sequence: ['block.banks'],
+              preferences: {
+                show_default_blocks: false,
+              },
+            },
           },
           handler:  async function (Paymentresponse){
             const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem('formId')}/payment`,{},option1);
