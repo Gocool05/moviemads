@@ -70,8 +70,6 @@ const Topnav = () => {
     getUserDetails();
   },[user]);
 
-
-
   const handlePayment = async(e)=>{
 
     try{
@@ -87,8 +85,7 @@ const Topnav = () => {
           handler:  async function (Paymentresponse){
             console.log(Token,'Token check')
             const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem('formId')}/payment`,{},option1);
-            console.log('Payment Response', response)
-            console.log('Payment ID Response', Paymentresponse.razorpay_payment_id)
+            
             handleFinish();
             window.location.reload(); // Refresh the page
             window.location.href = "/"; // Navigate to the home page
