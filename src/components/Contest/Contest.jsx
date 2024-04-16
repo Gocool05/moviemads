@@ -130,7 +130,7 @@ const Contest = () => {
     console.log(response);
     const formId = response.data.data.id;
     console.log(formId);
-    localStorage.setItem("contestId",formId);
+    localStorage.setItem("formId",formId);
     }
     catch (err) {
       console.log("Enter Correct credentials", err.response.data.error.message);
@@ -394,7 +394,7 @@ useEffect(() => {
         name:"MovieMads",
         handler:  async function (Paymentresponse){
           console.log(Token,'Token check')
-          const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem("contestId")}/payment`,{},option1);
+          const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem("formId")}/payment`,{},option1);
           console.log('Payment Response', response)
           console.log('Payment ID Response', Paymentresponse.razorpay_payment_id)
           handleFinish();
