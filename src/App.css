@@ -41,8 +41,9 @@ iframe{
 font-size: large
 }
 
-
-
+.methods-block .is-top-position {
+  display: none;
+}
 
 /* @keyframes slideIn {
     0% {

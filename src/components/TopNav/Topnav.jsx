@@ -90,7 +90,6 @@ const Topnav = () => {
                   instruments: [
                     {
                       method: 'upi',
-                      qr:false
                     },
                     {
                       method: 'card'
@@ -106,12 +105,14 @@ const Topnav = () => {
               },
               sequence: ['block.banks'],
               preferences: {
-                show_default_blocks: false,
+                show_default_blocks: false
               },
             },
           },
           handler:  async function (Paymentresponse){
+            console.log(Paymentresponse,'paym,enrsdasdas')
             const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem('formId')}/payment`,{},option1);
+
             handleFinish();
             window.location.reload(); // Refresh the page
             window.location.href = "/"; // Navigate to the home page
