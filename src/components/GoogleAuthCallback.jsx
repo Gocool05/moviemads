@@ -36,7 +36,8 @@ function GoogleAuthCallback() {
     localStorage.setItem('EmailId',auth?.user.email)
     localStorage.setItem('JwtToken',jwtToken)
     console.log(jwtToken,'token');
-    navigate("/");
+    window.location.href = "/"; // Navigate to the home page
+    window.location.reload(); // Refresh the page
 }
 
 

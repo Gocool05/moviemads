@@ -45,7 +45,7 @@ const option1 = {
               </div>
             <Swiper
         modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={1}
+        slidesPerView={2}
         centeredSlides={false}
         spaceBetween={20}
         // pagination={{

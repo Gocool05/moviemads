@@ -130,7 +130,7 @@ const Contest = () => {
     console.log(response);
     const formId = response.data.data.id;
     console.log(formId);
-    localStorage.setItem("formId",formId);
+    localStorage.setItem("contestId",formId);
     }
     catch (err) {
       console.log("Enter Correct credentials", err.response.data.error.message);
@@ -394,7 +394,7 @@ useEffect(() => {
         name:"MovieMads",
         handler:  async function (Paymentresponse){
           console.log(Token,'Token check')
-          const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/payment`,{},option1);
+          const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem("contestId")}/payment`,{},option1);
           console.log('Payment Response', response)
           console.log('Payment ID Response', Paymentresponse.razorpay_payment_id)
           handleFinish();
@@ -415,7 +415,7 @@ useEffect(() => {
       return Promise.resolve();
     };
 
-    const handleBeforeUpload = (file, fileList) => {
+    const handleBeforeUpload = (file) => {
       // Check if the file size exceeds the limit
       const isSizeAccepted = file.size / 1024 / 1024 < 3; // 3MB limit
       if (!isSizeAccepted) {
@@ -424,7 +424,8 @@ useEffect(() => {
           description: 'File size exceeds the limit. Maximum size allowed is 3MB.',
           placement:'top'
         });
-        return setButtonDisabled(false);
+        // return setButtonDisabled(false);
+        return false;
         
       }else{
         notification.success({
@@ -435,7 +436,7 @@ useEffect(() => {
       }
       return true;
     };
-    const handleBeforeUploadVideo = (file, fileList) => {
+    const handleBeforeUploadVideo = (file) => {
       // Check if the file size exceeds the limit
       const isSizeAccepted = file.size / 1024 / 1024 < 500; 
       if (!isSizeAccepted) {
@@ -444,7 +445,8 @@ useEffect(() => {
           description: 'File size exceeds the limit. Maximum size allowed is 500MB.',
           placement:'top'
         });
-        return setButtonDisabled(false);
+        // return setButtonDisabled(false);
+        return false;
       }else{
         notification.success({
           message: 'Your file is Uploading',
