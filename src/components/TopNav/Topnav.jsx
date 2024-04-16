@@ -89,17 +89,17 @@ const Topnav = () => {
                   name: 'All payment methods',
                   instruments: [
                     {
-                      method: 'upi'
+                      method: 'UPI ID/ Mobile Number'
                     },
-                    // {
-                    //   method: 'card'
-                    // },
-                    // {
-                    //     method: 'wallet'
-                    // },
-                    // {
-                    //     method: 'netbanking'
-                    // }
+                    {
+                      method: 'card'
+                    },
+                    {
+                        method: 'wallet'
+                    },
+                    {
+                        method: 'netbanking'
+                    }
                   ],
                 },
               },
