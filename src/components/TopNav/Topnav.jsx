@@ -82,10 +82,18 @@ const Topnav = () => {
           amount: amount *100,
           currency:"INR",
           name:"MovieMads",
+          payment_method: {
+            // Specify only UPI as the allowed payment method
+            card: false,
+            wallet: false,
+            upi: true,
+            netbanking: false,
+            emi: false,
+            bank_transfer: false,
+            qr: false, // Disable QR code payment
+          },
           handler:  async function (Paymentresponse){
-            console.log(Token,'Token check')
             const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem('formId')}/payment`,{},option1);
-            
             handleFinish();
             window.location.reload(); // Refresh the page
             window.location.href = "/"; // Navigate to the home page
