@@ -14,6 +14,7 @@ import './Slider.css';
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 import axios from 'axios';
 const Token = localStorage.getItem("JwtToken");
+console.log(Token,'token')
 const API_URL = process.env.REACT_APP_API_URL;
 const UpcomingMovies = () => {
   const [seoData, setSeoData] = useState(null);

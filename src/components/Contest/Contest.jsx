@@ -127,7 +127,6 @@ const Contest = () => {
       Email: localStorage.getItem('EmailId'),
     }
     },option1);
-    console.log(response);
     const formId = response.data.data.id;
     console.log(formId);
     localStorage.setItem("formId",formId);
@@ -382,8 +381,7 @@ useEffect(() => {
 
   const handlePayment = async(e)=>{
     const response = await axios.get(`${API_URL}/api/razorpay`,option1);
-    console.log('Razorpay',response.data);
-    console.log('Razorpay',response.data.data.attributes.keyId);
+
     e.preventDefault();
      const amount = 1;
       var options = {
@@ -393,10 +391,8 @@ useEffect(() => {
         currency:"INR",
         name:"MovieMads",
         handler:  async function (Paymentresponse){
-          console.log(Token,'Token check')
+          console.log(Paymentresponse,'payment response');
           const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem('formId')}/payment`,{},option1);
-          console.log('Payment Response', response)
-          console.log('Payment ID Response', Paymentresponse.razorpay_payment_id)
           handleFinish();
           window.location.reload(); // Refresh the page
           window.location.href = "/"; // Navigate to the home page
@@ -748,6 +744,7 @@ useEffect(() => {
         onChange={handleImageUpload}
         beforeUpload={handleBeforeUpload}
         maxCount={1}
+        withCredentials={false}
         accept="image/*"
        
       >

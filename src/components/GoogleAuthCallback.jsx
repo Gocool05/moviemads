@@ -37,6 +37,7 @@ function GoogleAuthCallback() {
     localStorage.setItem('JwtToken',jwtToken)
     console.log(jwtToken,'token');
     navigate("/");
+    
 }
 
 
