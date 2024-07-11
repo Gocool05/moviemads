@@ -8,6 +8,8 @@ import { WindowsFilled } from '@ant-design/icons';
 // import ShortFlimSlider from './ShortFlimSlider';
 // import required modules
 import './ShortFilms.css'
+import Topnav from '../TopNav/Topnav.jsx';
+import Header from '../Header.jsx';
 
 const ShortFilms = () => {
 
@@ -33,7 +35,7 @@ const ShortFilms = () => {
       .then(json => setMovies(json.results))
       .catch(err => console.error(err));
     }
-    console.log("TV",movies)
+    // console.log("TV",movies)
    
     useEffect(() => {
       getMovies();
@@ -68,6 +70,9 @@ const ShortFilms = () => {
 
 
   return (
+    <>
+    <Topnav/>
+    <Header/>
     <div className="card">
     <div className="content">
       <div className="title-holder">
@@ -82,6 +87,7 @@ const ShortFilms = () => {
       </a>
     </div>
   </div>
+    </>
     // <Container>
     //   <ShortFlimSlider/>
     //   <Toolbar>

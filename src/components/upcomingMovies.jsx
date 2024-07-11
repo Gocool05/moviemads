@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
-import { json, Link } from 'react-router-dom';
-import movies from '../movies.js';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -14,7 +13,7 @@ import './Slider.css';
 import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
 import axios from 'axios';
 const Token = localStorage.getItem("JwtToken");
-console.log(Token,'token')
+// console.log(Token,'token')
 const API_URL = process.env.REACT_APP_API_URL;
 const UpcomingMovies = () => {
   const [seoData, setSeoData] = useState(null);
@@ -30,7 +29,7 @@ const option1 = {
 
     const getMovies = async() => {
       try{
-        const res = await axios.get(`${API_URL}/api/movies?populate=*&sort[0]=id:desc`,option1);
+        const res = await axios.get(`${API_URL}/api/movies?populate=*&sort[0]=id:desc`);
         setMovies(res.data.data);
         setSeoData()
       }catch(err){
@@ -43,12 +42,12 @@ const option1 = {
       return (
           <Container>
               <div style={{display:'flex', justifyContent:"space-between"}}>
-              <h1 onClick={() => { navigate("/movieTrailer"); }}>MOVIE TRAILERS <span>&#8702;</span></h1>
+              <h1 onClick={() => { navigate("/movieTrailer"); }}>MOVIE TRAILERS<span>&#8702;</span></h1>
               {/* <h3 >View More</h3> */}
               </div>
               <Swiper
         modules={[ Navigation, Pagination,Grid]}
-        slidesPerView={3}
+        slidesPerView={2}
         centeredSlides={false}
         spaceBetween={20}
         navigation={true}

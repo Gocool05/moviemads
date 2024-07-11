@@ -1,18 +1,14 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
-import { json, Link } from 'react-router-dom';
-import movies from '../movies.js';
+import {Link } from 'react-router-dom';
 import './Slider1.css';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
-// import './Slider.css';
-// import required modules
-import { Autoplay, EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
+import { Autoplay, Grid, Navigation, Pagination } from 'swiper/modules';
 import axios from 'axios';
+
 const API_URL = process.env.REACT_APP_API_URL;
 const Token = localStorage.getItem("JwtToken");
 const MovieReviews = () => {
@@ -27,7 +23,7 @@ const option1 = {
   };
   const getMovies = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/reviews?populate=*`,option1);
+      const res = await axios.get(`${API_URL}/api/reviews?populate=*`);
       setMovies(res.data.data);
     }catch(err){
       console.error(err);
@@ -63,7 +59,7 @@ const option1 = {
       >
                 {movies.map((movie) => (
                         <SwiperSlide className='swiper-slide1' key={movie.id}>
-                            <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
+                            <Link to={'/review/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
                             <div className="movie-container1">
                             <img src={`${API_URL}${movie.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
                             <div className="overlay1">

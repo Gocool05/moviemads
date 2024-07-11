@@ -34,7 +34,7 @@ const option1 = {
            responseData = response.data.data.attributes.blocks[0].movies.data;
         }
         setRelatedMovies(responseData);
-        console.log("Related Movies", responseData);
+        // console.log("Related Movies", responseData);
         setLoading(false); // Set loading to false after data is fetched
         // setID();
         // window.location.reload();

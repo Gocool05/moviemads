@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import styled from 'styled-components';
-import { json, Link } from 'react-router-dom';
-import movies from '../movies.js';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import axios from 'axios';
@@ -10,7 +9,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import './Slider.css';
 // import required modules
-import { EffectCoverflow, Grid, Navigation, Pagination, Scrollbar, Virtual } from 'swiper/modules';
+import {  Grid, Navigation, Pagination } from 'swiper/modules';
 const API_URL = process.env.REACT_APP_API_URL;
 const Token = localStorage.getItem("JwtToken");
 function Movies() {
@@ -26,9 +25,9 @@ const option1 = {
 
   const getBytes = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/bytes?populate=*`,option1);
+      const res = await axios.get(`${API_URL}/api/bytes?populate=*`);
       setBytes(res.data.data);
-      console.log(res.data,'Bytes')
+      // console.log(res.data,'Bytes')
     }
     catch(err){
       console.error(err);

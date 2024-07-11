@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
 const API_URL = process.env.REACT_APP_API_URL;
 const user = localStorage.getItem("User");
 function Login() {
@@ -13,7 +12,7 @@ function Login() {
       <CTA>
         <CTALogoOne src="/images/mm logo.png" alt="" />
         <SignUp  onClick={() =>
-          (window.location =`${API_URL}/api/connect/google`)}>Let's Get Started</SignUp>
+          (window.location =`${API_URL}/api/connect/google`)}>LOGIN</SignUp>
         <Description>
         MovieMads: Your gateway to successful film marketing. Showcase your film pre-release with strategic promotion, branding, and social media campaigns. From press releases to targeted audience outreach, MovieMads ensures your film gets the attention it deserves. Join us and design your path to success in the film industry.
         </Description>
@@ -26,7 +25,7 @@ export default Login;
 
 const Container = styled.div`
   position: relative;
-  height: calc(100vh - 70px);
+  height: calc(100vh);
   display: flex;
   align-items: center;
   justify-content: center;

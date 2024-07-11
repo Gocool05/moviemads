@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Await, useParams } from "react-router-dom";
-import axios, { Axios } from "axios";
+import {  useParams } from "react-router-dom";
+import axios from "axios";
 import { Modal, Skeleton } from "antd";
-import { ControlFilled, EyeOutlined,CalendarOutlined,ClockCircleOutlined,HeartOutlined,ShareAltOutlined, HeartTwoTone, HeartFilled, UserAddOutlined, StarFilled, CrownOutlined, StarOutlined, VideoCameraAddOutlined, AppstoreOutlined, TranslationOutlined } from "@ant-design/icons";
-import Footer from "../Footer/Footer";
-import YouMayLike from "../YouMayLike";
+import { StarFilled, StarOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
+import Footer from "../Footer/Footer"
+import Topnav from "../TopNav/Topnav";
+import Header from "../Header";
 function ReviewInfo() {
 const [details, setDetails] = useState(null); // Initialize details state as null
 const [loading, setLoading] = useState(true); // Initialize loading state as true
@@ -38,7 +39,7 @@ const fetchData = async () => {
     const response = await axios.get(`${API_URL}/api/reviews/${id}?populate=*`);
 const responseData = response.data.data;
 setDetails(responseData);
-console.log("response data", responseData);
+// console.log("response data", responseData);
 setLikes(responseData.attributes.likes)
 setLoading(false); // Set loading to false after data is fetched
 } catch (err) {
@@ -51,7 +52,7 @@ const IsUserLiked = async () => {
   try{
     const response = await axios.get(`${API_URL}/api/users/${UserId}?populate=*`, option1);
     const responseData = response;
-    console.log("Liked data", responseData);
+    // console.log("Liked data", responseData);
     if(responseData.data.liked_review){localStorage.setItem('LikedReviewId',responseData.data.liked_review.id);}else{setLiked(false);}
   }catch(err){
     console.error(err);
@@ -60,11 +61,11 @@ const IsUserLiked = async () => {
 const LikedReviewId = localStorage.getItem('LikedReviewId');
 const GetLikedMovies = async () => {
   try{
-    console.log("Liked Movie checvk");
+    // console.log("Liked Movie checvk");
     if(LikedReviewId){
       const response = await axios.get(`${API_URL}/api/liked-reviews/${LikedReviewId}?populate[reviews]=*`, option1);
       const responseData = response;
-      console.log("Liked REVIEWS data", responseData.data.data.attributes.reviews.data);
+      // console.log("Liked REVIEWS data", responseData.data.data.attributes.reviews.data);
       setMovies(responseData.data.data.attributes.reviews.data);
       }
   }catch(err){
@@ -80,7 +81,7 @@ const IsMovieLiked = () => {
   }else{
     setLiked(false);
   }
-  console.log("isLiked status", isLiked);
+  // console.log("isLiked status", isLiked);/
 };
 
 useEffect(() => {
@@ -102,7 +103,7 @@ const getViews = async () => {
     const response = await axios.post(`${API_URL}/api/movies/${id}/view`,{},option1);
     const responseData = response.data;
     setViews(responseData.views);
-    console.log("View response data", responseData);
+    // console.log("View response data", responseData);
   } catch (err) {
     console.error(err);
   }
@@ -111,7 +112,7 @@ const getViews = async () => {
 const handlePlayButtonClick = () => {
 setShowModal(true);
 getViews();
-console.log("working");
+// console.log("working");
 };
 
 const closeModal = () => {
@@ -130,7 +131,7 @@ else{
 }
 try{
   const response = await axios .post(`${API_URL}/api/reviews/${id}/like`, {}, option1);
-console.log("response lieiks", response.data);
+// console.log("response lieiks", response.data);
 }
 
 catch (err) {
@@ -160,6 +161,8 @@ return stars;
 
 return (
 <>
+<Topnav/>
+<Header/>
 <Container>
 {loading ? (
 <Skeleton
@@ -176,20 +179,19 @@ rows: 4,
 <img src="/images/play-icon-black.png" alt="" />
 {/* <span>PLAY</span> */}
 </PlayButton>
-<Controls>
+{/* <Controls>
 <Like onClick={toggleLike}>
 {liked ? <HeartFilled style={{ color: 'gold' }} /> : <HeartOutlined />} {likes} likes
 </Like>
 <Views> <EyeOutlined style={{ color: 'gold' }}/> {details.attributes.views} Views</Views>
-{/* <ReleaseDate><CalendarOutlined /> {details?.release_date} 24th Feb 2024</ReleaseDate> */}
 <Duration><ClockCircleOutlined style={{ color: 'gold' }}/> {details.attributes.Duration} Mins </Duration>
 <Popularity><StarOutlined style={{ color: 'gold' }} /> 4.5/ 5 Ratings</Popularity>
-</Controls>
+</Controls> */}
 </Backdrop>
 
 <DetailsContainer>
 <Title>{details.attributes.MovieName} </Title>
-<Lang>{details.attributes.Genres} | {details.attributes.Language}</Lang>
+<Lang>{details.attributes.Genres}</Lang>
 <ActorName><span ><StarOutlined /> Actors: </span> {details.attributes.Actors}</ActorName>
 <ActorName><span><VideoCameraAddOutlined /> Director: </span>{details.attributes.Directors} </ActorName>
 {/* <ActorName><span><TranslationOutlined />  </span> {details.attributes.Language}</ActorName> */}
@@ -221,8 +223,8 @@ const Backdrop = styled.div`
 position: relative;
 flex: 0 0 60%; /* Adjust as needed */
 margin-right: 20px; /* Add some space between backdrop and details */
-max-width: 60%;
-max-height: 50vh;
+max-width: 70%;
+max-height: 60vh;
 @media (max-width: 768px) {
 max-width: 100%;
 max-height: 100%;
@@ -316,7 +318,7 @@ const Duration = styled.p`
 const Popularity = styled.p`
 `;
 const Title = styled.h2`
-margin-bottom: 20px;
+margin-bottom:1px;
 `;
 
 const Description = styled.p`
@@ -331,7 +333,9 @@ color: #e50914;
 }
 `;
 const Lang = styled.p`
-
+margin-top: 10px;
+text-transform: uppercase;
+color: #e50914;
 font-weight: bold;
 span {
 font-weight: bold;
@@ -407,7 +411,7 @@ const CustomModal = ({ onClose, API_URL, details }) => {
           Your browser does not support the video tag.
         </video>
       ) : (
-      <iframe  src={details?.attributes.videoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <iframe  src={details?.attributes.videoUrl} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
       )}
       </>
     )}

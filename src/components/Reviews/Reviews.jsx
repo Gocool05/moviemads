@@ -1,11 +1,12 @@
 import React,{useState,useEffect} from 'react'
 import styled from 'styled-components'
-import { json, Link } from 'react-router-dom';
+import {  Link } from 'react-router-dom';
 import './Reviews.css'
 import Footer from '../Footer/Footer.jsx'
-import { ConfigProvider, Pagination, Typography } from 'antd';
-import { WindowsFilled } from '@ant-design/icons';
+import { ConfigProvider, Pagination } from 'antd';
 import axios from 'axios';
+import Topnav from '../TopNav/Topnav';
+import Header from '../Header';
 const API_URL = process.env.REACT_APP_API_URL;
 const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +26,7 @@ const Reviews = () => {
       console.error(err);
     }
   }
-    console.log("TV",movies)
+    // console.log("TV",movies)
    
     useEffect(() => {
       getMovies();
@@ -58,6 +59,9 @@ const Reviews = () => {
   };
 
   return (
+    <>
+    <Topnav/>
+    <Header/>
     <Container>
       <Toolbar>
         <p
@@ -70,7 +74,7 @@ const Reviews = () => {
           MOVIE REVIEWS
         </p>
         <SearchInput
-          type="text"
+          type="text"   
           placeholder="Search..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -124,8 +128,9 @@ const Reviews = () => {
         />
       </ConfigProvider>
       </PaginationWrapper>
+    </Container>   
       <Footer />
-    </Container>
+    </>
   );
 }
 
@@ -148,6 +153,9 @@ const Container = styled.main`
     right: 0;
     bottom: 0;
     z-index: -1;
+  }
+  @media (max-width: 768px) {
+    min-height:100%;
   }
 `;
 

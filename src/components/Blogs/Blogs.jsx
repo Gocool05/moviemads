@@ -1,14 +1,17 @@
 import React,{useState,useEffect} from 'react'
 import styled from 'styled-components'
-import { json, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Blogs.css'
 import Footer from '../Footer/Footer.jsx'
-import { ConfigProvider, Modal, Pagination, Typography } from 'antd';
+import { ConfigProvider, Pagination } from 'antd';
 import axios from 'axios';
-import Skeleton,{SkeletonTheme} from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import Modal from 'react-modal';
+import Header from '../Header';
+import Topnav from '../TopNav/Topnav';
 const Token = localStorage.getItem("JwtToken");
 const API_URL = process.env.REACT_APP_API_URL;
+Modal.setAppElement('#root');
 const Blogs = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchQuery1, setSearchQuery1] = useState('');
@@ -30,6 +33,10 @@ const Blogs = () => {
   const [miniBytes, setMiniBytes] = useState([]);
   const [noMovie, setNoMovie] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+
+  const [embedcode, setEmbedcode] = useState(null);
 
   
 const option1 = {
@@ -37,19 +44,37 @@ const option1 = {
   'Authorization':`Bearer ${Token}`
   },
   };
-  const handleOpenModal = () => {
+  
+  const handleOpenModal = (videoURL) => {
+    setEmbedcode(videoURL);
     setModalVisible(true);
   };
   
   const handleCloseModal = () => {
     setModalVisible(false);
   };
+  const handleOpenModal1 = (videoURL) => {
+    setEmbedcode(videoURL);
+    setModalVisible1(true);
+  };
+  
+  const handleCloseModal1 = () => {
+    setModalVisible1(false);
+  };
+  const handleOpenModal2 = (videoURL) => {
+    setEmbedcode(videoURL);
+    setModalVisible2(true);
+  };
+  
+  const handleCloseModal2 = () => {
+    setModalVisible2(false);
+  };
   
 
 
   const getDirectorbytes = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/director-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`,option1);
+      const res = await axios.get(`${API_URL}/api/director-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`);
       setDirectorBytes(res.data.data);
     }
     catch(err){
@@ -58,7 +83,7 @@ const option1 = {
   }
   const getstudentbytes = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/college-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`,option1);
+      const res = await axios.get(`${API_URL}/api/college-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`);
       setStudentBytes(res.data.data);
     }
     catch(err){
@@ -68,7 +93,7 @@ const option1 = {
   const getMinibytes = async() => {
 
     try{
-      const res = await axios.get(`${API_URL}/api/mini-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`,option1);
+      const res = await axios.get(`${API_URL}/api/mini-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`);
       setMiniBytes(res.data.data);
     }catch(err){
       console.error(err);
@@ -120,6 +145,9 @@ const option1 = {
   };
 
   return (
+    <>
+    <Topnav/>
+    <Header/>
         <Container>
       <Toolbar>
         <p
@@ -139,17 +167,11 @@ const option1 = {
         />
       </Toolbar>
 
-      {!noMovie? (<Content>
-      {currentPageMovies.map((movie) => (
-          <div key={movie.id}>
-             <Modal
-                visible={modalVisible}
-                onCancel={handleCloseModal}
-                footer={null} // If you don't want a footer in the modal
-              >
-               <iframe  src={movie.attributes.byte.data.attributes.YoutubeEmbedCode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-              </Modal>
-              <Link onClick={handleOpenModal}>
+      {/* {!noMovie? ( */}
+      <Content >
+      {currentPageMovies && currentPageMovies.map((movie) => (
+          <div   key={movie.id}>
+              <Link onClick={() => handleOpenModal(movie?.attributes?.byte?.data?.attributes.YoutubeEmbedCode)}>
               <div className="movieTrailers-container">
               <img src={`${API_URL}${movie.attributes.byte.data.attributes.Thumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
                 <div className="Movietrailers-overlay">
@@ -157,11 +179,21 @@ const option1 = {
                 </div>
               </div>
               </Link>
+              <Modal
+                isOpen={modalVisible}
+                shouldCloseOnEsc
+                onRequestClose={handleCloseModal}
+              >
+                <span className='Esc'>press esc to close</span>
+               <iframe  src={embedcode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+              </Modal>
           </div>
         ))}
-      </Content>):(
+      </Content>
+      {/* )
+      :(
         <h1>Movie Not Found</h1>
-      )}
+      )} */}
       <PaginationWrapper>
       <ConfigProvider
         theme={{
@@ -195,7 +227,7 @@ const option1 = {
       
 {/*                //////////////////////////////////////////////     */}
 
-      <Toolbar>
+      {/* <Toolbar>
         <p
           style={{
             fontWeight: "bold",
@@ -216,14 +248,7 @@ const option1 = {
       <Content>
       {currentPageMovies1.map((movie) => (
           <div key={movie.id}>
-            <Modal
-                visible={modalVisible}
-                onCancel={handleCloseModal}
-                footer={null} 
-              >
-               <iframe  src={movie.attributes.byte.data.attributes.YoutubeEmbedCode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-              </Modal>
-              <Link onClick={handleOpenModal}>
+              <Link onClick={()=>handleOpenModal1(movie?.attributes?.byte?.data.attributes.YoutubeEmbedCode)}>
               <div className="movieTrailers-container">
               <img src={`${API_URL}${movie.attributes.byte.data.attributes.Thumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
                 <div className="Movietrailers-overlay">
@@ -231,6 +256,14 @@ const option1 = {
                 </div>
               </div>
               </Link>
+              <Modal
+               isOpen={modalVisible1}
+               shouldCloseOnEsc
+               onRequestClose={handleCloseModal1}
+              >
+                <span className='Esc'>press esc to close</span>
+               <iframe  src={embedcode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+              </Modal>
           </div>
         ))}
       </Content>
@@ -263,7 +296,7 @@ const option1 = {
           pageSize={pageSize1}
         />
       </ConfigProvider>
-      </PaginationWrapper>
+      </PaginationWrapper> */}
 
 
       {/*                //////////////////////////////////////////////     */}
@@ -289,14 +322,7 @@ const option1 = {
       <Content1>
       {currentPageMovies2.map((movie) => (
           <div key={movie.id}>
-            <Modal
-                visible={modalVisible}
-                onCancel={handleCloseModal}
-                footer={null} 
-              >
-               <iframe  src={movie.attributes.byte.data.attributes.YoutubeEmbedCode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-              </Modal>
-              <Link onClick={handleOpenModal}>
+              <Link onClick={()=>handleOpenModal2(movie?.attributes?.byte?.data.attributes.YoutubeEmbedCode)}>
               <div className="movie-container">
               <img className='mini-bytes-img' src={`${API_URL}${movie.attributes.byte.data.attributes.Poster.data.attributes.url}`} alt="Img" id={movie.id}/>
                 <div className="overlay">
@@ -304,6 +330,14 @@ const option1 = {
                 </div>
               </div>
               </Link>
+              <Modal
+                isOpen={modalVisible2}
+                shouldCloseOnEsc
+                onRequestClose={handleCloseModal2}
+              >
+                <span className='Esc'>press esc to close</span>
+               <iframe src={embedcode} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+              </Modal>
           </div>
         ))}
       </Content1>
@@ -338,8 +372,9 @@ const option1 = {
       </ConfigProvider>
       </PaginationWrapper>
      
-      <Footer />
     </Container>
+      <Footer />
+    </>
   );
 }
 
@@ -372,6 +407,24 @@ const PaginationWrapper = styled.div`
   margin-top: 20px;
 `;
 
+const ModalContent = styled.div`
+// width: 70%;
+// z-index: 10;
+@media (max-width: 768px) {
+padding: 3px;
+}
+iframe {
+width:750px;
+height: 422px;
+border-color: #e50914;
+@media (max-width: 768px) {
+width: 90vw;
+height: 30vh;
+object-fit: cover;
+}
+}
+`;
+
 const Content = styled.div`
 cursor: pointer;
   display: grid;
@@ -398,6 +451,7 @@ cursor: pointer;
   display: grid;
   grid-gap: 25px;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+
 img{
   width: 100%;
   height: 100%;

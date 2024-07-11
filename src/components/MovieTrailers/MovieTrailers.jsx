@@ -2,13 +2,14 @@ import React,{useState,useEffect} from 'react'
 import MovieSlider from './MovieSlider'
 import styled from 'styled-components'
 import './MovieTrailers.css'
-import { json, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // Import Swiper styles
 import './MovieTrailers.css'
-import { ConfigProvider, Pagination, Typography } from 'antd';
-import { WindowsFilled } from '@ant-design/icons';
+import { ConfigProvider, Pagination } from 'antd';
 import Footer from '../Footer/Footer';
 import axios from 'axios';
+import Header from '../Header';
+import Topnav from '../TopNav/Topnav';
 // import required modules
 const API_URL = process.env.REACT_APP_API_URL;
 const MovieTrailers = () => {
@@ -63,6 +64,9 @@ const MovieTrailers = () => {
 
 
   return (
+    <>
+    <Topnav/>
+    <Header/>
     <Container>
       <MovieSlider />
       <Toolbar>
@@ -81,38 +85,6 @@ const MovieTrailers = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        {/* <LanguageSelect
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
-        >
-          <option value="">Select Language</option>
-            <option value="Tamil">Tamil</option>
-            <option value="English">English</option>
-            <option value="Hindi">Hindi</option>
-            <option value="Telugu">Telugu</option>
-            <option value="Kannada">Kannada</option>
-            <option value="Malayalam">Malayalam</option>
-
-        </LanguageSelect>
-        <GenreSelect
-          value={selectedGenre}
-          onChange={(e) => setSelectedGenre(e.target.value)}
-        >
-            <option value="">Select Genre</option>
-            <option value="Action">Action</option>
-            <option value="Adventure">Adventure</option>
-            <option value="Comedy">Comedy</option>
-            <option value="Drama">Drama</option>
-            <option value="Fantasy">Fantasy</option>
-            <option value="Horror">Horror</option>
-            <option value="Mystery">Mystery</option>
-            <option value="Romance">Romance</option>
-            <option value="Science fiction">Science fiction</option>
-            <option value="Sports">Sports</option>
-            <option value="Thriller">Thriller</option>
-            <option value="Documentary">Documentary</option>
-    
-        </GenreSelect> */}
       </Toolbar>
 
       <Content>
@@ -162,8 +134,9 @@ const MovieTrailers = () => {
         />
       </ConfigProvider>
       </PaginationWrapper>
-      <Footer/>
     </Container>
+      <Footer/>
+    </>
   );
 }
 

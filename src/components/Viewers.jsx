@@ -13,7 +13,7 @@ const Viewers = (props) => {
       <Wrap>
         <h1>BEST DIRECTOR</h1>
         <video
-          src="/videos/coming.mp4"
+          src="https://api.moviemads.com/uploads/Trophy_09829cd62f.mp4"
           type="video/mp4"
           ref={vidRef}
           muted
@@ -24,7 +24,7 @@ const Viewers = (props) => {
       <Wrap>
       <h1>BEST ACTOR</h1>
         <video
-          src="/videos/award1.mp4"
+          src="https://api.moviemads.com/uploads/Trophy_09829cd62f.mp4"
           type="video/mp4"
           ref={vidRef}
           muted
@@ -35,7 +35,7 @@ const Viewers = (props) => {
       <Wrap>
       <h1>BEST SCREENPLAY</h1>
         <video
-          src="/videos/award4.mp4"
+          src="https://api.moviemads.com/uploads/Trophy_09829cd62f.mp4"
           type="video/mp4"
           ref={vidRef}
           muted
@@ -46,7 +46,7 @@ const Viewers = (props) => {
       <Wrap>
         <h1>BEST STORY</h1>
         <video
-          src="/videos/award3.mp4"
+          src="https://api.moviemads.com/uploads/Trophy_09829cd62f.mp4"
           type="video/mp4"
           ref={vidRef}
           muted
@@ -57,7 +57,7 @@ const Viewers = (props) => {
       <Wrap>
       <h1>BEST ACTRESS</h1>
         <video
-          src="/videos/award2.mp4"
+          src="https://api.moviemads.com/uploads/Trophy_09829cd62f.mp4"
           type="video/mp4"
           ref={vidRef}
           muted

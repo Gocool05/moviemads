@@ -28,15 +28,31 @@ function GoogleAuthCallback() {
       .then((res) =>  res.data)
       .then(setAuth)
     },[location] )
-    console.log(JSON.stringify(auth),'auth')
+    // console.log(JSON.stringify(auth),'auth')
     localStorage.setItem('User',auth)
     const jwtToken = auth?.jwt
 
     localStorage.setItem('UserId',auth?.user.id)
     localStorage.setItem('EmailId',auth?.user.email)
     localStorage.setItem('JwtToken',jwtToken)
-    console.log(jwtToken,'token');
-    navigate("/");
+    // console.log(jwtToken,'token');
+    // navigate("/");
+
+    const redirectUrl = localStorage.getItem('redirect');
+
+    if(redirectUrl){
+        navigate(redirectUrl);
+        setTimeout(() => {
+          window.location.reload();
+         },2000)
+    }
+    else{
+        localStorage.setItem('redirectToHome','/')
+        navigate('/');
+        setTimeout(() => {
+         window.location.reload();
+        },2000)
+    }
     
 }
 

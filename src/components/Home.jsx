@@ -6,39 +6,23 @@ import ImgSlider from "./imgSlider";
 import Footer from "./Footer/Footer";
 import UpcomingMovies from "./upcomingMovies";
 import Topnav from "./TopNav/Topnav";
-import TopRated from "./TopRated";
 import EventPartners from "./EventPartners/EventPartners";
-import { Navigate, useNavigate } from "react-router-dom";
-import Login from "./Login";
+import { useNavigate } from "react-router-dom";
 import MovieReviews from "./MovieReviews";
 import { useState } from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import Header from "./Header";
+import VideoModal from "./VideoModal";
 
 function Home() {
 
 
-  const user = localStorage.getItem("User");
-  const navigate = useNavigate();
 
-  if (!user) {
-    navigate("/login");
-  }
-      
-  // useEffect(() => {
-  //   const reloadPage = () => {
-  //     if (user) {
-  //       // Refresh the page if user exists
-  //       window.location.reload();
-  //     }
-  //   };
 
-  //   reloadPage();
-  // }, []);
-
-      const [isLoading, setIsloading] = useState(true);
   return (
     <>
+    <Topnav/>
+    <Header/>
       <Container>
         <ImgSlider />
         <UpcomingMovies />
@@ -46,8 +30,8 @@ function Home() {
         <Viewers />
         <MovieReviews />
         <EventPartners />
-        <Footer />
       </Container>
+        <Footer />
     </>
   );
 }

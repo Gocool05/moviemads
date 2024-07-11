@@ -3,9 +3,9 @@ import styled from "styled-components";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { json, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Overlay } from "antd/es/popconfirm/PurePanel";
-import { InfoCircleFilled, InfoCircleOutlined, PlayCircleFilled, PlayCircleOutlined, PlaySquareFilled } from "@ant-design/icons";
+import { InfoCircleFilled, PlayCircleFilled } from "@ant-design/icons";
 import './MovieTrailers.css'
 import axios from "axios";
 const Token = localStorage.getItem("JwtToken");
@@ -34,8 +34,8 @@ const option1 = {
   
   const getSlider = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/slider-for-movie-trailers?populate[0]=movieTrailer.MovieThumbnail&populate[1]=movieTrailer.VideoFile`,option1);
-      console.log("Slider for movie trailer",res.data.data);
+      const res = await axios.get(`${API_URL}/api/slider-for-movie-trailers?populate[0]=movieTrailer.MovieThumbnail&populate[1]=movieTrailer.VideoFile`);
+      // console.log("Slider for movie trailer",res.data.data);
       setMovies(res.data.data);
     }catch(err){
       console.error(err);
@@ -49,20 +49,19 @@ const option1 = {
     <Carousel {...settings}>
       
       {movies.map((movie) => (
+  <Link to={'/details/movieTrailer/'+movie.attributes.movieTrailer.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
        <Wrap>
        <Info key={movie.id}>
- 
        <Subtitle>{movie.attributes.movieTrailer.data.attributes.MovieName}</Subtitle>
-  <Link to={'/details/movieTrailer/'+movie.attributes.movieTrailer.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1" >
      <Button1><PlayCircleFilled spin/> Play Now</Button1>
       <Button2><InfoCircleFilled /> More Info</Button2>
-       </Link>
-       <Description>{movie.attributes.movieTrailer.data.attributes.Description}</Description>
+       {/* <Description>{movie.attributes.movieTrailer.data.attributes.Description}</Description> */}
      </Info>
      <Overlays>
        <img src={`${API_URL}${movie.attributes.movieTrailer.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
        </Overlays>
 </Wrap>
+       </Link>
            
     ))}
       
@@ -172,29 +171,35 @@ border-radius: 5px;
 font-size: 15px;
 font-weight: bold;
 cursor: pointer;
+margin-right: 8px;
+&:hover{
+  background-color: #303030;
+}
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 8px;
+  font-size: 10px;
   margin-right: 3px;
 padding: 5px;
 }
 `;
 const Button2 = styled.button`
-// margin: 5px;
-padding: 10px;
-background-color: #303030;
-background:#fba010;
-color: #fff;
-font-weight: bold;
-font-size: 15px;
-border-radius: 5px;
-cursor: pointer;
-@media (max-width: 768px) {
-  margin: 0px;
-  font-size: 8px;
- 
-padding: 5px;
-}
+  // margin: 5px;
+  padding: 10px;
+  background:#fba010;
+  color: #fff;
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover{
+    background-color: #303030;
+  }
+  @media (max-width: 768px) {
+    margin: 0px;
+    font-size: 10px;
+   
+  padding: 5px;
+  }
 `;
 
 const Subtitle = styled.h2`

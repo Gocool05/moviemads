@@ -1,39 +1,33 @@
 import React, { useEffect,useState,useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-import { CiOutlined, LogoutOutlined, MenuOutlined, StarTwoTone, UpOutlined } from "@ant-design/icons";
-import Topnav from "./TopNav/Topnav";
-
+import {  LogoutOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { Menu, Dropdown } from "antd";
+import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
-
+const USERID = localStorage.getItem('UserId');
 function Header() {
-  // const userPhoto = useSelector(selectUserPhoto);
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [modelExits, setModelExits] = useState(null);
+  const [modelId, setModelId] = useState("");
+  const [initial, setInitial] = useState("");
   const menuRef = useRef(null);
   
   const user = localStorage.getItem("User");
+  const jwt = localStorage.getItem("JwtToken");
   var username ;
-  if (user){
+  if (jwt){
     username= true
   }
   else{
     username= false
   }
-  // useEffect(() => {
-  //     if (user) {
-  //       dispatch(
-  //         setUserLogin({
-  //           name: user.username,
-  //           email: user.email,
-  //           photo: user.photoURL,
-  //         })
-  //       );
-  //       navigate("/home");
-  //     }
-  //   });
+
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
 
   useEffect(() => {
     // Function to close the menu when clicking outside of it
@@ -52,10 +46,12 @@ function Header() {
     };
   }, []);
 
-  const signOut = () => {
+  const handleSignOut = () => {
     localStorage.removeItem("User");
     localStorage.removeItem("UserId");
-    navigate("/login", { replace: true });
+    localStorage.removeItem("JwtToken");
+    localStorage.removeItem("EmailId");
+    window.location.href='/';
   };
 
   const toggleMenu = () => {
@@ -66,20 +62,63 @@ function Header() {
     setIsMenuOpen(false);
   };
 
+  const alreadyModelExists = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/api/users/${USERID}?populate=model`);
+      setInitial(res.data.username);
+      setModelExits(res.data.model);
+      setModelId(res.data.model?.id);
+      console.log("rendered");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
+  useEffect(() => {
+    if(localStorage.getItem('redirectToHome')){
+      localStorage.removeItem('redirectToHome')
+      window.location.reload();
+    }
+    alreadyModelExists(); 
+  }, []);
+
+  const handleModelEdit = () => {
+    if(modelExits){
+      navigate(`/model/${modelId}/edit`);
+    }
+    else{
+          navigate(`/model`);
+        }
+  }
+
+  const dropdownMenu = (
+    <Menu>
+      {!username ? (
+        <>
+          <Menu.Item key="login" onClick={() => (window.location = `${API_URL}/api/connect/google`)}>
+            Login
+          </Menu.Item>
+        </>
+      ) : (
+        <>
+          <Menu.Item key="model" onClick={handleModelEdit}>
+           Edit Model
+          </Menu.Item>
+        <Menu.Item key="signOut" onClick={handleSignOut}>
+          SIGN<LogoutOutlined rotate={-90} style={{ fontSize: '15px', color: 'red',fontWeight:'bold' }} />UT 
+        </Menu.Item>
+        </>
+      )}
+    </Menu>
+  );
+
   return (
     <>
     <Nav>
-      <Logo src="/images/Moviemads Logo.png"></Logo>
+      <a href="/"><Logo src="/images/Moviemads Logo.png"></Logo></a>
       {/* <h1 style={{ color: "Red" }}>MOVIE<span style={{ color: "gold" }}>MADS</span></h1> */}
-      {!username ? (
-        <LoginContainer>
-          <Login  onClick={() =>
-          (window.location =`${API_URL}/api/connect/google`)}>Login</Login>
-        </LoginContainer>
-      ) : (
         <>
         <MenuToggle onClick={toggleMenu}><MenuOutlined style={{fontSize:"24px"}} /></MenuToggle>
-        <Menu isOpen={isMenuOpen} ref={menuRef}>
+        <Menu1 isOpen={isMenuOpen} ref={menuRef}>
           <NavMenu>
             <a onClick={() => { navigate("/"); handleMenuClick(); }}>
               <span>Home</span>
@@ -87,29 +126,64 @@ function Header() {
             <a onClick={() => { navigate("/movieTrailer"); handleMenuClick(); }}>
               <span>Movie Trailers</span>
             </a>
-            <a onClick={() => { navigate("/shortfilms"); handleMenuClick(); }}>
+            {/* <a onClick={() => { navigate("/shortfilms"); handleMenuClick(); }}>
               <span>Short Films</span>
-            </a>
+            </a> */}
             <a onClick={() => { navigate("/blogs"); handleMenuClick(); }}>
               <span>Blogs</span>
+            </a>
+            <a onClick={() => { navigate("/model"); handleMenuClick(); }}>
+              <span>Models</span>
+            </a>
+            <a onClick={() => { navigate("/gallery"); handleMenuClick(); }}>
+              <span>Gallery</span>
             </a>
             <a onClick={() => { navigate("/awards"); handleMenuClick(); }}>
               <span>Awards</span>
             </a>
             <a onClick={() => { navigate("/reviews"); handleMenuClick(); }}>
-              <span>Reviews</span>
+              <span>Movie Reviews</span>
             </a>
-          <a className="sign-out" style={{cursor:"pointer",fontWeight:"700",opacity:'0.8'}} onClick={signOut}>SIGN<LogoutOutlined rotate={-90}  style={{fontSize:"20px",color:"red"}} /> UT </a>
+            <div className="profile-icon">
+            <Dropdown  overlay={dropdownMenu} trigger={['click']}>
+              <ProfileIcon>
+                {username ? (
+                  <ProfileInitials>{initial?.charAt(0).toUpperCase()}</ProfileInitials>
+                ) : (
+                  <UserOutlined style={{ fontSize: '24px', color: '#e50914' }} />
+                )}
+              </ProfileIcon>
+            </Dropdown>
+            </div>
+
           </NavMenu>
-          </Menu>
+          </Menu1>
         </> 
-         )}  
+        
     </Nav>
     </>
   );
 }
 
 export default Header;
+
+const ProfileIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border:1px solid #e50914;
+  background-color: rgb(16, 16, 17);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const ProfileInitials = styled.span`
+  font-size: 20px;
+  font-weight: bold;
+  color: #e50914;
+`;
 
 
 const MenuToggle = styled.div`
@@ -123,7 +197,7 @@ const MenuToggle = styled.div`
 `;
 
 // Styles for mobile menu
-const Menu = styled.div`
+const Menu1 = styled.div`
   display: ${(props) => (props.isOpen ? "flex" : "none")}; /* Hide or show menu based on isOpen prop */
   flex-direction: column;
   background: #090b13;
@@ -155,12 +229,17 @@ const Nav = styled.div`
   overflow-x: hidden;
   overflow-y: hidden;
   justify-content: space-between;
-  
+  // @media (max-width: 768px) {
+  //   height: 55px;
+  // }
 `;
 
 const Logo = styled.img`
   cursor: pointer;
   width: 150px;
+  @media (max-width: 768px) {
+    width: 130px;
+  }
 `;
 
 const NavMenu = styled.div`
@@ -215,32 +294,3 @@ const NavMenu = styled.div`
   }
 `;
 
-const UserImg = styled.img`
-  height: 48px;
-  width: 48px;
-  border-radius: 50%;
-  cursor: pointer;
-`;
-
-const LoginContainer = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const Login = styled.div`
-  border: 1px solid #f9f9f9;
-  padding: 8px 16px;
-  border-radius: 4px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  background-color: rgba(0, 0, 0, 0.5);
-  transition: all 0.2s ease 0s;
-  cursor: pointer;
-
-  :hover {
-    background-color: #f9f9f9;
-    color: black;
-    border-color: transparent;
-  }
-`;

@@ -27,7 +27,7 @@ function ShortFlimSlider() {
   
   const getSlider = async() => {
     const res = await axios.get(`${API_URL}/api/short-film-sliders?populate[0]=short_film.MovieThumbnail&populate[1]=short_film.VideoFile`);
-    console.log("ShortFlim Slider CHECK",res.data)
+    // console.log("ShortFlim Slider CHECK",res.data)
     setMovies(res.data.data);
   }
   useEffect(() => {
@@ -172,7 +172,7 @@ font-weight: bold;
 cursor: pointer;
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 8px;
+  font-size: 10px;
   margin-right: 3px;
 padding: 5px;
 }
@@ -189,8 +189,7 @@ border-radius: 5px;
 cursor: pointer;
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 8px;
- 
+  font-size: 10px;
 padding: 5px;
 }
 `;

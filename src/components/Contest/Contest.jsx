@@ -1,19 +1,18 @@
 import React, { useState,useEffect } from 'react';
-import { Steps, Form, Input,ConfigProvider, Button, Upload, message, Progress,Select, TimePicker,notification } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Steps, Form, Input,ConfigProvider, Button, Upload, message, Progress,Select,notification } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
-
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
+import { PlusOutlined } from '@ant-design/icons';
 // import {STRAPI_API_URL} from '../../constants.js';
 import './Contest.css';
 import TextArea from 'antd/es/input/TextArea';
 import axios from 'axios';
 import Modal from 'antd/es/modal/Modal';
 import Topnav from '../TopNav/Topnav';
+import Header from '../Header';
 const { Step } = Steps;
 const Token = localStorage.getItem("JwtToken");
+
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -23,7 +22,6 @@ const getBase64 = (file) =>
   });
 
   const API_URL = process.env.REACT_APP_API_URL;
-
 const Contest = () => {
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -52,9 +50,14 @@ const Contest = () => {
   const [directorName, setDirectorName] = useState("");
   const [contentRating, setContentRating] = useState("");
   const [duration, setDuration] = useState("");
+  const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState("");
   const [agreed, setAgreed] = useState(false);
-  const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(true);
+
+  const [fileSizeError, setFileSizeError] = useState(false);
+  const [fileSizeError1, setFileSizeError1] = useState(false);
+  const [fileSizeError2, setFileSizeError2] = useState(false);
+
   const [uploadStatus, setUploadStatus] = useState({
     poster: false,
     thumbnail: false,
@@ -110,30 +113,45 @@ const Contest = () => {
       const values = await form.validateFields();
       setCurrentStep(currentStep + 1);  
       const response = await axios.post(`${API_URL}/api/contests`, {
-    data:{
-      UserName: values.yourName,
-      MobileNumber: values.mobile,
-      MovieName: values.movieName,
-      Description: values.description,
-      Language: values.language,
-      Genres: values.genre,
-      Actors: values.actorName,
-      Actress: values.actressName,
-      Directors: values.directorName,
-      contentRating: values.contentRating,
-      Duration: values.duration,
-      Profile:values.profile,
-      users_permissions_user:localStorage.getItem('UserId'),
-      Email: localStorage.getItem('EmailId'),
-    }
-    },option1);
-    const formId = response.data.data.id;
-    console.log(formId);
-    localStorage.setItem("formId",formId);
-    }
-    catch (err) {
-      console.log("Enter Correct credentials", err.response.data.error.message);
-    }
+          data:{
+              UserName: values.yourName,
+              MobileNumber: values.mobile,
+              MovieName: values.movieName,
+              Description: values.description,
+              Language: values.language,
+              Genres: values.genre,
+              Actors: values.actorName,
+              Actress: values.actressName,
+              Directors: values.directorName,
+              contentRating: values.contentRating,
+              Duration: values.duration,
+              Profile: values.profile,
+              users_permissions_user: localStorage.getItem('UserId'),
+              Email: localStorage.getItem('EmailId'),
+          }
+      }, option1);
+      const formId = response.data.data.id;
+      console.log(formId);
+      localStorage.setItem("formId", formId);
+  } catch (err) {
+      if (err.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          // console.error("Server responded with error:", err.response.data);
+          // alert("Server responded with error: " + err.response.data.error.message);
+      } else if (err.request) {
+          // The request was made but no response was received
+          // console.error("No response received from server:", err.request);
+          // alert("No response received from server. Please check your network connection.");
+      } else {
+          // Something happened in setting up the request that triggered an Error
+          notification.error({
+            message: 'Upload Error',
+            description: 'Fill all the required fields',
+            placement:'top'
+          });
+      }
+  }  
   }
 
   const nextStep = () => {
@@ -152,7 +170,7 @@ const Contest = () => {
         reader.readAsDataURL(file.originFileObj);
         reader.onload = () => resolve(reader.result);
       });
-      console.log(file);
+      // console.log(file);
     }
     setPreviewImage(file.url || file.preview);
     setPreviewTitle(
@@ -169,38 +187,87 @@ const Contest = () => {
 
 
   
-  const handleVideoUpload = async (file) => {
+  const handleVideoUpload =  (file) => {
+    const MAX_FILE_SIZE = 500 * 1024 * 1024; 
+    // console.log(file,'file size')
     try {
-        setVideoUpload(file.file.originFileObj);
-        setUploadProgress(prevState => ({ ...prevState, movie: file.percent }));
-        setUploadStatus(prevStatus => ({ ...prevStatus, movie: true }));
-    } catch (error) {
-        console.error('Error handling video upload:', error);
-        // Handle error
-    }
-};
+      // Check if a file is selected
+      if (!file || !file.file || !file.file.originFileObj) {
+        // Handle case where no file is selected
+        return;
+      }
+      // Check file size against the maximum allowed size
+      if (file.file.originFileObj.size > MAX_FILE_SIZE) {
+        // setFileSizeError2(true);
+        console.error('Error: File size exceeds the maximum limit.');
+        // Optionally, you can also reset the file input here
+        // handlePreview(false);
+        // document.getElementById('fileInput').value = '';
+        return;
+      }
+  
+      // Proceed with setting the video upload state and updating progress
+      setVideoUpload(file.file.originFileObj);
+      setUploadProgress(prevState => ({ ...prevState, movie: file.percent }));
+      setUploadStatus(prevStatus => ({ ...prevStatus, movie: true }));
 
-const handleImageUpload = async (file) => {
+    } catch (error) {
+      console.error('Error handling video upload:', error);
+      // Handle other errors, if any
+    }
+  };
+  
+
+  const handleImageUpload = (file) => {
+    const MAX_FILE_SIZE = 3 * 1024 * 1024; // Example maximum file size for images (10MB)
     try {
+        // Check if a file is selected
+        if (!file || !file.file || !file.file.originFileObj) {
+            // Handle case where no file is selected
+            return;
+        }
+        // Check file size against the maximum allowed size
+        if (file.file.originFileObj.size > MAX_FILE_SIZE) {
+          // setFileSizeError(true);
+            console.error('Error: File size exceeds the maximum limit.');
+            return;
+        }
+
+        // Proceed with setting the image upload state and updating progress
         setImageUpload(file.file.originFileObj);
         setUploadProgress(prevState => ({ ...prevState, poster: file.percent }));
         setUploadStatus(prevStatus => ({ ...prevStatus, poster: true }));
     } catch (error) {
-        console.error('Error handling image1 upload:', error);
-        // Handle error
+        console.error('Error handling image upload:', error);
+        // Handle other errors, if any
     }
 };
 
-const handleImageUpload1 = async (file) => {
+const handleImageUpload1 =  (file) => {
+    const MAX_FILE_SIZE = 7 * 1024 * 1024; // Example maximum file size for images (10MB)
     try {
+        // Check if a file is selected
+        if (!file || !file.file || !file.file.originFileObj) {
+            // Handle case where no file is selected
+            return;
+        }
+        // Check file size against the maximum allowed size
+        if (file.file.originFileObj.size > MAX_FILE_SIZE) {
+          // setFileSizeError1(true);
+            console.error('Error: File size exceeds the maximum limit.');
+            return;
+        }
+
+        // Proceed with setting the image upload state and updating progress
         setImageUpload1(file.file.originFileObj);
         setUploadProgress(prevState => ({ ...prevState, thumbnail: file.percent }));
         setUploadStatus(prevStatus => ({ ...prevStatus, thumbnail: true }));
     } catch (error) {
-        console.error('Error handling image2 upload:', error);
-        // Handle error
+        console.error('Error handling image upload:', error);
+        // Handle other errors, if any
     }
 };
+
 
 useEffect(() => {
     // Check if all files are uploaded
@@ -225,6 +292,7 @@ useEffect(() => {
 
   const handleUpload = async () => {
     setUploading(true); 
+    // setLoading(true);
     // setUploading(true);
     const videoSize = videoUpload.size;
     // console.log('uplaodsizeuplaodsizeuplaodsizeuplaodsizeuplaodsize',videoSize);
@@ -258,13 +326,13 @@ useEffect(() => {
     videoFormData.append('ref','api::constest.constest')
     videoFormData.append('field',"VideoFile")
     // Handle video upload
-    console.log(' upload response:', videoFormData.values);
+    // console.log(' upload response:', videoFormData.values);
     
     try {
       const videoResponse = await axios.post(`${API_URL}/api/upload`, videoFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization':`Bearer ${Token}`,
+          'Authorization': `Bearer ${Token}`,
         },
         onUploadProgress: progressEvent => {
           uploadedBytes = progressEvent.loaded;
@@ -278,7 +346,7 @@ useEffect(() => {
       }
       });
       // Handle success or error for video upload
-      console.log('Video upload response:', videoResponse);
+      // console.log('Video upload response:', videoResponse);
     } catch (error) {
       console.error('Error uploading video:', error);
       // Handle error, e.g., show a message to the user
@@ -318,13 +386,15 @@ useEffect(() => {
             'Authorization':`Bearer ${Token}`,
           },
         });
-        console.log('All uploads completed');
-        console.log(`Image ${i + 1} upload response:`, imageResponse);
+        // console.log('All uploads completed');
+        // console.log(`Image ${i + 1} upload response:`, imageResponse);
         setCurrentStep(currentStep + 1);
+        // setLoading(false);
       } catch (error) {
         console.error(`Error uploading image ${i + 1}:`, error);
       }finally {
         setUploading(false); 
+        // setLoading(false);
       }
     }
   
@@ -367,7 +437,7 @@ useEffect(() => {
     if (agreed) {
       handlePayment();
     } else {
-      console.log("Please agree to the terms and conditions.");
+      // console.log("Please agree to the terms and conditions.");
     }
   };
 
@@ -380,50 +450,111 @@ useEffect(() => {
 
 
   const handlePayment = async(e)=>{
+    // e.preventDefault();
     const response = await axios.get(`${API_URL}/api/razorpay`,option1);
+    const amount = 1;
 
-    e.preventDefault();
-     const amount = 1;
+    const { data: order } = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {} );
+    console.log(order,'order created')
+
       var options = {
         key: `${response.data.data.attributes.keyId}`,
         key_secret:`${response.data.data.attributes.keySecret}`,
-        amount: amount *100,
+        amount: order.amount,
         currency:"INR",
+        order_id: order.id,
         name:"MovieMads",
+        
+        config: {
+          display: {
+            blocks: {
+              banks: {
+                name: 'All payment methods',
+                instruments: [
+                  {
+                    method: 'upi',
+                  },
+                  {
+                    method: 'card'
+                  },
+                  {
+                      method: 'wallet'
+                  },
+                  {
+                      method: 'netbanking'
+                  },
+                ],
+              },
+            },
+            sequence: ['block.banks'],
+            preferences: {
+              show_default_blocks: false
+            },
+          },
+        },
         handler:  async function (Paymentresponse){
-          console.log(Paymentresponse,'payment response');
           const response = await axios.post( `${API_URL}/api/contests/${Paymentresponse.razorpay_payment_id}/${localStorage.getItem('formId')}/payment`,{},option1);
           handleFinish();
-          window.location.reload(); // Refresh the page
-          window.location.href = "/"; // Navigate to the home page
+          window.location.href = "/";
+          // console.log(response,'payment response');
+          // window.location.reload();
         },
       };
       var pay = new window.Razorpay(options);
       pay.open();
     }
     const validateDuration = (_, value) => {
-      if (value > 8  ) { 
-        return Promise.reject('Duration cannot exceed 8 minutes!');
+      if (value > 7  ) { 
+        return Promise.reject('Duration cannot exceed 7 minutes!');
       }
-      else if(value<=2){
-        return Promise.reject('Duration cannot be less than 2 minutes!')
+      else if(value<5){
+        return Promise.reject('Duration cannot be less than 5 minutes!')
       }
       return Promise.resolve();
     };
+
+
 
     const handleBeforeUpload = (file) => {
       // Check if the file size exceeds the limit
       const isSizeAccepted = file.size / 1024 / 1024 < 3; // 3MB limit
       if (!isSizeAccepted) {
+        setButtonDisabled(true);
+        setFileSizeError(true);
         notification.error({
           message: 'Upload Error',
           description: 'File size exceeds the limit. Maximum size allowed is 3MB.',
-          placement:'top'
+          placement:'top',
+          duration: 8,
         });
-        // return setButtonDisabled(false);
         return false;
         
       }else{
+        setFileSizeError(false);
+        notification.success({
+          message: 'Your file is Uploading',
+          description: 'plesase wait while we upload your file',
+          placement:'top'
+        });
+      }
+      return true;
+    };
+    const handleBeforeUpload1 = (file) => {
+      // Check if the file size exceeds the limit
+      const isSizeAccepted = file.size / 1024 / 1024 < 3; // 3MB limit
+      if (!isSizeAccepted) {
+        setButtonDisabled(true);
+        setFileSizeError1(true);
+        notification.error({
+          message: 'Upload Error',
+          description: 'File size exceeds the limit. Maximum size allowed is 3MB.',
+          placement:'top',
+          duration: 8,
+        });
+        return false;
+        
+      }else{
+        setFileSizeError1(false);
         notification.success({
           message: 'Your file is Uploading',
           description: 'plesase wait while we upload your file',
@@ -436,6 +567,8 @@ useEffect(() => {
       // Check if the file size exceeds the limit
       const isSizeAccepted = file.size / 1024 / 1024 < 500; 
       if (!isSizeAccepted) {
+        setButtonDisabled(true);
+        setFileSizeError2(true);
         notification.error({
           message: 'Upload Error',
           description: 'File size exceeds the limit. Maximum size allowed is 500MB.',
@@ -444,6 +577,7 @@ useEffect(() => {
         // return setButtonDisabled(false);
         return false;
       }else{
+        setFileSizeError2(false);
         notification.success({
           message: 'Your file is Uploading',
           description: 'plesase wait while we upload your file',
@@ -455,8 +589,23 @@ useEffect(() => {
 
   return (
     <>
+    <Topnav/>
+    <Header/>
     <div className="container">
-      <h1 className='contest-heading'>Contest form</h1>
+      <h1 className='contest-heading'>Short Film contest<p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of Rs.1499 only)</p></h1>
+      {loading?(
+       <div class="hourglassBackground">
+       <div class="hourglassContainer">
+         <div class="hourglassCurves"></div>
+         <div class="hourglassCapTop"></div>
+         <div class="hourglassGlassTop"></div>
+         <div class="hourglassSand"></div>
+         <div class="hourglassSandStream"></div>
+         <div class="hourglassCapBottom"></div>
+         <div class="hourglassGlass"></div>
+       </div>
+     </div>
+     ):(
       <div className="steps-container">
       <ConfigProvider
       theme={{
@@ -706,7 +855,7 @@ useEffect(() => {
           </Select>
             </Form.Item>
             <Form.Item
-              label="Duration ( Maximum 8mins ! )"
+              label="Duration ( Maximum 7mins ! )"
               name="duration"
               rules={[{ required: true, message: 'Please Fill the Duration!' },
               { validator: validateDuration }]}
@@ -738,11 +887,16 @@ useEffect(() => {
         >
          <Upload
         listType="picture-card"
-        // fileList={fileList}
-        // rules={[{ required: true, message: 'Please Upload the Movie Poster' }]}
         onPreview={handlePreview}
         onChange={handleImageUpload}
-        beforeUpload={handleBeforeUpload}
+        beforeUpload={(file) => {
+          const MAX_FILE_SIZE = 3 * 1024 * 1024; // Maximum file size for each image (3MB)
+          if (file.size > MAX_FILE_SIZE) {
+            message.error('File size exceeds the maximum limit of 3MB.');
+            return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+          }
+          return true;
+        }}
         maxCount={1}
         withCredentials={false}
         accept="image/*"
@@ -752,7 +906,7 @@ useEffect(() => {
         {/* {uploadButton} */}
       </Upload>
       </Form.Item>
-      <span style={{ color: 'red' }}>( Maximum 3MB )</span>
+      <span >( Maximum 3MB )</span>
       <Modal open={previewOpen} title={previewTitle} visible={previewVisible} footer={null} 
       onCancel={handleCancel}
       >
@@ -776,7 +930,14 @@ useEffect(() => {
          <Upload
         listType="picture-card"
         onPreview={handlePreview}
-        beforeUpload={handleBeforeUpload}
+        beforeUpload={(file) => {
+          const MAX_FILE_SIZE = 7 * 1024 * 1024; // Maximum file size for each image (3MB)
+          if (file.size > MAX_FILE_SIZE) {
+            message.error('File size exceeds the maximum limit of 7MB.');
+            return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+          }
+          return true;
+        }}
         onChange={handleImageUpload1}
         maxCount={1}
         accept="image/*"
@@ -784,7 +945,7 @@ useEffect(() => {
         {uploadButton}
       </Upload>
       </Form.Item>
-      <span style={{ color: 'red' }}>( Maximum 3MB )</span>
+      <span >( Maximum 7MB )</span>
       <Modal open={previewOpen} title={previewTitle} footer={null} 
       onCancel={handleCancel}
       visible={previewVisible}
@@ -809,7 +970,14 @@ useEffect(() => {
          <Upload
         listType="picture-card"
         onPreview={handlePreview}
-        beforeUpload={handleBeforeUploadVideo}
+        beforeUpload={(file) => {
+          const MAX_FILE_SIZE = 500 * 1024 * 1024; // Maximum file size for each image (3MB)
+          if (file.size > MAX_FILE_SIZE) {
+            message.error('File size exceeds the maximum limit of 500MB.');
+            return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+          }
+          return true;
+        }}
         onChange={handleVideoUpload}
         maxCount={1}
         accept="video/*"
@@ -817,7 +985,8 @@ useEffect(() => {
         {uploadButton}
       </Upload>
       </Form.Item>
-      <span style={{ color: 'red' }}>( Maximum 500MB )</span>
+      {fileSizeError2 && <p className='SizeError'>Video size exceeds the limit</p>}
+      <span >( Maximum 500MB )</span>
          </div>
          </div>
          <Progress percent={calculateOverallProgress()} />
@@ -992,6 +1161,7 @@ useEffect(() => {
       </div>
     </ConfigProvider>
     </div>
+     )} 
     </div>
     </>
   )

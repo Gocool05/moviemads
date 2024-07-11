@@ -19,14 +19,26 @@
     -webkit-animation: flicker-1 2s linear infinite both;
     animation: flicker-1 2s linear infinite both;
     }
-
+.awardlogo{
+  height: 350px;
+  width: auto;
+ margin-left: 32%;
+}
+.awardvideo{
+  margin: 0 auto;
+  width: 100%;
+  max-width: 800px;
+}
     @media screen and (max-width: 512px) {
       .button-57 {
         width: 50%;
         border-radius: 0;
         box-shadow: none;
       }
-
+      .awardlogo{
+        height: 150px;
+        margin-left: 40%;
+      }
     }
 
     @-webkit-keyframes flicker-1 {
@@ -138,20 +150,21 @@
     transition: all 900ms cubic-bezier(0.48, 0, 0.12, 1);
     }
 
-    .marquee-container {
+    .marquee-containers {
       overflow: hidden;
-      width: 100vw; /* Ensure the marquee covers the entire width of the container */
+      width: 100vw;
+      position: relative;
     }
     
-    .marquee {
-      display: inline-block;
+    .marquees {
+      display: flex;
       white-space: nowrap;
       animation: marquee-animation 30s linear infinite both;
       color: #ffffff;
     }
     
     @media screen and (max-width: 512px) {
-      .marquee {
+      .marquees {
         animation: marquee-animation 15s  infinite;
       }
       

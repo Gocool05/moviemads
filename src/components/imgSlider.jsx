@@ -34,12 +34,13 @@ const option1 = {
 
   const getSlider = async() => {
     try{
-      const res = await axios(`${API_URL}/api/sliders?populate[0]=movie.MovieThumbnail&populate[1]=movie.VideoFile`,option1);
+      const res = await axios(`${API_URL}/api/sliders?populate[0]=movie.MovieThumbnail&populate[1]=movie.VideoFile`);
       setMovies(res.data.data);
       setLoading(false);
 
     }catch(err){
       console.error(err);
+      window.location.reload();
     }
   }
   useEffect(() => {
@@ -54,7 +55,7 @@ const option1 = {
   return (
     <Carousel {...settings}>
       {loading ? (
-        <SkeletonTheme baseColor="#212529" highlightColor="rgba(229, 9, 20, 0.55)">
+        <SkeletonTheme baseColor="#212529" highlightColor="rgba(230, 19, 20, 0.05)">
           <Skeleton style={{ width: '95%', margin: '0 2.5%', height: skeletonHeight }} enableAnimation count={1} />
           <div style={{ display: 'flex', gap: '30px', justifyContent: 'center', marginTop: '40px', flexWrap: 'wrap' }}>
             <Skeleton enableAnimation count={1} style={{ height: skeletonWidth, width: skeletonWidth2, flex: '1 1 auto' }} />
@@ -69,19 +70,19 @@ const option1 = {
         movies.map(movie => {
           if (movie.attributes.movie.data) {
             return (
+                  <Link to={'/details/' + movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1">
               <Wrap key={movie.id}>
                 <Info>
                   <Subtitle>{movie.attributes.movie.data.attributes.MovieName}</Subtitle>
-                  <Link to={'/details/' + movie.attributes.movie.data.id} onClick={() => window.scrollTo(0, 0)} className="movie-link1">
                     <Button1><PlayCircleFilled spin /> Play Now</Button1>
                     <Button2><InfoCircleFilled /> More Info</Button2>
-                  </Link>
-                  <Description>{movie.attributes.movie.data.attributes.Description}</Description>
+                  {/* <Description>{movie.attributes.movie.data.attributes.Description}</Description> */}
                 </Info>
                 <Overlays>
                   <img src={`${API_URL}${movie.attributes.movie.data.attributes.MovieThumbnail.data.attributes.url}`} alt="Img" id={movie.id} />
                 </Overlays>
               </Wrap>
+                  </Link>
             );
           } else {
             // Handle condition when movie.attributes.movie is not defined
@@ -152,8 +153,9 @@ const Wrap = styled.div`
   right: 0;
   pointer-events: none;
   @media (max-width: 768px) {
-    height: 70%;
+    height:70%;
   }
+  
 }
 
   cursor: pointer;
@@ -191,9 +193,13 @@ border-radius: 5px;
 font-size: 15px;
 font-weight: bold;
 cursor: pointer;
+margin-right: 8px;
+&:hover{
+  background-color: #303030;
+}
 @media (max-width: 768px) {
   margin: 0px;
-  font-size: 8px;
+  font-size: 10px;
   margin-right: 3px;
 padding: 5px;
 }
@@ -201,16 +207,18 @@ padding: 5px;
 const Button2 = styled.button`
   // margin: 5px;
   padding: 10px;
-  // background-color: #303030;
   background:#fba010;
   color: #fff;
   font-weight: bold;
   font-size: 15px;
   border-radius: 5px;
   cursor: pointer;
+  &:hover{
+    background-color: #303030;
+  }
   @media (max-width: 768px) {
     margin: 0px;
-    font-size: 8px;
+    font-size: 10px;
    
   padding: 5px;
   }

@@ -27,7 +27,7 @@ const option1 = {
 
   const getMovies = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/movies?populate=*&sort[0]=id:desc`,option1);
+      const res = await axios.get(`${API_URL}/api/movies?populate=*&sort[0]=id:desc`);
       setMovies(res.data.data);
       setSeoData()
     }catch(err){
