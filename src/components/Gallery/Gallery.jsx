@@ -32,7 +32,7 @@ const Gallery = () => {
   const GalleryImages = async () => {
     const res = await axios.get( `${API_URL}/api/galleries?populate=*`);
     setPics(res.data.data);
-    console.log(pics, 'Gallery images')
+    // console.log(pics, 'Gallery images')
   }
 
   useEffect(()=>{

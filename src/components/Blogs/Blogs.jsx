@@ -157,7 +157,7 @@ const option1 = {
             marginRight: "10px",
           }}
         >
-           DIRECTORS BYTES 
+           BYTES 
         </p>
         <SearchInput
           type="text"

@@ -224,7 +224,7 @@ const Button2 = styled.button`
   }
 `;
 
-const Subtitle = styled.h2`
+const Subtitle = styled.h1`
   color: #fff;
   font-size: 32px;
   margin-bottom: 10px;

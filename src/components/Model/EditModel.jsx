@@ -74,7 +74,7 @@ const EditModel = () => {
       setPosterId(responseData.attributes.Poster.data.id);
       
       setThumbnailId(responseData.attributes.Thumbnail.data.id);
-      console.log(responseData,'Edit response');
+      // console.log(responseData,'Edit response');
     } catch (err) {
       console.error(err);
     }
@@ -92,7 +92,7 @@ const EditModel = () => {
             Weight:weight,
         }
       });
-      console.log(res.data,'edited response')
+      // console.log(res.data,'edited response')
       toggleEditing();
       window.location.reload();
     } catch (error) {
@@ -102,22 +102,22 @@ const EditModel = () => {
 
   const handleFileChange = (e, index) => {
     const { name, files } = e.target;
-    console.log(`File selected for ${name}:`, files[0]);
+    // console.log(`File selected for ${name}:`, files[0]);
   
     switch (name) {
       case "poster":
-        console.log("Setting poster:", files[0]);
+        // console.log("Setting poster:", files[0]);
         setPoster(files[0]);
         break;
       case "thumbnail":
-        console.log("Setting thumbnail:", files[0]);
+        // console.log("Setting thumbnail:", files[0]);
         setThumbnail(files[0]);
         break;
       case "images":
         setImages(prevImages => {
           const newImages = [...prevImages];
           newImages[index] = files[0];
-          console.log("Setting images:", newImages);
+          // console.log("Setting images:", newImages);
           return newImages;
         });
         break;
@@ -192,7 +192,7 @@ const EditModel = () => {
   
       if (imageId) {
         // Replace existing image
-        console.log('OLD Image Check')
+        // console.log('OLD Image Check')
         const res = await axios.post(`${API_URL}/api/upload?id=${imageId}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -200,9 +200,9 @@ const EditModel = () => {
           }
         });
         window.location.reload();
-        console.log(res.data, 'image update response');
+        // console.log(res.data, 'image update response');
       } else {
-        console.log('new Image Check')
+        // console.log('new Image Check')
         const newImageData = new FormData();
         newImageData.append('files', img);
         newImageData.append('field', 'Images');
@@ -222,7 +222,7 @@ const EditModel = () => {
           }
         });
         window.location.reload();
-        console.log(localStorage.getItem('ModelId'),res.data, 'new image upload response');
+        // console.log(localStorage.getItem('ModelId'),res.data, 'new image upload response');
       }
     } catch (error) {
       console.error(error);
@@ -466,7 +466,7 @@ const ProfileModal = ({ closeModal, handleFileChange,handleSvgClick,fileInputRef
   const handleFileSelected = (e) => {
     setSelectedFile(e.target.files[0]);
   };
-console.log(selectedFile,'selectedFile')
+// console.log(selectedFile,'selectedFile')
 
   return (
     <div className="modal">

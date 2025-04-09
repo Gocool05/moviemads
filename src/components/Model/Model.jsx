@@ -49,7 +49,7 @@ const option1 = {
     try{
       const res = await axios.get(`${API_URL}/api/models?filters[Category][$eq]=Male&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`);
       setMaleModel(res.data.data);
-      console.log(maleModel,'Male model');
+      // console.log(maleModel,'Male model');
     }
     catch(err){
       console.error(err);
@@ -59,7 +59,7 @@ const option1 = {
     try{
       const res = await axios.get(`https://api.moviemads.com/api/models?filters[Category][$eq]=Female&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`);
       setFemaleModel(res.data.data);
-      console.log(femaleModel,'FeMale model');
+      // console.log(femaleModel,'FeMale model');
     }
     catch(err){
       console.error(err);
@@ -69,7 +69,7 @@ const option1 = {
     try{
       const res = await axios.get(`${API_URL}/api/models?filters[Category][$eq]=ChildArtist&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`);
       setChildArtist(res.data.data);
-      console.log('ChildArtist', childArtist);
+      // console.log('ChildArtist', childArtist);
     }catch(err){
       console.error(err);
 
@@ -122,7 +122,7 @@ const option1 = {
     setCurrent2(page);
   };
 
-console.log(currentPageMovies,'Current page')
+// console.log(currentPageMovies,'Current page')
 
   return (
     <>
@@ -400,7 +400,7 @@ const Content1 = styled.div`
 cursor: pointer;
   display: grid;
   grid-gap: 25px;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 2fr));
 img{
   width: 100%;
   height: 250px;

@@ -8,7 +8,7 @@ const Viewers = (props) => {
   }, []);
   return (
     <Container2>
-      <h1>SHORT FILM AWARDS <span>&#8702;</span> </h1>
+      {/* <h1>SHORT FILM AWARDS <span>&#8702;</span> </h1> */}
     <Container>
       <Wrap>
         <h1>BEST DIRECTOR</h1>

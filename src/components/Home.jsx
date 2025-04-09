@@ -15,6 +15,21 @@ import Header from "./Header";
 import VideoModal from "./VideoModal";
 
 function Home() {
+  // const [showModal, setShowModal] = useState(false);
+
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  // };
+
+  // useEffect(() => {
+  //   // Set a timeout to show the modal after 2 seconds
+  //   const timer = setTimeout(() => {
+  //     setShowModal(true);
+  //   },3000);
+
+  //   // Cleanup the timeout if the component unmounts
+  //   return () => clearTimeout(timer);
+  // }, []);
 
 
 
@@ -27,11 +42,13 @@ function Home() {
         <ImgSlider />
         <UpcomingMovies />
         <Movies />
+      <h1>SHORT FILM AWARDS 2024 <span>&#8702;</span> </h1>
         <Viewers />
         <MovieReviews />
         <EventPartners />
       </Container>
         <Footer />
+        {/* <VideoModal showModal={showModal} handleClose={handleCloseModal} /> */}
     </>
   );
 }

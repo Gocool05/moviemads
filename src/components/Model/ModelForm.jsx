@@ -98,9 +98,9 @@ const ModelForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
       const values = await form.validateFields();
+      setLoading(true);
       const response = await axios.post(`${API_URL}/api/models`, {
           data:{
             Name: values.fullName,
@@ -120,7 +120,7 @@ const ModelForm = () => {
       });
       const ModelId = response.data.data.id;
       localStorage.setItem("ModelId", ModelId);
-      console.log(ModelId,'ModelId');
+      // console.log(ModelId,'ModelId');
       setCurrentStep(currentStep + 1);  
       setLoading(false); 
   } catch (err) {
@@ -147,6 +147,18 @@ const ModelForm = () => {
       }
   }  
   }
+
+
+  const validateWordCount = (_, value) => {
+    if (value) {
+      const words = value.trim().split(/\s+/);
+      if (words.length > 200) {
+        return Promise.reject(new Error('Description cannot exceed 200 words!'));
+      }
+    }
+    return Promise.resolve();
+  };
+
 
   const nextStep = () => {
     setCurrentStep(currentStep + 1);
@@ -240,7 +252,7 @@ const handleImageUpload2 = ({fileList}) => {
     setUploadProgress((prevState) => ({ ...prevState, images: fileList.length }));
     setUploadStatus((prevStatus) => ({ ...prevStatus, images: fileList.length <= 5 }));
     setImagesUpload(arrayImages);
-    console.log(imagesUpload, 'Multiple images uploaded');
+    // console.log(imagesUpload, 'Multiple images uploaded');
     return true;
   } catch (error) {
     console.error('Error handling image upload:', error);
@@ -258,7 +270,7 @@ useEffect(() => {
     }
 }, [uploadStatus]);
 
-console.log(buttonDisabled,'Button disabled');
+// console.log(buttonDisabled,'Button disabled');
 
 const calculateOverallProgress = () => {
   let progress = 0;
@@ -275,7 +287,7 @@ const calculateOverallProgress = () => {
     setLoading(true);
     // Handle image uploads (assuming you have two imageUpload variables)
     const imageFormDatas = [imageUpload,imageUpload1, ...imagesUpload];
-  console.log(localStorage.getItem('ModelId'),'ModelId Poster');
+  // console.log(localStorage.getItem('ModelId'),'ModelId Poster');
     for (let i = 0; i < imageFormDatas.length; i++) {
       const imageFormData = new FormData();
       imageFormData.append('files', imageFormDatas[i]);
@@ -316,7 +328,7 @@ const calculateOverallProgress = () => {
           },
         });
         // console.log('All uploads completed');
-        console.log(`Image ${i + 1} upload response:`, imageResponse);
+        // console.log(`Image ${i + 1} upload response:`, imageResponse);
         setCurrentStep(currentStep + 1);
         setLoading(false);
       } catch (error) {
@@ -379,7 +391,7 @@ const calculateOverallProgress = () => {
         const keyId = keyResponse.data.data.attributes.keyId;
         const key_secret = keyResponse.data.data.attributes.keySecret;
         // Create order
-        const amount = 1;
+        const amount = 499;
         const orderResponse = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {}, option1);
         const order = orderResponse.data;
     
@@ -415,7 +427,7 @@ const calculateOverallProgress = () => {
             try {
               const paymentResponse = await axios.post(`${API_URL}/api/models/${localStorage.getItem('ModelId')}/${Paymentresponse.razorpay_payment_id}/payment`, {}, option1);
               handleFinish();  // Make sure handleFinish is defined and handles any async operations
-              console.log(paymentResponse, 'payment response');
+              // console.log(paymentResponse, 'payment response');
               window.location.href = "/";
             } catch (error) {
               console.error('Error in payment handler:', error);
@@ -438,7 +450,7 @@ const calculateOverallProgress = () => {
     <Header/>
     <div className="container">
       <div>
-      <h1 className='contest-heading'>Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.299</p> Now Rs.99 only)</p> </h1>
+      <h1 className='contest-heading'>Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.499 only)</p> </h1>
       </div>
 
      {loading?(
@@ -637,7 +649,10 @@ const calculateOverallProgress = () => {
             <Form.Item
               label="Describe Yourself ( Max 200 words! )"
               name="description"
-              rules={[{ required: true, message: 'Please Describe yourself!' }]}
+                rules={[
+              { required: true, message: 'Please describe about yourself!' },
+              { validator: validateWordCount }
+            ]}
               className="input-container"
               onChange={handleInputChange}
               

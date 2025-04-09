@@ -3,16 +3,15 @@ import { Steps, Form, Input,ConfigProvider, Button, Upload, message, Progress,Se
 import { LeftOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-// import {STRAPI_API_URL} from '../../constants.js';
+import styled from "styled-components";
 import './Contest.css';
 import TextArea from 'antd/es/input/TextArea';
 import axios from 'axios';
-import Modal from 'antd/es/modal/Modal';
+import Modal  from 'antd/es/modal/Modal';
 import Topnav from '../TopNav/Topnav';
 import Header from '../Header';
 const { Step } = Steps;
 const Token = localStorage.getItem("JwtToken");
-
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -21,7 +20,10 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
+
+
   const API_URL = process.env.REACT_APP_API_URL;
+  
 const Contest = () => {
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -29,6 +31,7 @@ const Contest = () => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [ previewImage, setPreviewImage] = useState('');
+  const [showModal, setShowModal] = useState(false);
   // const [previewVideo, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [videoUpload, setVideoUpload] = useState(null);
@@ -57,6 +60,22 @@ const Contest = () => {
   const [fileSizeError, setFileSizeError] = useState(false);
   const [fileSizeError1, setFileSizeError1] = useState(false);
   const [fileSizeError2, setFileSizeError2] = useState(false);
+
+  const ShowModal = () =>{
+    setShowModal(true);
+  }
+  const handleClose = () => {
+    setShowModal(false);
+  };
+  useEffect(() => {
+    // Set a timeout to show the modal after 2 seconds
+    const timer = setTimeout(() => {
+      setShowModal(true);
+    },3000);
+
+    // Cleanup the timeout if the component unmounts
+    return () => clearTimeout(timer);
+  }, []);
 
   const [uploadStatus, setUploadStatus] = useState({
     poster: false,
@@ -111,35 +130,40 @@ const Contest = () => {
     e.preventDefault();
     try {
       const values = await form.validateFields();
-      setCurrentStep(currentStep + 1);  
+      setLoading(true); 
       const response = await axios.post(`${API_URL}/api/contests`, {
-          data:{
-              UserName: values.yourName,
-              MobileNumber: values.mobile,
-              MovieName: values.movieName,
-              Description: values.description,
-              Language: values.language,
-              Genres: values.genre,
-              Actors: values.actorName,
-              Actress: values.actressName,
-              Directors: values.directorName,
-              contentRating: values.contentRating,
-              Duration: values.duration,
-              Profile: values.profile,
-              users_permissions_user: localStorage.getItem('UserId'),
-              Email: localStorage.getItem('EmailId'),
-          }
+        data:{
+          UserName: values.yourName,
+          MobileNumber: values.mobile,
+          MovieName: values.movieName,
+          Description: values.description,
+          Language: values.language,
+          Genres: values.genre,
+          Actors: values.actorName,
+          Actress: values.actressName,
+          Directors: values.directorName,
+          contentRating: values.contentRating,
+          Duration: values.duration,
+          Profile: values.profile,
+          users_permissions_user: localStorage.getItem('UserId'),
+          Email: localStorage.getItem('EmailId'),
+        }
       }, option1);
       const formId = response.data.data.id;
-      console.log(formId);
       localStorage.setItem("formId", formId);
+      setCurrentStep(currentStep + 1);  
+      setLoading(false);
+      // console.log(formId);
   } catch (err) {
       if (err.response) {
+        setLoading(false);
+        setCurrentStep(currentStep + 1);
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
           // console.error("Server responded with error:", err.response.data);
           // alert("Server responded with error: " + err.response.data.error.message);
       } else if (err.request) {
+        // setLoading(false);
           // The request was made but no response was received
           // console.error("No response received from server:", err.request);
           // alert("No response received from server. Please check your network connection.");
@@ -188,7 +212,7 @@ const Contest = () => {
 
   
   const handleVideoUpload =  (file) => {
-    const MAX_FILE_SIZE = 500 * 1024 * 1024; 
+    const MAX_FILE_SIZE = 1500 * 1024 * 1024; 
     // console.log(file,'file size')
     try {
       // Check if a file is selected
@@ -292,7 +316,6 @@ useEffect(() => {
 
   const handleUpload = async () => {
     setUploading(true); 
-    // setLoading(true);
     // setUploading(true);
     const videoSize = videoUpload.size;
     // console.log('uplaodsizeuplaodsizeuplaodsizeuplaodsizeuplaodsize',videoSize);
@@ -339,9 +362,9 @@ useEffect(() => {
           // Calculate progress based on uploaded bytes
           const progress = Math.min(uploadedBytes / videoSize * 100, 100);
           setUploadProgress({
-              poster: progress,
-              thumbnail: progress,
-              movie: progress,
+            poster: progress,
+            thumbnail: progress,
+            movie: progress,
           });
       }
       });
@@ -386,15 +409,12 @@ useEffect(() => {
             'Authorization':`Bearer ${Token}`,
           },
         });
-        // console.log('All uploads completed');
-        // console.log(`Image ${i + 1} upload response:`, imageResponse);
         setCurrentStep(currentStep + 1);
-        // setLoading(false);
+        setLoading(false);
       } catch (error) {
-        console.error(`Error uploading image ${i + 1}:`, error);
+        console.error(`Error uploading Media ${i + 1}:`, error);
       }finally {
         setUploading(false); 
-        // setLoading(false);
       }
     }
   
@@ -449,13 +469,25 @@ useEffect(() => {
     };
 
 
+    const validateWordCount = (_, value) => {
+      if (value) {
+        const words = value.trim().split(/\s+/);
+        if (words.length > 200) {
+          return Promise.reject(new Error('Description cannot exceed 200 words!'));
+        }
+      }
+      return Promise.resolve();
+    };
+
+
+
   const handlePayment = async(e)=>{
     // e.preventDefault();
     const response = await axios.get(`${API_URL}/api/razorpay`,option1);
-    const amount = 1;
+    const amount = 1499;
 
     const { data: order } = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {} );
-    console.log(order,'order created')
+    // console.log(order,'order created')
 
       var options = {
         key: `${response.data.data.attributes.keyId}`,
@@ -503,12 +535,13 @@ useEffect(() => {
       var pay = new window.Razorpay(options);
       pay.open();
     }
+
     const validateDuration = (_, value) => {
       if (value > 7  ) { 
         return Promise.reject('Duration cannot exceed 7 minutes!');
       }
-      else if(value<5){
-        return Promise.reject('Duration cannot be less than 5 minutes!')
+      else if(value<3){
+        return Promise.reject('Duration cannot be less than 3 minutes!')
       }
       return Promise.resolve();
     };
@@ -565,13 +598,13 @@ useEffect(() => {
     };
     const handleBeforeUploadVideo = (file) => {
       // Check if the file size exceeds the limit
-      const isSizeAccepted = file.size / 1024 / 1024 < 500; 
+      const isSizeAccepted = file.size / 1024 / 1024 < 5000; 
       if (!isSizeAccepted) {
         setButtonDisabled(true);
         setFileSizeError2(true);
         notification.error({
           message: 'Upload Error',
-          description: 'File size exceeds the limit. Maximum size allowed is 500MB.',
+          description: 'File size exceeds the limit. Maximum size allowed is 5GB.',
           placement:'top'
         });
         // return setButtonDisabled(false);
@@ -591,8 +624,22 @@ useEffect(() => {
     <>
     <Topnav/>
     <Header/>
+    <Modal
+    open={showModal} footer={null}  onCancel={handleClose}
+    >  
+    <VideoContainer>
+        <img
+        src='https://api.moviemads.com/uploads/Rules1_5554c18870.jpg'
+        alt='Moviemads Invitation'
+        />
+        <img
+        src='https://api.moviemads.com/uploads/Whats_App_Image_2024_08_16_at_18_00_35_3f74cab0_f8777d6bb1.jpg'
+        alt='Moviemads Invitation'
+        />
+      </VideoContainer>
+    </Modal>
     <div className="container">
-      <h1 className='contest-heading'>Short Film contest<p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of Rs.1499 only)</p></h1>
+      <h1 className='contest-heading'>Short Film contest 2024 <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of Rs.1499 only)</p></h1>
       {loading?(
        <div class="hourglassBackground">
        <div class="hourglassContainer">
@@ -607,6 +654,7 @@ useEffect(() => {
      </div>
      ):(
       <div className="steps-container">
+        <button className='Rules-Btn' onClick={ShowModal}>View rules and regulations</button>
       <ConfigProvider
       theme={{
         token:{
@@ -779,7 +827,10 @@ useEffect(() => {
             <Form.Item
               label="Describe Your Short Film ( Max 200 words! )"
               name="description"
-              rules={[{ required: true, message: 'Please Describe your movie name!' }]}
+            rules={[
+              { required: true, message: 'Please describe your movie!' },
+              { validator: validateWordCount }
+            ]}
               className="input-container"
               onChange={handleInputChange}
               
@@ -807,6 +858,7 @@ useEffect(() => {
             <Select.Option value="Sports">Sports</Select.Option>
             <Select.Option value="Thriller">Thriller</Select.Option>
             <Select.Option value="Documentary">Documentary</Select.Option>
+            <Select.Option value="Based on a True Story">Based on a True Story</Select.Option>
           </Select>
             </Form.Item>
 
@@ -838,6 +890,7 @@ useEffect(() => {
             <Select.Option value="Homemaker">Homemaker</Select.Option>
             <Select.Option value="Consultant">Consultant</Select.Option>
             <Select.Option value="Entrepreneur">Entrepreneur</Select.Option>
+            <Select.Option value="Others">Others</Select.Option>
           </Select>
             </Form.Item>
             <Form.Item
@@ -971,10 +1024,10 @@ useEffect(() => {
         listType="picture-card"
         onPreview={handlePreview}
         beforeUpload={(file) => {
-          const MAX_FILE_SIZE = 500 * 1024 * 1024; // Maximum file size for each image (3MB)
+          const MAX_FILE_SIZE = 1500 * 1024 * 1024; // Maximum file size for each image (3MB)
           if (file.size > MAX_FILE_SIZE) {
-            message.error('File size exceeds the maximum limit of 500MB.');
-            return Upload.LIST_IGNORE; // Prevent the file from being uploaded
+            message.error('File size exceeds the maximum limit of 1.5GB.');
+            return Upload.LIST_IGNORE;
           }
           return true;
         }}
@@ -986,7 +1039,7 @@ useEffect(() => {
       </Upload>
       </Form.Item>
       {fileSizeError2 && <p className='SizeError'>Video size exceeds the limit</p>}
-      <span >( Maximum 500MB )</span>
+      <span >( Maximum 1.5GB )</span>
          </div>
          </div>
          <Progress percent={calculateOverallProgress()} />
@@ -1169,3 +1222,24 @@ useEffect(() => {
 
 
 export default Contest;
+
+const VideoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  background: black;
+  gap: 10px; /* Added 'px' to define the unit for gap */
+  overflow-y: scroll;
+  height: 600px; /* Set a fixed height for the container */
+  border: 4px solid rgba(255, 0, 0, 0.315);
+
+  img {
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    img {
+      height: auto; /* Adjust height for smaller screens if needed */
+    }
+  }
+`;

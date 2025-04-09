@@ -50,7 +50,7 @@ const ModelSlider = () => {
       const alreayModelExists = async() => {
         const res = await axios.get(`${API_URL}/api/users/${USERID}?populate=model`)
         setModelExits(res.data.model)
-        console.log(res.data.model,'Models existing or not')
+        // console.log(res.data.model,'Models existing or not')
       }
       useEffect(() => {
         getSlider();

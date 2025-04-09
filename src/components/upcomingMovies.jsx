@@ -42,7 +42,7 @@ const option1 = {
       return (
           <Container>
               <div style={{display:'flex', justifyContent:"space-between"}}>
-              <h1 onClick={() => { navigate("/movieTrailer"); }}>MOVIE TRAILERS<span>&#8702;</span></h1>
+              <h1 onClick={() => { navigate("/movieTrailer"); }}>LATEST MOVIE TRAILERS<span>&#8702;</span></h1>
               {/* <h3 >View More</h3> */}
               </div>
               <Swiper

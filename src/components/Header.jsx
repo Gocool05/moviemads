@@ -68,7 +68,7 @@ function Header() {
       setInitial(res.data.username);
       setModelExits(res.data.model);
       setModelId(res.data.model?.id);
-      console.log("rendered");
+      // console.log("rendered");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -129,11 +129,11 @@ function Header() {
             {/* <a onClick={() => { navigate("/shortfilms"); handleMenuClick(); }}>
               <span>Short Films</span>
             </a> */}
-            <a onClick={() => { navigate("/blogs"); handleMenuClick(); }}>
-              <span>Blogs</span>
-            </a>
             <a onClick={() => { navigate("/model"); handleMenuClick(); }}>
               <span>Models</span>
+            </a>
+            <a onClick={() => { navigate("/blogs"); handleMenuClick(); }}>
+              <span>Blogs</span>
             </a>
             <a onClick={() => { navigate("/gallery"); handleMenuClick(); }}>
               <span>Gallery</span>

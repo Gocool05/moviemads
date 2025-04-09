@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Button, ConfigProvider, Form, Input, Modal,message, Skeleton } from "antd";
+import { Button, ConfigProvider, Form, Input, Modal,message, Skeleton,Dropdown, Menu } from "antd";
 import {
   StarOutlined,
   VideoCameraAddOutlined,
+  ShareAltOutlined,
+  WhatsAppOutlined,
+  TwitterOutlined,
+  MailOutlined,
+  LinkOutlined,
 } from "@ant-design/icons";
 import Footer from "../Footer/Footer";
 import TextArea from "antd/es/input/TextArea";
@@ -13,6 +18,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; 
 import Topnav from "../TopNav/Topnav";
 import Header from "../Header";
+import ShareButton from "./ShareButton";
 
 
 const ModelDetails = () => {
@@ -114,6 +120,11 @@ const ModelDetails = () => {
 
   }
 
+  const url = window.location.href;
+  const title = "Check this out!";
+ 
+
+ 
   return (
     <>
     <Topnav/>
@@ -177,7 +188,12 @@ const ModelDetails = () => {
               </Look>
               {/* </div> */}
               <Description>{details?.attributes.Description} </Description>
+              <div className="two-input" style={{ margin: "10px 0" }}>
               <PlayButton onClick={handleOpenModal1}>Hire me</PlayButton>
+              <div>
+                <ShareButton url={url} title={title} />
+              </div>
+              </div>
               <Modal
                 visible={modalVisible1}
                 onCancel={handleCloseModal1}

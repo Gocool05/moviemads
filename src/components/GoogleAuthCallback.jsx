@@ -1,61 +1,50 @@
-import React, { useState, useEffect } from 'react'
-import { Navigate,useNavigate, useLocation, useParams } from 'react-router-dom'
-import axios from 'axios'
-import Home from './Home';
-import App from '../App';
-import Login from './Login';
-import MovieTrailers from './MovieTrailers/MovieTrailers';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+
 const API_URL = process.env.REACT_APP_API_URL;
+
 function GoogleAuthCallback() {
-  const [auth, setAuth] = useState()
-  const [jwt, setJwt] = useState()
-  const location = useLocation()
+  const [auth, setAuth] = useState(null);
+  const location = useLocation();
   const navigate = useNavigate();
-  const id_token = useParams();
+
   useEffect(() => {
     if (!location) {
-      return
+      return;
     }
-    const { search } = location
+    const { search } = location;
+    console.log('User Agent:', navigator.userAgent);
     axios({
-        method: 'GET',
-        url: `${API_URL}/api/auth/google/callback?${search}`,
-        headers: {
-          "ngrok-skip-browser-warning": true,
-          'Access-Control-Allow-Origin': '*',
-        }
-      })
-      .then((res) =>  res.data)
-      .then(setAuth)
-    },[location] )
-    // console.log(JSON.stringify(auth),'auth')
-    localStorage.setItem('User',auth)
-    const jwtToken = auth?.jwt
+      method: 'GET',
+      url: `${API_URL}/api/auth/google/callback${search}`,
+      headers: {
+        'User-Agent': navigator.userAgent,
+        'Access-Control-Allow-Origin': '*',
+      }
+    })
+    .then((res) => res.data)
+    .then((data) => {
+      setAuth(data);
+      localStorage.setItem('User', JSON.stringify(data));
+      localStorage.setItem('UserId', data.user.id);
+      localStorage.setItem('EmailId', data.user.email);
+      localStorage.setItem('JwtToken', data.jwt);
 
-    localStorage.setItem('UserId',auth?.user.id)
-    localStorage.setItem('EmailId',auth?.user.email)
-    localStorage.setItem('JwtToken',jwtToken)
-    // console.log(jwtToken,'token');
-    // navigate("/");
+      const redirectUrl = localStorage.getItem('redirect') || '/';
+      navigate(redirectUrl);
 
-    const redirectUrl = localStorage.getItem('redirect');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    })
+    .catch((error) => {
+      console.error('Error during authentication', error);
+      navigate('/login');
+    });
+  }, [location, navigate]);
 
-    if(redirectUrl){
-        navigate(redirectUrl);
-        setTimeout(() => {
-          window.location.reload();
-         },2000)
-    }
-    else{
-        localStorage.setItem('redirectToHome','/')
-        navigate('/');
-        setTimeout(() => {
-         window.location.reload();
-        },2000)
-    }
-    
+  return null;
 }
 
-
-
-export default GoogleAuthCallback
+export default GoogleAuthCallback;

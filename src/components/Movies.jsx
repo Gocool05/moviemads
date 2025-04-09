@@ -25,9 +25,9 @@ const option1 = {
 
   const getBytes = async() => {
     try{
-      const res = await axios.get(`${API_URL}/api/bytes?populate=*`);
+      const res = await axios.get(`${API_URL}/api/director-bytes?populate[0]=byte.Thumbnail&populate[1]=byte.Poster`);
       setBytes(res.data.data);
-      // console.log(res.data,'Bytes')
+      // console.log(res.data.data,'Bytes')
     }
     catch(err){
       console.error(err);
@@ -60,11 +60,11 @@ const option1 = {
       >
                 {bytes.map((movie) => (
                         <SwiperSlide key={movie.id}>
-                            <Link to={'/details/'+movie.id} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
+                            <Link to={'/blogs'} onClick={() => window.scrollTo(0, 0)} className="movie-link" >
                             <div className="movie-container">
-                                <img src={`${API_URL}${movie.attributes.Thumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
+                                <img src={`${API_URL}${movie.attributes.byte.data.attributes.Thumbnail.data.attributes.url}`} alt="Img" id={movie.id}/>
                             <div className="overlay">
-                                <p className="movie-name">{movie.attributes.caption}</p>
+                                <p className="movie-name">{movie.attributes.byte.data.attributes.caption}</p>
                             </div>
                             </div>
                             </Link>

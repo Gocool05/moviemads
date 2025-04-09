@@ -37,21 +37,6 @@ const Footer = () => {
     navigate("/contact")
     window.scrollTo(0, 0);
   }
-  const [showModal, setShowModal] = useState(false);
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  useEffect(() => {
-    // Set a timeout to show the modal after 2 seconds
-    const timer = setTimeout(() => {
-      setShowModal(true);
-    },3000);
-
-    // Cleanup the timeout if the component unmounts
-    return () => clearTimeout(timer);
-  }, []);
 
 
  useEffect(() => {
@@ -115,7 +100,6 @@ const Footer = () => {
   </div>
   </>)}
 </footer>
-{/* <VideoModal showModal={showModal} handleClose={handleCloseModal} /> */}
     </>
   )
 }

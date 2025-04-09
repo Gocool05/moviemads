@@ -74,10 +74,10 @@ const Topnav = () => {
     e.preventDefault();
     try{
       const response = await axios.get(`${API_URL}/api/razorpay`,option1);
-      const amount = 1;
+      const amount = 1499;
   
       const { data: order } = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {} );
-      console.log(order,'order created');
+      // console.log(order,'order created');
         var options = {
           key: `${response.data.data.attributes.keyId}`,
           key_secret:`${response.data.data.attributes.keySecret}`,
