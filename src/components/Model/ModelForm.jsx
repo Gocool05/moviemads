@@ -23,7 +23,7 @@ const ModelForm = () => {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [ previewImage, setPreviewImage] = useState('');
-  // const [previewVideo, setPreviewImage] = useState('');
+  const [refCode, setRefCode] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [videoUpload, setVideoUpload] = useState(null);
   const [imageUpload, setImageUpload] = useState(null);
@@ -91,6 +91,9 @@ const ModelForm = () => {
       case "instaLink":
         setInstaLink(value);
         break;
+      case "refcode":
+        setRefCode(value);
+        break;
       default:
         break;
     }
@@ -114,6 +117,7 @@ const ModelForm = () => {
               Height: values.height,
               Weight: values.weight,
               Social: values.instaLink,
+              referral_code: values.refcode,
               users_permissions_user: localStorage.getItem('UserId'),
               publishedAt:null
           }
@@ -391,7 +395,7 @@ const calculateOverallProgress = () => {
         const keyId = keyResponse.data.data.attributes.keyId;
         const key_secret = keyResponse.data.data.attributes.keySecret;
         // Create order
-        const amount = 499;
+        const amount = 99;
         const orderResponse = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {}, option1);
         const order = orderResponse.data;
     
@@ -450,7 +454,7 @@ const calculateOverallProgress = () => {
     <Header/>
     <div className="container">
       <div>
-      <h1 className='contest-heading'>Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.499 only)</p> </h1>
+      <h1 className='contest-heading'>Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.99 only)</p> </h1>
       </div>
 
      {loading?(
@@ -612,7 +616,7 @@ const calculateOverallProgress = () => {
               </div>
             <div className='Two input'>
             <Form.Item
-              label="Category"
+              label="Gender"
               name="category"
               rules={[{ required: true, message: 'Please Select a Category!' }]}
               className="input-container"
@@ -687,6 +691,8 @@ const calculateOverallProgress = () => {
             </Form.Item>
             </div>
               </div>
+              <div className="Two input">
+
             <Form.Item
               label="Paste Your Instagram link"
               name="instaLink"
@@ -696,6 +702,16 @@ const calculateOverallProgress = () => {
             >
             <Input/>
             </Form.Item>
+
+            <Form.Item
+              label="Referral Code"
+              name="refcode"
+              className="input-container"
+              onChange={handleInputChange}
+            >
+            <Input/>
+            </Form.Item>
+            </div>
           
             {/* Add other form fields here */}
             <Form.Item>

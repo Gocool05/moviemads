@@ -21,6 +21,8 @@ import Gallery from "./components/Gallery/Gallery";
 import EditModel from "./components/Model/EditModel";
 import PageNotFound from "./components/PageNotFound";
 import Keywords from "./components/Keywords";
+import AgentForm from "./components/Model/AgentForm";
+import AgentEditModel from "./components/Model/AgentEditModel";
 
 function App() {
   return (
@@ -75,6 +77,7 @@ const jwt = localStorage.getItem("JwtToken");
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/model/:id" element={<ModelDetails />} />
           <Route path="/model/:id/edit" element={<EditModel />} />
+        <Route path="/editAgentModel" element={<AgentEditModel />} />
           <Route path="/keywords" element={<Keywords />} />
           </>
         ):(
@@ -96,8 +99,10 @@ const jwt = localStorage.getItem("JwtToken");
         <Route path="/model" element={<Model />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/modelForm" element={<ModelForm />} />
+        <Route path="/agentModelForm" element={<AgentForm />} />
         <Route path="/model/:id" element={<ModelDetails />} />
         <Route path="/model/:id/edit" element={<EditModel />} />
+        <Route path="/editAgentModel" element={<AgentEditModel />} />
         <Route path="/keywords" element={<Keywords />} />
         </>
         )}

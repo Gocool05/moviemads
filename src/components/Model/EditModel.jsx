@@ -65,15 +65,15 @@ const EditModel = () => {
       );
       const responseData = response.data.data;
       setDetails(responseData);
-      setFullName(responseData.attributes.Name);
-      setDescription(responseData.attributes.Description);
-      setHairColor(responseData.attributes.HairColor);
-      setEyeColor(responseData.attributes.EyeColor);
-      setHeight(responseData.attributes.Height);
-      setWeight(responseData.attributes.Weight);
-      setPosterId(responseData.attributes.Poster.data.id);
+      setFullName(responseData?.attributes.Name);
+      setDescription(responseData?.attributes.Description);
+      setHairColor(responseData?.attributes.HairColor);
+      setEyeColor(responseData?.attributes.EyeColor);
+      setHeight(responseData?.attributes.Height);
+      setWeight(responseData?.attributes?.Weight);
+      setPosterId(responseData?.attributes?.Poster?.data?.id);
       
-      setThumbnailId(responseData.attributes.Thumbnail.data.id);
+      setThumbnailId(responseData?.attributes?.Thumbnail?.data?.id);
       // console.log(responseData,'Edit response');
     } catch (err) {
       console.error(err);
@@ -282,7 +282,7 @@ const EditModel = () => {
         <div className='profile'>
         <div className="profile-info left">
           <div className="profile-pic">
-            <img src={`${API_URL}${details?.attributes?.Poster?.data.attributes.url}`} alt="Profile" />
+            <img src={`${API_URL}${details?.attributes?.Poster?.data?.attributes?.url}`} alt="Profile" />
           </div>
           <div className="profile-details">
             {!editing ? (
@@ -370,7 +370,7 @@ const EditModel = () => {
         <div className='r1'>
         <h2 className="gallery-title">Poster</h2>
         <div className="gallery-item gallery1">
-              <img src={`${API_URL}${details?.attributes?.Poster?.data.attributes.url}`}  alt={`Model Image`} className="gallery-image" />
+              <img src={`${API_URL}${details?.attributes?.Poster?.data?.attributes?.url}`}  alt={`Model Image`} className="gallery-image" />
               <button className="edit-Pic" onClick={() => setIsModalOpen('poster')}>
                   Change Poster
                 </button>
@@ -380,7 +380,7 @@ const EditModel = () => {
         <div className='r1'>
         <h2 className="gallery-title">Thumbnail</h2>
         <div className="gallery-item gallery1">
-              <img src={`${API_URL}${details?.attributes?.Thumbnail?.data.attributes.url}`}  alt={`Model Image`} className="gallery-image" />
+              <img src={`${API_URL}${details?.attributes?.Thumbnail?.data?.attributes?.url}`}  alt={`Model Image`} className="gallery-image" />
          <button className="edit-Pic" onClick={() => setIsModalOpen('thumbnail')}>
                   Change Thumbnail
                 </button>
@@ -392,14 +392,14 @@ const EditModel = () => {
 
         <div className="gallery1">
   {[...Array(5)].map((_, index) => {
-    const image = details?.attributes?.Images?.data[index];
+    const image = details?.attributes?.Images?.data?.[index];
     const fileInputId = `fileInput_${index}`;
 
     return (
       <div key={index} className="gallery-item">
         {image ? (
           <>
-            <img src={`${API_URL}${image.attributes.url}`} alt={`Model ${index}`} className="gallery-image" />
+            <img src={`${API_URL}${image?.attributes.url}`} alt={`Model ${index}`} className="gallery-image" />
             <button className="edit-Pic" onClick={() => { setIsModalOpen('Images'); setMultipleImage(`${API_URL}${image.attributes.url}`); setImageId(`${image.id}`) }}>
               Change Image
             </button>
@@ -427,7 +427,7 @@ const EditModel = () => {
           closeModal={toggleModal}
           handleFileChange={handleFileChange}
           handleImageUpload={handlePosterUpload}
-          currentImage={`${API_URL}${details?.attributes?.Poster?.data.attributes.url}`}
+          currentImage={`${API_URL}${details?.attributes?.Poster?.data?.attributes?.url}`}
           handleSvgClick={handleSvgClick}
           fileInputRef={fileInputRef}
         />
@@ -438,7 +438,7 @@ const EditModel = () => {
             closeModal={() => setIsModalOpen(false)}
             handleFileChange={handleFileChange}
             handleImageUpload={handleThumbnailUpload}
-            currentImage={`${API_URL}${details?.attributes?.Thumbnail?.data.attributes.url}`}
+            currentImage={`${API_URL}${details?.attributes?.Thumbnail?.data?.attributes?.url}`}
             handleSvgClick={handleSvgClick}
             fileInputRef={fileInputRef}
           />

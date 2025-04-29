@@ -12,6 +12,8 @@ function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [modelExits, setModelExits] = useState(null);
   const [modelId, setModelId] = useState("");
+  const [agentModelExits, setAgentModelExits] = useState(false);
+  const [role, setRole]=useState("")
   const [initial, setInitial] = useState("");
   const menuRef = useRef(null);
   
@@ -64,11 +66,13 @@ function Header() {
 
   const alreadyModelExists = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/users/${USERID}?populate=model`);
-      setInitial(res.data.username);
-      setModelExits(res.data.model);
+      const res = await axios.get(`${API_URL}/api/users/${USERID}?populate[model]=*&populate[role]=*&populate[agent_models]=*`);
+      setInitial(res.data?.username);
+      setModelExits(res.data?.model);
       setModelId(res.data.model?.id);
-      // console.log("rendered");
+      setRole(res.data?.role?.name);
+      setAgentModelExits(res?.data?.agent_models?.length>0)
+      console.log(agentModelExits,'models');
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -82,12 +86,20 @@ function Header() {
   }, []);
 
   const handleModelEdit = () => {
-    if(modelExits){
-      navigate(`/model/${modelId}/edit`);
+    if(role==='Agent'){
+      if(agentModelExits){
+        navigate(`/editAgentModel`)
+      }else{
+        navigate('/agentModelForm')
+      }
+    }else{
+      if(modelExits){
+        navigate(`/model/${modelId}/edit`);
+      }
+      else{
+            navigate(`/model`);
+          }
     }
-    else{
-          navigate(`/model`);
-        }
   }
 
   const dropdownMenu = (

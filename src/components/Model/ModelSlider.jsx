@@ -29,6 +29,7 @@ const ModelSlider = () => {
       const [movies, setMovies] = useState([]);
       const [token, setToken] = useState(localStorage.getItem("JwtToken"));
       const [modelExits, setModelExits] = useState(null);
+      const [agentExits, setAgentExits] = useState(false);
      const navigate = useNavigate();
        
     const option1 = {
@@ -48,9 +49,10 @@ const ModelSlider = () => {
         }
       }
       const alreayModelExists = async() => {
-        const res = await axios.get(`${API_URL}/api/users/${USERID}?populate=model`)
+        const res = await axios.get(`${API_URL}/api/users/${USERID}?populate=model&populate=role&populate=agent_models`)
         setModelExits(res.data.model)
-        // console.log(res.data.model,'Models existing or not')
+        setAgentExits(res?.data?.agent_models.length>0);
+        console.log(res.data,'Models existing or not')
       }
       useEffect(() => {
         getSlider();
@@ -62,13 +64,28 @@ const ModelSlider = () => {
       },[token]);
 
 
-      const applyNow = () => {
+
+      const applyNow = async(type) => {
+        // console.log(type,'agent')
         if (token) {
-          if(modelExits){
-            message.error('You already applied for the Model');
-          }
+          if(type==='Agent'){
+            if(modelExits){
+              message.error('You already applied for the Model');
+            }else{
+              navigate("/agentModelForm");
+            }
+            }
           else{
-            navigate("/modelForm");
+            if(agentExits){
+              message.error('You Already an Agent, Please apply as an Agent');
+            }else{
+              if(modelExits){
+                message.error('You already applied for the Model');
+              }
+              else{
+                navigate("/modelForm");
+              }
+            }
           }
         } else {
           localStorage.setItem("redirect", window.location.pathname);
@@ -83,8 +100,9 @@ const ModelSlider = () => {
            <Wrap>
            <Info>
            <Subtitle>Want to be a model?<br/>Click below and Fill the form </Subtitle>
-            <Button1 onClick={applyNow}><FormOutlined  /> Apply Now</Button1>
-         </Info>
+            <Button1 onClick={applyNow}><FormOutlined  /> Apply As Model</Button1>
+            <Button2 onClick={()=>applyNow('Agent')}><FormOutlined  /> Apply As Agent</Button2>
+         </Info>  
          <Overlays>
            <img src={`https://api.moviemads.com/uploads/Model_Thumbnail_17d55ca8c9.jpg`} alt="Img"/>
            </Overlays>
@@ -213,13 +231,14 @@ const Button2 = styled.button`
   // margin: 5px;
   padding: 10px;
   background:#fba010;
-  color: #fff;
+  color: #000;
   font-weight: bold;
   font-size: 15px;
   border-radius: 5px;
   cursor: pointer;
   &:hover{
     background-color: #303030;
+    color:#fff;
   }
   @media (max-width: 768px) {
     margin: 0px;
