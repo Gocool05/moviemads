@@ -72,7 +72,7 @@ function Header() {
       setModelId(res.data.model?.id);
       setRole(res.data?.role?.name);
       setAgentModelExits(res?.data?.agent_models?.length>0)
-      console.log(agentModelExits,'models');
+      // console.log(agentModelExits,'models');
     } catch (error) {
       console.error("Error fetching user data:", error);
     }

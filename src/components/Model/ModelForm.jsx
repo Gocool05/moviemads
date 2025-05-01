@@ -49,6 +49,7 @@ const ModelForm = () => {
   const [fileSizeError, setFileSizeError] = useState(false);
   const [fileSizeError1, setFileSizeError1] = useState(false);
   const [fileSizeError2, setFileSizeError2] = useState(false);
+  const [price, setPrice] = useState(0);
 
   const [uploadStatus, setUploadStatus] = useState({
     poster: false,
@@ -119,6 +120,7 @@ const ModelForm = () => {
               Social: values.instaLink,
               referral_code: values.refcode,
               users_permissions_user: localStorage.getItem('UserId'),
+              Model_ID:null,
               publishedAt:null
           }
       });
@@ -386,6 +388,19 @@ const calculateOverallProgress = () => {
     },
     };
 
+    const getAmount = async() =>{
+      try{
+        const res = await axios.get(`${API_URL}/api/price?populate=*`)
+        setPrice(res?.data?.data?.attributes?.ModelPrice);
+        // console.log(res,'amount')
+      }catch(err){
+        console.log(err)
+      }
+    }
+    useEffect(()=>{
+      getAmount();
+    },[])
+
 
     const handlePayment = async (e) => {
       e.preventDefault();
@@ -395,15 +410,14 @@ const calculateOverallProgress = () => {
         const keyId = keyResponse.data.data.attributes.keyId;
         const key_secret = keyResponse.data.data.attributes.keySecret;
         // Create order
-        const amount = 99;
-        const orderResponse = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {}, option1);
+        const orderResponse = await axios.post(`${API_URL}/api/contests/${price}/create-order`, {}, option1);
         const order = orderResponse.data;
     
         // Razorpay options
         const options = {
           key: keyId,
           key_secret:key_secret,
-          amount: order.amount,
+          amount: order.price,
           currency: "INR",
           order_id: order.id,
           name: "MovieMads",
@@ -454,7 +468,7 @@ const calculateOverallProgress = () => {
     <Header/>
     <div className="container">
       <div>
-      <h1 className='contest-heading'>Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.99 only)</p> </h1>
+      <h1 className='contest-heading'>Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.{price} only)</p> </h1>
       </div>
 
      {loading?(

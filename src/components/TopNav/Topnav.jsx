@@ -16,6 +16,7 @@ const Topnav = () => {
   const [contestDetails,setContestDetails] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [price, setPrice] = useState(0);
 
   const option1 = {
     headers: {
@@ -70,18 +71,30 @@ const Topnav = () => {
     getUserDetails();
   },[user]);
 
+
+  const getAmount = async() =>{
+    try{
+      const res = await axios.get(`${API_URL}/api/price?populate=*`)
+      setPrice(res?.data?.data?.attributes?.ContestPrice);
+      // console.log(res,'amount')
+    }catch(err){
+      console.log(err)
+    }
+  }
+  useEffect(()=>{
+    getAmount();
+  },[])
+
   const handlePayment = async(e)=>{
     e.preventDefault();
     try{
       const response = await axios.get(`${API_URL}/api/razorpay`,option1);
-      const amount = 1499;
-  
-      const { data: order } = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {} );
+      const { data: order } = await axios.post(`${API_URL}/api/contests/${price}/create-order`, {} );
       // console.log(order,'order created');
         var options = {
           key: `${response.data.data.attributes.keyId}`,
           key_secret:`${response.data.data.attributes.keySecret}`,
-          amount: order.amount,
+          amount: order.price,
           currency:"INR",
           order_id: order.id,
           name:"MovieMads",
@@ -166,7 +179,7 @@ const Topnav = () => {
       <Nav>
         <div className="marquee-container">
       <Text strong className="marquees" style={{color:'white',textTransform:'uppercase'}}>
-      Get ready for an exciting announcement: Moviemads 2024 Short Film Awards are coming soon! Prepare your best short films and stay tuned for more details!
+      Get ready for an exciting announcement: Moviemads 2025 Short Film Awards are coming soon! Prepare your best short films and stay tuned for more details!
       </Text>
     </div>
         {/* <button class="button-57" role="button" ><span class="text">Contest</span><span onClick={() => navigate("/contest")}>Apply Now</span></button>

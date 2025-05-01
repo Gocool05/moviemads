@@ -287,11 +287,11 @@ const EditModel = () => {
           <div className="profile-details">
             {!editing ? (
               <>
-                <h2 className="name">{details?.attributes.Name}</h2>
+                <h2 className="name">{details?.attributes?.Name}</h2>
                 {/* <p className="email">{details?.attributes.Email}</p> */}
-                <p className="bio"><span>H: {details?.attributes.Height}cm</span>{" "}|{" "}<span>W: {details?.attributes.Weight}kg</span></p>
-                <p className="bio"><span>Eye Color: {details?.attributes.EyeColor}</span>{" "}|{" "}<span>Hair Color: {details?.attributes.HairColor}</span></p>
-                <p className="bio">{details?.attributes.Description}</p>
+                <p className="bio"><span>H: {details?.attributes?.Height}cm</span>{" "}|{" "}<span>W: {details?.attributes.Weight}kg</span></p>
+                <p className="bio"><span>Eye Color: {details?.attributes?.EyeColor}</span>{" "}|{" "}<span>Hair Color: {details?.attributes.HairColor}</span></p>
+                <p className="bio">{details?.attributes?.Description}</p>
                 <button className="edit-button" onClick={toggleEditing}>
                   Edit Profile
                 </button>
@@ -399,8 +399,8 @@ const EditModel = () => {
       <div key={index} className="gallery-item">
         {image ? (
           <>
-            <img src={`${API_URL}${image?.attributes.url}`} alt={`Model ${index}`} className="gallery-image" />
-            <button className="edit-Pic" onClick={() => { setIsModalOpen('Images'); setMultipleImage(`${API_URL}${image.attributes.url}`); setImageId(`${image.id}`) }}>
+            <img src={`${API_URL}${image?.attributes?.url}`} alt={`Model ${index}`} className="gallery-image" />
+            <button className="edit-Pic" onClick={() => { setIsModalOpen('Images'); setMultipleImage(`${API_URL}${image?.attributes?.url}`); setImageId(`${image.id}`) }}>
               Change Image
             </button>
           </>

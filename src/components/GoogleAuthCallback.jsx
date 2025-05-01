@@ -14,7 +14,7 @@ function GoogleAuthCallback() {
       return;
     }
     const { search } = location;
-    console.log('User Agent:', navigator.userAgent);
+    // console.log('User Agent:', navigator.userAgent);
     axios({
       method: 'GET',
       url: `${API_URL}/api/auth/google/callback${search}`,

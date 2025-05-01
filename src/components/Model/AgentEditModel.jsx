@@ -29,7 +29,7 @@ const AgentEditModel = () => {
         const res = await axios.get(`${API_URL}/api/users/${USERID}?populate[agent_models][populate][Poster]=*&populate[agent_models][populate][Thumbnail]=*&populate[agent_models][populate][Images]=*`);
         const models = res.data.agent_models || [];
         setAgentModels(models);
-        console.log(agentModels,'Agent mdoels')
+        // console.log(agentModels,'Agent mdoels')
         setUserDetails(res.data);
         const initialEdit = {};
         const initialForms = {};
@@ -229,12 +229,12 @@ const AgentEditModel = () => {
                     </>
                   ) : (
                     <>
-                      <ModelName>{model.Name}</ModelName>
-                      <p>{model.Description}</p>
-                      <p>Height: {model.Height} | Weight: {model.Weight}</p>
-                      <p>Hair Color: {model.HairColor}</p>
-                      <p>Eye Color: {model.EyeColor}</p>
-                      <Button onClick={() => toggleEdit(model.id)}>Edit</Button>
+                      <ModelName>{model?.Name}</ModelName>
+                      <p>{model?.Description}</p>
+                      <p>Height: {model?.Height} | Weight: {model?.Weight}</p>
+                      <p>Hair Color: {model?.HairColor}</p>
+                      <p>Eye Color: {model?.EyeColor}</p>
+                      <Button onClick={() => toggleEdit(model?.id)}>Edit</Button>
                     </>
                   )}
                 </RightSection>
@@ -281,7 +281,7 @@ const AgentEditModel = () => {
           ))}
         </Card>
       </Container>
-      {console.log(multipleImage,'multipleimage') }
+      {/* {console.log(multipleImage,'multipleimage') } */}
       {isModalOpen && (
         <ProfileModal
           closeModal={() => setIsModalOpen(false)}

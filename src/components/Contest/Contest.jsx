@@ -56,6 +56,7 @@ const Contest = () => {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [price, setPrice] = useState(0);
 
   const [fileSizeError, setFileSizeError] = useState(false);
   const [fileSizeError1, setFileSizeError1] = useState(false);
@@ -480,19 +481,31 @@ useEffect(() => {
     };
 
 
+    const getAmount = async() =>{
+      try{
+        const res = await axios.get(`${API_URL}/api/price?populate=*`)
+        setPrice(res?.data?.data?.attributes?.ContestPrice);
+        // console.log(res,'amount')
+      }catch(err){
+        console.log(err)
+      }
+    }
+    useEffect(()=>{
+      getAmount();
+    },[])
+
 
   const handlePayment = async(e)=>{
     // e.preventDefault();
     const response = await axios.get(`${API_URL}/api/razorpay`,option1);
-    const amount = 1499;
 
-    const { data: order } = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {} );
+    const { data: order } = await axios.post(`${API_URL}/api/contests/${price}/create-order`, {} );
     // console.log(order,'order created')
 
       var options = {
         key: `${response.data.data.attributes.keyId}`,
         key_secret:`${response.data.data.attributes.keySecret}`,
-        amount: order.amount,
+        amount: order.price,
         currency:"INR",
         order_id: order.id,
         name:"MovieMads",
@@ -639,7 +652,7 @@ useEffect(() => {
       </VideoContainer>
     </Modal>
     <div className="container">
-      <h1 className='contest-heading'>Short Film contest 2024 <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of Rs.1499 only)</p></h1>
+      <h1 className='contest-heading'>Short Film contest 2024 <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of Rs.{price} only)</p></h1>
       {loading?(
        <div class="hourglassBackground">
        <div class="hourglassContainer">

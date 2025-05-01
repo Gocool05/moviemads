@@ -23,6 +23,7 @@ import PageNotFound from "./components/PageNotFound";
 import Keywords from "./components/Keywords";
 import AgentForm from "./components/Model/AgentForm";
 import AgentEditModel from "./components/Model/AgentEditModel";
+import AgentModelDetails from "./components/Model/AgentModelDetails";
 
 function App() {
   return (
@@ -101,6 +102,7 @@ const jwt = localStorage.getItem("JwtToken");
         <Route path="/modelForm" element={<ModelForm />} />
         <Route path="/agentModelForm" element={<AgentForm />} />
         <Route path="/model/:id" element={<ModelDetails />} />
+        <Route path="/agent-model/:id" element={<AgentModelDetails />} />
         <Route path="/model/:id/edit" element={<EditModel />} />
         <Route path="/editAgentModel" element={<AgentEditModel />} />
         <Route path="/keywords" element={<Keywords />} />

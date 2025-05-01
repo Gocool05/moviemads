@@ -43,16 +43,16 @@ const ModelSlider = () => {
         try{
           const res = await axios.get(`${API_URL}/api/slider-for-movie-trailers?populate[0]=movieTrailer.MovieThumbnail&populate[1]=movieTrailer.VideoFile`,option1);
           // console.log("Slider for movie trailer",res.data.data);
-          setMovies(res.data.data);
+          setMovies(res?.data?.data);
         }catch(err){
           console.error(err);
         }
       }
       const alreayModelExists = async() => {
         const res = await axios.get(`${API_URL}/api/users/${USERID}?populate=model&populate=role&populate=agent_models`)
-        setModelExits(res.data.model)
-        setAgentExits(res?.data?.agent_models.length>0);
-        console.log(res.data,'Models existing or not')
+        setModelExits(res?.data?.model)
+        setAgentExits(res?.data?.agent_models?.length>0);
+        // console.log(res.data,'Models existing or not')
       }
       useEffect(() => {
         getSlider();

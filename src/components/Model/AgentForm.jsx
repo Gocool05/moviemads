@@ -52,6 +52,7 @@ const AgentForm = () => {
   const [fileSizeError2, setFileSizeError2] = useState(false);
   const [agentName, setAgentName] = useState("");
   const [agentNum, setAgentNum] = useState("");
+  const [price, setPrice] = useState(0);
   const [agentDetails, setAgentDetails] = useState(false);
   
 
@@ -105,7 +106,7 @@ const AgentForm = () => {
     try{
       const res = await axios.get(`${API_URL}/api/users/${localStorage.getItem('UserId')}?populate=*`)
       setAgentDetails(res?.data?.agent_detail !==null);
-      console.log(res,agentDetails,'user details')
+      // console.log(res,agentDetails,'user details')
     }catch(err){
       console.log(err)
     }
@@ -150,6 +151,7 @@ const AgentForm = () => {
           Weight: values.weight,
           Social: values.instaLink,
           users_permissions_user: localStorage.getItem('UserId'),
+          agentModel_ID:null,
           publishedAt:null
         }
       });
@@ -161,7 +163,7 @@ const AgentForm = () => {
       }catch(err){
         console.log(err)
       }
-      console.log(response,'Agent model res')
+      // console.log(response,'Agent model res')
       const AgentModelId = response.data.data.id;
       localStorage.setItem("AgentModelId", AgentModelId);
       // console.log(ModelId,'ModelId');
@@ -213,6 +215,7 @@ const AgentForm = () => {
   };
 
   const handleCancel = () => setPreviewOpen(false);
+  
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await new Promise((resolve) => {
@@ -427,6 +430,21 @@ const calculateOverallProgress = () => {
     };
 
 
+
+    
+  const getAmount = async() =>{
+    try{
+      const res = await axios.get(`${API_URL}/api/price?populate=*`)
+      setPrice(res?.data?.data?.attributes?.AgentModelPrice);
+      // console.log(res,'amount')
+    }catch(err){
+      console.log(err)
+    }
+  }
+  useEffect(()=>{
+    getAmount();
+  },[])
+
     const handlePayment = async (e) => {
       e.preventDefault();
       try {
@@ -434,17 +452,16 @@ const calculateOverallProgress = () => {
         const keyResponse = await axios.get(`${API_URL}/api/razorpay`, option1);
         const keyId = keyResponse.data.data.attributes.keyId;
         const key_secret = keyResponse.data.data.attributes.keySecret;
-        console.log(keyResponse,'keyResponse')
+        // console.log(keyResponse,'keyResponse')
         // Create order
-        const amount = 99;
-        const orderResponse = await axios.post(`${API_URL}/api/contests/${amount}/create-order`, {}, option1);
+        const orderResponse = await axios.post(`${API_URL}/api/contests/${price}/create-order`, {}, option1);
         const order = orderResponse.data;
-        console.log(orderResponse,'Order response')
+        // console.log(orderResponse,'Order response')
         // Razorpay options
         const options = {
           key: keyId,
           key_secret:key_secret,
-          amount: order.amount,
+          amount: order.price,
           currency: "INR",
           order_id: order.id,
           name: "MovieMads",
@@ -472,7 +489,7 @@ const calculateOverallProgress = () => {
             try {
               const paymentResponse = await axios.post(`${API_URL}/api/agent-models/${localStorage.getItem('AgentModelId')}/${Paymentresponse.razorpay_payment_id}/payment`, {}, option1);
               handleFinish();  // Make sure handleFinish is defined and handles any async operations
-              console.log(paymentResponse, 'payment response');
+              // console.log(paymentResponse, 'payment response');
               window.location.href = "/agentModelForm";
             } catch (error) {
               console.error('Error in payment handler:', error);
@@ -495,7 +512,7 @@ const calculateOverallProgress = () => {
     <Header/>
     <div className="container">
       <div>
-      <h1 className='contest-heading'>Agent Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.99 only)</p> </h1>
+      <h1 className='contest-heading'>Agent Model form <p style={{fontSize:'1.5rem', padding:'0',margin:'0'}}>(Entry fee of <p className='strikeOut'>Rs.999</p> Now Rs.{price} only)</p> </h1>
       </div>
 
      {loading?(
@@ -637,7 +654,7 @@ const calculateOverallProgress = () => {
             >
               <Input />
             </Form.Item>
-            {console.log(agentName,agentNum,'agent details')}
+            {/* {console.log(agentName,agentNum,'agent details')} */}
               </div>
           </Form>
           <h2>Model Details :</h2>

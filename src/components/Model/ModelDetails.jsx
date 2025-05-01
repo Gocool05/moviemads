@@ -65,6 +65,7 @@ const ModelDetails = () => {
       );
       const responseData = response.data.data;
       setDetails(responseData);
+      // console.log(details,'model details');                          
       setLoading(false); // Set loading to false after data is fetched
     } catch (err) {
       console.error(err);
@@ -168,7 +169,7 @@ const ModelDetails = () => {
                 </Look>
                 <Look>
                   <span>
-                    <VideoCameraAddOutlined /> Weight:{" "}
+                  <StarOutlined /> Weight:{" "}
                   </span>
                   {details?.attributes.Weight} kg
                 </Look>
@@ -182,10 +183,11 @@ const ModelDetails = () => {
               </Look>
               <Look>
                 <span>
-                  <VideoCameraAddOutlined /> Eye Color:{" "}
+                <StarOutlined /> Eye Color:{" "}
                 </span>
                 {details?.attributes.EyeColor}{" "}
               </Look>
+              <Look1><span> <StarOutlined /> Model_ID:{" "}</span>{details?.attributes?.Model_ID || "Model ID Does Not Exists"}</Look1>
               {/* </div> */}
               <Description>{details?.attributes.Description} </Description>
               <div className="two-input" style={{ margin: "10px 0" }}>
@@ -448,6 +450,15 @@ const Description = styled.p`
 `;
 const Look = styled.p`
   line-height: 1;
+  margin: 0;
+  span {
+    font-weight: bold;
+    // text-transform: uppercase;
+    color: #e50914;
+  }
+`;
+const Look1 = styled.p`
+  line-height: 2;
   margin: 0;
   span {
     font-weight: bold;

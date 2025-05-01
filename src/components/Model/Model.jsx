@@ -45,36 +45,81 @@ const option1 = {
   
 
 
-  const getMaleModel = async() => {
-    try{
-      const res = await axios.get(`${API_URL}/api/models?filters[Category][$eq]=Male&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`);
-      setMaleModel(res.data.data);
-      // console.log(maleModel,'Male model');
-    }
-    catch(err){
+  const getMaleModel = async () => {
+    try {
+      const [modelsRes, agentModelsRes] = await Promise.all([
+        axios.get(`${API_URL}/api/models?filters[Category][$eq]=Male&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`),
+        axios.get(`${API_URL}/api/agent-models?filters[Category][$eq]=Male&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`)
+      ]);
+  
+      const modelsData = modelsRes.data.data.map(item => ({
+        ...item,
+        type: "model"
+      }));
+  
+      const agentModelsData = agentModelsRes.data.data.map(item => ({
+        ...item,
+        type: "agent-model"
+      }));
+  
+      const combinedModels = [...modelsData, ...agentModelsData];
+  
+      setMaleModel(combinedModels);
+    } catch (err) {
       console.error(err);
     }
-  }
-  const getFemaleModel = async() => {
-    try{
-      const res = await axios.get(`https://api.moviemads.com/api/models?filters[Category][$eq]=Female&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`);
-      setFemaleModel(res.data.data);
-      // console.log(femaleModel,'FeMale model');
-    }
-    catch(err){
+  };
+  
+  const getFemaleModel = async () => {
+    try {
+      const [femaleModelsRes, agentFemaleModelsRes] = await Promise.all([
+        axios.get(`${API_URL}/api/models?filters[Category][$eq]=Female&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`),
+        axios.get(`${API_URL}/api/agent-models?filters[Category][$eq]=Female&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`)
+      ]);
+  
+      const femaleModelsData = femaleModelsRes.data.data.map(item => ({
+        ...item,
+        type: "model"
+      }));
+  
+      const agentFemaleModelsData = agentFemaleModelsRes.data.data.map(item => ({
+        ...item,
+        type: "agent-model"
+      }));
+  
+      const combinedFemaleModels = [...femaleModelsData, ...agentFemaleModelsData];
+  
+      setFemaleModel(combinedFemaleModels);
+    } catch (err) {
       console.error(err);
     }
-  }
-  const getChildArtist = async() => {
-    try{
-      const res = await axios.get(`${API_URL}/api/models?filters[Category][$eq]=ChildArtist&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`);
-      setChildArtist(res.data.data);
-      // console.log('ChildArtist', childArtist);
-    }catch(err){
+  };
+  
+  const getChildArtist = async () => {
+    try {
+      const [childModelsRes, agentChildModelsRes] = await Promise.all([
+        axios.get(`${API_URL}/api/models?filters[Category][$eq]=ChildArtist&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`),
+        axios.get(`${API_URL}/api/agent-models?filters[Category][$eq]=ChildArtist&filters[Payment][$eq]=Paid&sort[0]=id:desc&populate=*`)
+      ]);
+  
+      const childModelsData = childModelsRes.data.data.map(item => ({
+        ...item,
+        type: "model"
+      }));
+  
+      const agentChildModelsData = agentChildModelsRes.data.data.map(item => ({
+        ...item,
+        type: "agent-model"
+      }));
+  
+      const combinedChildModels = [...childModelsData, ...agentChildModelsData];
+  
+      setChildArtist(combinedChildModels);
+    } catch (err) {
       console.error(err);
-
     }
-  }
+  };
+  
 
   
   useEffect(() => {
@@ -151,15 +196,15 @@ const option1 = {
 
       <Content1>
       {currentPageMovies && currentPageMovies.map((model) => (
-          <div key={model.id}>
+          <div key={model?.id}>
             <Link
-              to={"/model/" + model.id}
+               to={`/${model?.type}/${model?.id}`}
               onClick={() => window.scrollTo(0, 0)}
             >
               <div className="movieTrailers-container">
-              <img src={`${API_URL}${model.attributes.Poster.data.attributes.url}`} alt="Img" id={model.id}/>
+              <img src={`${API_URL}${model?.attributes?.Poster?.data?.attributes?.url}`} alt="Img" id={model?.id}/>
                 <div className="Movietrailers-overlay">
-                  <p className="movieTrailers-title">{model.attributes.Name}</p>
+                  <p className="movieTrailers-title">{model?.attributes?.Name}</p>
                 </div>
               </div>
             </Link>
@@ -220,15 +265,15 @@ const option1 = {
 
       <Content1>
       { currentPageMovies1 && currentPageMovies1.map((model) => (
-          <div key={model.id}>
+          <div key={model?.id}>
             <Link
-              to={"/model/" + model.id}
+              to={`/${model?.type}/${model?.id}`}
               onClick={() => window.scrollTo(0, 0)}
             >
-              <div className="movieTrailers-container1">
-              <img src={`${API_URL}${model.attributes.Poster.data.attributes.url}`} alt="Img" id={model.id}/>
+              <div className="movieTrailers-container">
+              <img src={`${API_URL}${model?.attributes?.Poster?.data?.attributes?.url}`} alt="Img" id={model?.id}/>
                 <div className="Movietrailers-overlay">
-                  <p className="movieTrailers-title">{model.attributes.Name}</p>
+                  <p className="movieTrailers-title">{model?.attributes?.Name}</p>
                 </div>
               </div>
             </Link>
@@ -290,15 +335,15 @@ const option1 = {
 
      <Content1>
       {currentPageMovies2 && currentPageMovies2.map((model) => (
-          <div key={model.id}>
+          <div key={model?.id}>
             <Link
-              to={"/model/" + model.id}
+              to={`/${model?.type}/${model?.id}`}
               onClick={() => window.scrollTo(0, 0)}
             >
               <div className="movieTrailers-container">
-              <img src={`${API_URL}${model.attributes.Poster.data.attributes.url}`} alt="Img" id={model.id}/>
+              <img src={`${API_URL}${model?.attributes?.Poster?.data?.attributes?.url}`} alt="Img" id={model?.id}/>
                 <div className="Movietrailers-overlay">
-                  <p className="movieTrailers-title">{model.attributes.Name}</p>
+                  <p className="movieTrailers-title">{model?.attributes?.Name}</p>
                 </div>
               </div>
             </Link>
